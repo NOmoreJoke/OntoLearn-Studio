@@ -1,22 +1,27 @@
 import { z } from 'zod'
 import {
   safeError,
+  safeDisplayError,
   type BridgeResult,
   type JobListOptions,
   type JobView,
   type ProjectView,
   type ProgressView,
   type ResultPageOptions,
+  type ResultMetadataDTO,
+  type ResultPageDTO,
   type TaskUpdate,
   type TaskView,
   type SafeError,
 } from '@ontolearn/contracts'
 import {
   acceptsJobEvent,
+  acceptsBusiness3JobEvent,
+  validateBusiness3,
   validateV2,
   type EventBinding,
 } from '../../../../packages/contracts/src/v2'
-import type { EngineConnectionState } from './engine'
+import { EngineError, EngineSupervisor, type EngineConnectionState } from './engine'
 
 interface TaskEngine {
   request(method: string, params: Record<string, unknown>): Promise<unknown>
@@ -37,6 +42,24 @@ const invalid = {
   params: { field: 'params' },
   retryable: false,
 }
+/** Main-only seam, installed synchronously by the production project owner.
+ * A context is an actual attempt, never a renderer-supplied grant or project DTO.
+ */
+export interface TaskRecoveryContext {
+  readonly projectId: string
+  readonly generation: number
+  isCurrent(): boolean
+}
+export type TaskRecoveryRequest = (
+  method: string,
+  params: Record<string, unknown>,
+) => Promise<unknown>
+export interface TaskMainlineRecovery {
+  run(
+    context: TaskRecoveryContext,
+    restore: (request: TaskRecoveryRequest) => Promise<BridgeResult<TaskView>>,
+  ): Promise<BridgeResult<TaskView>>
+}
 interface Recovery {
   projectId: string
   generation: number
@@ -45,6 +68,8 @@ interface Recovery {
   error: SafeError
   promise?: Promise<BridgeResult<TaskView>>
   wake?: () => void
+  attemptToken?: object
+  scope?: { token: object; request: TaskRecoveryRequest; current: () => boolean }
 }
 interface Watch {
   binding: EventBinding
@@ -52,10 +77,32 @@ interface Watch {
 }
 
 // This disposable cache holds view context only. All state and commit evidence is re-read from SQLite.
+interface AuthenticatedFailure {
+  value: SafeError
+  generation: number
+  projectId: string | null
+  recoveryRefusal?: boolean
+}
 export class TaskService {
+  #supervisor?: EngineSupervisor
+  #caught = new WeakMap<object, AuthenticatedFailure>()
+  #outcomes = new WeakMap<
+    object,
+    { context: AuthenticatedFailure; promises: WeakSet<Promise<unknown>> }
+  >()
+  private validate(name: string, value: unknown): boolean {
+    return this.#supervisor?.profile === 'business3'
+      ? validateBusiness3(name, value)
+      : validateV2(name, value)
+  }
   private projectId: string | null = null
   private generation = 0
   private projectRevision: number | undefined
+  private lastProject: ProjectView | null = null
+  private projectObservers = new Map<
+    object,
+    (project: ProjectView | null, session: string | undefined) => void
+  >()
   private projectRefresh = new Map<number, Promise<TaskView | undefined>>()
   private projectTransition:
     | {
@@ -70,6 +117,68 @@ export class TaskService {
   private remembered = new Set<string>()
   private earlyBytes = 0
   private earlyEvents = new Map<string, unknown[]>()
+  #queryWatchReservations = new Map<
+    object,
+    { projectId: string; generation: number; supervisor: EngineSupervisor }
+  >()
+  queryViewGeneration(projectId: string, supervisor: EngineSupervisor): number {
+    if (this.disposed || this.#supervisor !== supervisor || this.projectId !== projectId)
+      throw new EngineError(denied)
+    return this.generation
+  }
+  reserveQueryWatch(projectId: string, supervisor: EngineSupervisor): object {
+    if (
+      this.disposed ||
+      this.#supervisor !== supervisor ||
+      this.projectId !== projectId ||
+      this.remembered.size + this.#queryWatchReservations.size >= 16
+    )
+      throw new EngineError({
+        code: 'RESOURCE_LIMIT',
+        messageKey: 'resource.limitExceeded',
+        params: { resource: 'memory' },
+        retryable: false,
+      })
+    const token = Object.freeze({})
+    this.#queryWatchReservations.set(token, { projectId, generation: this.generation, supervisor })
+    return token
+  }
+  releaseQueryWatch(token: object): void {
+    this.#queryWatchReservations.delete(token)
+  }
+  queryWatchReserved(token: object): boolean {
+    return this.#queryWatchReservations.has(token)
+  }
+  async watchAcceptedQuery(
+    token: object,
+    job: JobView,
+    supervisor: EngineSupervisor,
+  ): Promise<BridgeResult<JobView>> {
+    const reservation = this.#queryWatchReservations.get(token)
+    if (
+      !reservation ||
+      reservation.supervisor !== supervisor ||
+      this.#supervisor !== supervisor ||
+      reservation.projectId !== job.projectId ||
+      this.projectId !== job.projectId ||
+      reservation.generation !== this.generation ||
+      !this.validate('job', job) ||
+      job.capability !== 'query.execute'
+    )
+      return { ok: false, error: safeError(denied) }
+    // Transfer this one reserved watch into the original remembered16, never mint another cap.
+    this.#queryWatchReservations.delete(token)
+    this.remembered.add(job.jobId)
+    const result = await this.subscribeJob(job.jobId)
+    if (
+      this.disposed ||
+      this.#supervisor !== supervisor ||
+      this.projectId !== reservation.projectId ||
+      this.generation !== reservation.generation
+    )
+      return { ok: false, error: safeError(denied) }
+    return result
+  }
   private cancelledSubscriptions = new Set<string>()
   private dirtyWatches = new WeakSet<Watch>()
   private reconciliations = new Map<string, Promise<void>>()
@@ -77,16 +186,40 @@ export class TaskService {
   private release: () => void
   private releaseConnection: () => void
   private recovery: Recovery | undefined
+  private mainlineRecovery: TaskMainlineRecovery | undefined
+  private mainlineRecoveryRequired = false
   private connection: 'ready' | 'reconnecting' | 'offline' = 'ready'
   private engineGeneration = -1
   private lastReadySession: string | undefined
   private disconnectedSession: string | undefined
   private disposed = false
   private sink: ((value: TaskUpdate) => void) | undefined
-  constructor(private engine: TaskEngine) {
+  constructor(
+    private engine: TaskEngine,
+    private readonly onProjectChanged?: (projectId: string | null) => void,
+  ) {
+    this.#supervisor = EngineSupervisor.owns(engine) ? engine : undefined
     this.lastReadySession = engine.engineSessionId
     this.release = engine.onNotification((value) => this.receive(value))
     this.releaseConnection = engine.onConnectionState((value) => this.connectionChanged(value))
+  }
+  installMainlineRecovery(supervisor: EngineSupervisor, adapter: TaskMainlineRecovery): () => void {
+    if (
+      this.disposed ||
+      this.#supervisor !== supervisor ||
+      supervisor.profile !== 'business3' ||
+      this.mainlineRecoveryRequired ||
+      typeof adapter.run !== 'function'
+    )
+      throw new EngineError(denied)
+    this.mainlineRecoveryRequired = true
+    this.mainlineRecovery = adapter
+    return () => {
+      if (this.mainlineRecovery !== adapter) return
+      this.mainlineRecovery = undefined
+      this.cancelRecovery()
+      if (this.projectId) this.connection = 'offline'
+    }
   }
   // Called only by trusted main-process project selection, never exposed as IPC.
   selectProject(projectId: string, jobs: string[] = []): void {
@@ -96,7 +229,60 @@ export class TaskService {
     this.detachView()
     this.projectId = projectId
     this.projectRevision = undefined
+    this.lastProject = null
     this.remembered = new Set(jobs)
+    this.connection = 'ready'
+    this.onProjectChanged?.(projectId)
+  }
+  // Main owns project identity independently of renderer and task view generation.
+  projectContext(): string | null {
+    return this.disposed ? null : this.projectId
+  }
+  /** Main-only selection fence; never cancels a durable accepted Job. */
+  clearProject(): void {
+    const previousSink = this.sink
+    this.detachView()
+    this.projectId = null
+    this.projectRevision = undefined
+    this.lastProject = null
+    this.remembered.clear()
+    this.connection = 'ready'
+    this.onProjectChanged?.(null)
+    this.notifyProject()
+    try {
+      previousSink?.({
+        kind: 'restored',
+        generation: this.generation,
+        view: { generation: this.generation, project: null, jobs: [] },
+      })
+    } catch {
+      /* selection is already fenced; a destroyed view cannot undo it */
+    }
+  }
+  observeActiveProject(
+    listener: (project: ProjectView | null, session: string | undefined) => void,
+  ): () => void {
+    if (this.disposed || this.projectObservers.size >= 8) throw new Error('INVALID_STATE')
+    const registration = Object.freeze({})
+    this.projectObservers.set(registration, listener)
+    try {
+      listener(this.lastProject, this.engine.engineSessionId)
+    } catch (cause) {
+      this.projectObservers.delete(registration)
+      throw cause
+    }
+    return () => {
+      this.projectObservers.delete(registration)
+    }
+  }
+  private notifyProject(): void {
+    for (const listener of this.projectObservers.values()) {
+      try {
+        listener(this.lastProject, this.engine.engineSessionId)
+      } catch {
+        /* isolate observers */
+      }
+    }
   }
   attachView(sink: (value: TaskUpdate) => void): void {
     this.detachView()
@@ -143,8 +329,15 @@ export class TaskService {
     this.detachView()
     this.release()
     this.releaseConnection()
+    this.projectObservers.clear()
+    this.onProjectChanged?.(null)
   }
   private connectionChanged(event: EngineConnectionState): void {
+    if (this.#supervisor && event.state === 'disconnected') {
+      const issued = this.#supervisor.projectConnectionFailure(event)
+      if (!issued) return
+      event = issued
+    }
     if (
       this.disposed ||
       !Number.isSafeInteger(event.generation) ||
@@ -174,17 +367,17 @@ export class TaskService {
     if (
       event.engineSessionId !== this.lastReadySession ||
       this.disconnectedSession === event.engineSessionId ||
-      !validateV2('error', event.error)
+      !this.validate('error', event.error)
     )
       return
     this.disconnectedSession = event.engineSessionId
     this.connection = 'reconnecting'
     this.fenceConnection()
     if (this.recovery) {
-      this.recovery.error = safeError(event.error)
+      this.recovery.error = safeDisplayError(event.error)
       return
     }
-    if (this.projectId && this.sink) void this.beginRecovery(safeError(event.error))
+    if (this.projectId && this.sink) void this.beginRecovery(safeDisplayError(event.error))
   }
   private alive(recovery: Recovery): boolean {
     return (
@@ -203,7 +396,7 @@ export class TaskService {
         projectId: recovery.projectId,
         state,
         attempt: recovery.attempt,
-        error: safeError(recovery.error),
+        error: safeDisplayError(recovery.error),
       })
   }
   private beginRecovery(error: SafeError): Promise<BridgeResult<TaskView>> {
@@ -227,6 +420,63 @@ export class TaskService {
     this.connectionUpdate(recovery, 'reconnecting')
     return recovery.promise
   }
+  private restoreRecovery(
+    recovery: Recovery,
+    attemptToken: object,
+  ): Promise<BridgeResult<TaskView>> {
+    const adapter = this.mainlineRecovery
+    if (!this.mainlineRecoveryRequired) return this.restoreOnce(true)
+    const current = () => this.alive(recovery) && recovery.attemptToken === attemptToken
+    const context: TaskRecoveryContext = Object.freeze({
+      projectId: recovery.projectId,
+      get generation() {
+        return recovery.generation
+      },
+      isCurrent: current,
+    })
+    return this.guard(async () => {
+      if (!adapter || !current()) throw { error: denied }
+      let restored: Promise<BridgeResult<TaskView>> | undefined
+      const operation = adapter.run(context, async (request) => {
+        if (!current()) throw { error: denied }
+        const scope = { token: attemptToken, request, current }
+        recovery.scope = scope
+        try {
+          restored = this.restoreOnce(true, false, current)
+          const result = await restored
+          if (!current()) throw { error: denied }
+          return result
+        } finally {
+          if (recovery.scope === scope) recovery.scope = undefined
+        }
+      })
+      let result: BridgeResult<TaskView>
+      try {
+        result = await operation
+      } catch (cause) {
+        if (!current()) throw { error: denied }
+        if (this.#supervisor) {
+          const token = Object.freeze({})
+          this.#caught.set(token, {
+            value: this.#supervisor.projectFailure(cause, operation),
+            recoveryRefusal: this.#supervisor.isMainlineRecoveryRefusal(cause, operation),
+            generation: this.generation,
+            projectId: this.projectId,
+          })
+          throw token
+        }
+        throw cause
+      }
+      if (!current()) throw { error: denied }
+      if (!result.ok) this.forwardFailure(result, restored ?? operation)
+      if (
+        result.data.generation !== this.generation ||
+        result.data.project?.projectId !== recovery.projectId
+      )
+        throw { error: denied }
+      return result.data
+    })
+  }
   private async recover(recovery: Recovery): Promise<BridgeResult<TaskView>> {
     for (let attempt = 1; attempt <= 3; attempt++) {
       if (!this.alive(recovery)) return { ok: false, error: safeError(denied) }
@@ -244,8 +494,11 @@ export class TaskService {
       recovery.attempt = attempt
       this.connectionUpdate(recovery, 'reconnecting')
       let timer: ReturnType<typeof setTimeout> | undefined
+      const attemptToken = Object.freeze({})
+      recovery.attemptToken = attemptToken
+      const restoration = this.restoreRecovery(recovery, attemptToken)
       const result = await Promise.race([
-        this.restoreOnce(true),
+        restoration,
         new Promise<BridgeResult<TaskView>>((done) => {
           timer = setTimeout(
             () =>
@@ -263,15 +516,31 @@ export class TaskService {
         }),
       ])
       clearTimeout(timer)
+      // Expire the exact attempt even when the race timed out while a real
+      // request is still pending. A late reply cannot authorize another attempt.
+      if (recovery.attemptToken === attemptToken) recovery.attemptToken = undefined
       if (!this.alive(recovery)) return { ok: false, error: safeError(denied) }
       if (result.ok) {
         this.connection = 'ready'
         this.sink?.({ kind: 'restored', generation: result.data.generation, view: result.data })
+        // A synchronous sink may select/close/dispose. Never return its old view
+        // as a current recovery success after that owner has been invalidated.
+        if (!this.alive(recovery)) return { ok: false, error: safeError(denied) }
         return result
       }
+      // Only the original authenticated mainline outcome may stop retrying a
+      // nonretryable refusal. A DTO or a timed-out race has no such context.
+      const issued = this.#outcomes.get(result)
+      const terminalRefusal =
+        this.mainlineRecoveryRequired &&
+        issued?.context.recoveryRefusal === true &&
+        issued.promises.has(restoration) &&
+        issued.context.projectId === recovery.projectId &&
+        issued.context.generation === this.generation &&
+        result.error.retryable === false
       recovery.error = result.error
       this.fenceConnection(!!this.engine.engineSessionId)
-      if (attempt === 3) {
+      if (terminalRefusal || attempt === 3) {
         this.connection = 'offline'
         this.connectionUpdate(recovery, 'offline')
         return result
@@ -280,16 +549,39 @@ export class TaskService {
     return { ok: false, error: safeError(denied) }
   }
   private async call<T>(method: string, params: Record<string, unknown>): Promise<T> {
-    if (!validateV2(`params_${method}`, params)) throw { error: invalid }
+    if (!this.validate(`params_${method}`, params)) throw { error: invalid }
     const generation = this.generation
     const requestedSession = this.engine.engineSessionId
-    const result = await this.engine.request(method, params)
+    const scope = this.recovery?.scope
+    if (this.mainlineRecoveryRequired && this.connection !== 'ready' && !scope?.current())
+      throw { error: denied }
+    const operation =
+      this.mainlineRecoveryRequired && this.connection !== 'ready' && scope
+        ? scope.request(method, params)
+        : this.engine.request(method, params)
+    let result: unknown
+    try {
+      result = await operation
+    } catch (cause) {
+      if (generation !== this.generation) throw { error: denied }
+      if (this.#supervisor) {
+        const token = Object.freeze({})
+        this.#caught.set(token, {
+          value: this.#supervisor.projectFailure(cause, operation),
+          recoveryRefusal: this.#supervisor.isMainlineRecoveryRefusal(cause, operation),
+          generation,
+          projectId: this.projectId,
+        })
+        throw token
+      }
+      throw cause
+    }
     if (generation !== this.generation) {
       if (
         method === 'job.subscribe' &&
         this.engine.engineSessionId &&
         (!requestedSession || requestedSession === this.engine.engineSessionId) &&
-        validateV2('result_job.subscribe', result)
+        this.validate('result_job.subscribe', result)
       ) {
         const sub = result as { subscriptionId: string }
         void this.engine
@@ -298,7 +590,7 @@ export class TaskService {
       }
       throw { error: denied }
     }
-    if (!validateV2(`result_${method}`, result)) throw new Error('INVALID_RESPONSE')
+    if (!this.validate(`result_${method}`, result)) throw new Error('INVALID_RESPONSE')
     if (result && typeof result === 'object') {
       const record = result as Record<string, unknown>
       for (const key of ['projectId', 'jobId', 'resultId', 'operationId']) {
@@ -312,12 +604,50 @@ export class TaskService {
     if (!this.projectId) throw { error: denied }
     return this.projectId
   }
-  private async guard<T>(action: () => Promise<T>): Promise<BridgeResult<T>> {
+  private guard<T>(action: () => Promise<T>): Promise<BridgeResult<T>> {
+    let source: Promise<T>
     try {
-      return { ok: true, data: await action() }
-    } catch (error) {
-      return { ok: false, error: safeError((error as { error?: unknown } | null)?.error) }
+      source = action()
+    } catch (cause) {
+      source = Promise.reject(cause)
     }
+    const promise: Promise<BridgeResult<T>> = source.then(
+      (data) => ({ ok: true, data }),
+      (cause) => {
+        const context = cause && typeof cause === 'object' ? this.#caught.get(cause) : undefined
+        const current =
+          context && context.generation === this.generation && context.projectId === this.projectId
+        const result = {
+          ok: false as const,
+          error: current
+            ? safeDisplayError(context.value)
+            : context
+              ? safeError(denied)
+              : safeError((cause as { error?: unknown } | null)?.error),
+        }
+        if (current) this.#outcomes.set(result, { context, promises: new WeakSet([promise]) })
+        return result
+      },
+    )
+    return promise
+  }
+  private forwardFailure(
+    result: Extract<BridgeResult<unknown>, { ok: false }>,
+    originatingPromise: Promise<unknown>,
+  ): never {
+    const issued = this.#outcomes.get(result)
+    if (issued && issued.promises.has(originatingPromise)) {
+      if (
+        issued.context.generation !== this.generation ||
+        issued.context.projectId !== this.projectId
+      )
+        throw { error: denied }
+      const token = Object.freeze({})
+      this.#caught.set(token, issued.context)
+      throw token
+    }
+    // A DTO/clone alone carries no startup/business3 authority.
+    throw { error: safeError(result.error) }
   }
   private observeProject(project: ProjectView, alreadyFenced = false): boolean {
     if (this.projectRevision !== undefined && project.projectRevision < this.projectRevision)
@@ -332,6 +662,8 @@ export class TaskService {
     const advanced =
       this.projectRevision !== undefined && project.projectRevision > this.projectRevision
     this.projectRevision = project.projectRevision
+    this.lastProject = project
+    this.notifyProject()
     if (advanced && !alreadyFenced) {
       // A revision is a new view generation. Preserve the view delivery target,
       // discard its subscriptions, and keep each job's immutable input grouping.
@@ -344,11 +676,14 @@ export class TaskService {
     }
     return advanced
   }
-  private async restoreJobs(): Promise<JobView[]> {
+  private async restoreJobs(current?: () => boolean): Promise<JobView[]> {
     const jobs: JobView[] = []
     for (const jobId of this.remembered) {
-      const response = await this.subscribeJob(jobId)
-      if (!response.ok) throw { error: response.error }
+      if (current && !current()) throw { error: denied }
+      const operation = this.subscribeJob(jobId)
+      const response = await operation
+      if (current && !current()) throw { error: denied }
+      if (!response.ok) this.forwardFailure(response, operation)
       jobs.push(response.data)
     }
     return jobs.map((job) => this.watches.get(job.jobId)?.job ?? job)
@@ -405,19 +740,31 @@ export class TaskService {
           retryable: false,
         }),
       })
-    const request = this.doSubscribe(jobId, key).finally(() => {
+    const operation = this.doSubscribe(jobId, key)
+    const request = operation.finally(() => {
       this.pendingSubscriptions.delete(key)
       this.cancelledSubscriptions.delete(key)
       this.dropEarly(key)
     })
+    // Register only this internally linked wrapper promise, never a caller-supplied DTO.
+    void request.then(
+      (result) => {
+        const issued = this.#outcomes.get(result)
+        if (issued?.promises.has(operation)) issued.promises.add(request)
+      },
+      () => {},
+    )
     this.pendingSubscriptions.set(key, request)
     return request
   }
-  private async doSubscribe(jobId: string, key: string): Promise<BridgeResult<JobView>> {
+  private doSubscribe(jobId: string, key: string): Promise<BridgeResult<JobView>> {
     return this.guard(async () => {
       const projectId = this.project()
       if (!id.safeParse(jobId).success) throw { error: invalid }
-      if (!this.remembered.has(jobId) && this.remembered.size >= 16)
+      if (
+        !this.remembered.has(jobId) &&
+        this.remembered.size + this.#queryWatchReservations.size >= 16
+      )
         throw {
           error: {
             code: 'RESOURCE_LIMIT',
@@ -549,6 +896,7 @@ export class TaskService {
   private restoreOnce(
     reconcileMarkers = false,
     alreadyFenced = false,
+    current?: () => boolean,
   ): Promise<BridgeResult<TaskView>> {
     return this.guard(async () => {
       // A project read and its job reads are separate transactions. A committed
@@ -558,15 +906,19 @@ export class TaskService {
       let requiredRevision = 0
       let requiredSnapshot: string | undefined
       for (let attempt = 0; attempt < 3; attempt++) {
+        if (current && !current()) throw { error: denied }
         const project = this.projectId
           ? await this.call<ProjectView>('project.get', { projectId: this.projectId })
           : null
+        if (current && !current()) throw { error: denied }
         if (project) this.observeProject(project, alreadyFenced)
+        if (current && !current()) throw { error: denied }
         const generation = this.generation
         const session = this.engine.engineSessionId
         try {
-          let jobs = await this.restoreJobs()
+          let jobs = await this.restoreJobs(current)
           if (reconcileMarkers) await this.reconcileMarkers(jobs)
+          if (current && !current()) throw { error: denied }
           if (generation !== this.generation) throw { error: denied }
           // Operation reads may yield while same-generation progress advances.
           // Return the current validated watch DTO, never overwrite it with an
@@ -677,11 +1029,13 @@ export class TaskService {
         throw { error: invalid }
     }
   }
-  getResult(resultId: string): Promise<BridgeResult<Record<string, unknown>>> {
-    return this.guard(() => this.call('result.get', { projectId: this.project(), resultId }))
+  getResult(resultId: string): Promise<BridgeResult<ResultMetadataDTO>> {
+    return this.guard<ResultMetadataDTO>(() =>
+      this.call<ResultMetadataDTO>('result.get', { projectId: this.project(), resultId }),
+    )
   }
-  getResultPage(options: ResultPageOptions): Promise<BridgeResult<Record<string, unknown>>> {
-    return this.guard(async () => {
+  getResultPage(options: ResultPageOptions): Promise<BridgeResult<ResultPageDTO>> {
+    return this.guard<ResultPageDTO>(async () => {
       if (
         !z
           .object({
@@ -693,11 +1047,11 @@ export class TaskService {
           .safeParse(options).success
       )
         throw { error: invalid }
-      const result = await this.call<Record<string, unknown>>('result.get', {
+      const result = await this.call<ResultMetadataDTO>('result.get', {
         projectId: this.project(),
         resultId: options.resultId,
       })
-      return this.call('result.page', {
+      return this.call<ResultPageDTO>('result.page', {
         binding: {
           projectId: this.project(),
           resultId: options.resultId,
@@ -812,7 +1166,7 @@ export class TaskService {
     this.reconciliations.set(key, recovery)
   }
   private receive(value: unknown): void {
-    if (!validateV2('notification', value)) return
+    if (!this.validate('notification', value)) return
     const event = value as {
       event: string
       projectId: string
@@ -861,7 +1215,11 @@ export class TaskService {
       this.refreshProject(watch)
       return
     }
-    if (!acceptsJobEvent(value, watch.binding)) {
+    if (
+      !(this.#supervisor?.profile === 'business3'
+        ? acceptsBusiness3JobEvent(value, watch.binding)
+        : acceptsJobEvent(value, watch.binding))
+    ) {
       // Old/repeated notifications have no authority. A forward sequence gap or
       // contradictory next state requires a fresh durable snapshot, not guesses.
       if (event.seq > watch.binding.lastSeq || event.data.stateVersion > watch.binding.stateVersion)

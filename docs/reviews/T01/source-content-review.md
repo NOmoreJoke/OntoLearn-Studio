@@ -1,0 +1,23 @@
+# 私有来源内容封存验证
+
+范围仅project/source_content.py与test_project_source_transport.py：严格typed chunk/manifest、canonical base64、safe整数与长度/逐块/整体SHA，在现JobStore同连接外事务中复用不可变job_blobs原子intern，读取完整验证后才返回bytes。无新schema/Store/writer/公共wire/parser/worker接线；sourceRef是内容身份，不是broker proof/授权/人类确认。私有候选65536字节块、8MiB上限不冒充已批准wire profile。
+
+首轮实际87 passed/2.50s。格式首跑E501已由ruff format修复，发生在pytest启动前，不当产品失败掩盖。14项格式2/3真实binary边界含0/1/65535/65536/65537/131073/8MiB；整内容与逐块manifest、重复intern/调用者修改返回值、关闭重开和全部formal表逐项不变。8项坏输入零写；15项chunk严格类型/encoding/hash；16项manifest形状及伪整体hash拒绝；真实错member/缺块/跨project和预存坏hash行拒绝。7边界×4类=28项真正异常/取消/磁盘错误/子进程退出：提交前完整库不变，提交后仅不可变缓存完整可读/精确重复不新增、formal表不变。不是parser/上传/取消Job终态或正式Store写验收。
+
+本轮完整 `npm run check` 实际退出0：630 TS、2301 Python、44原不适用skip，静态/类型/构建/ruff均通过；2301=此前2214+新增87，不将skip算通过。主内审独立临时Python探针6项通过（格式2/3），冻结源码d3e660b7376e13fe1c4602990d1f7a0c7cc2025356ef3c433f68832cd29a8fe4、测试7b0487e6c96363d03a3bf7beaf11ca834b01fe3abafe65b374beaf9e576b9a7d匹配，未发现新阻断。独立核实重复全零块因ordinal保持不同ref、外层回滚全部缓存、伪空源整体摘要拒绝、预存损坏manifest使新chunk全部回滚并可重开；未重复87矩阵/check。已有f51源码/测试未修改；原候选总控固定审计23548807004be26fb1ebd338abfe832d1628a6885cd81d9d6244c23c7cd22c35已全文读，接受其273/20修前与2/3/275/2214修后归属，早期105缺poll/封存call缺output的原始边界不补造。
+
+worker唯一未来维护已实际effective=true，时间2026-10-21T10:21:19.636646+08:00；协议SHA63c194efc64dae0b7e5b36911027cf69be04df709e9c5152d107baed265450da、独立最终47e564f62ab9489a0054e95827286eef8b3e450592cedf46baccf02da5e26423、原接收019117b5…均实际核验。common新增责任尾段及原§9/无桌面规则已读，新SHAff5f9fd0a4913cc6c2fa612ec565bdf40d67db4a6640e5293d4ca1e7d02cfaff，AGENTS仍78df…97a759。只从5f维护、不消费C3、不扩protocol/resources/语义/旧tests/build/CI。纯政策不重启Goal或重跑不变产品；当前worker仍原5f字节。
+
+
+## 原始证据与后续门
+
+两份完整日志和主线/独立任务工具原字节选段在evidence/source-cache-raw-evidence.tar.gz，62633B/SHA256 `9ef1078784b6a7c32a28a138aa44a2667c338f162190608ffc895fca5e199405`。配套manifest记录逐成员/源prefix及原行offset/hash，已逐成员重读，主线16对、独立5对call/output齐全；排除自封存未完成call，没有人类消息/session_meta，不声称包含全部debug。原首个ruff E501及修正链保留在原工具行，87和完整check各有实际终态。入库保留理由仍是总控要求可从Git恢复原始验证证据，未有CI artifact代存。
+
+T03六项接口答复r2 SHA `dfd39ff7ddb9fb861b392cf0268bd3b23e09caa0cc42248976ce9b067af8fccf` 已由第二位独立设计复核，未发现收窄/越权/漏报，只支持交owner继续统一。完整table字段投影/跨语言digest、source预算/TTL/pin/回收、readonly parser真实能力、typed worker大结果、公共3/同版ready及实际生命周期仍待实现/验收。本阶段不消费未批准T03/I05实现，不计正式来源上传、parser/导出或父T01完成。全check后产品/测试未改，仅追加文档和证据；无GUI、外审、push/PR/CI/合并。
+
+
+## 总控E1补封
+
+已全文读总控固定证据审计T01-controller-source-content-fixed-evidence-readback.md，SHAd77f9021209c6ba1063e13c13ebf4233670b0478a556c41416c9cbd94eec3108。其确认ff两文件/87/独立6/完整630TS2301Py44skip同版，无新增实现阻断；指出原62633B包虽所选16/5对齐全，仍漏87专项进程74516的实际完成poll，不能将配对完整扩写成所有异步进程终态已封存。
+
+仅补封原captured prefix中的2693/2697两完整工具行，offset/1237及21723字节/各hash完全符合根报告。原call_id与其output保持原字节，包含并行只读结果；终态为chunk5e0c72/exit0，不是测试失败或仍运行。新source-cache-specialty-tail-supplement.tar.gz为10642B/SHA370a055ad1ab23ba037d2efb297b78300f1389de163782fac9e538c97ef23a52，配套JSON给源prefix、逐行offset/hash及回读索引；唯一成员逐字回读。旧ff包62633B/SHA9ef107…99405及原日志/代码/测试均不改，不重新执行产品。

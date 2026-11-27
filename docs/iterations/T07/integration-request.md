@@ -1,0 +1,30 @@
+# T07 精确接线需求（待批准，私有适配口不作为公共契约）
+
+基线：`5f910b52c69d86a1076b2032e5d3c63e715947f3`。本线不修改以下共享文件。
+
+| owner/路径                                                                      | 必需接口与验收                                                                                                                                                                                                                                                              |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| T05 实际推理服务，T00 正式版本契约                                              | 对隔离场景不可变断言，分别在初始、事件后、资源后实际执行推理；返回输入/规则/语义版本与依据。失败本轮不提交；禁止传入预先计算结果冒充执行。                                                                                                                                  |
+| T06 行为服务                                                                    | 应用事件→同份推理快照冻结全部条件→冲突检查→稳定排序执行；计划提供动作数与完整触发顺序，执行接受取消检查/1000上限，返回实际执行数、新事件及完整场景状态。跨实例冲突应抛受限错误，本轮零提交。新事件只能排入下一轮。                                                          |
+| T01 `packages/engine/src/ontolearn_engine/storage.py` 与 I04 coordinator/worker | 用已批准 `Store.start_run/commit_round/finish_run` 保存独立运行；逐轮消费/状态/指标/输入身份同一事务落盘，提交边界原子检查取消与任务身份；提交成功响应丢失按 operationId 读回确认，不能盲重放或误报失败零效果。快照显式续跑需来源/版本/消费完整校验。场景不可写正式 facts。 |
+| T00/I06 `packages/contracts/src/{index.ts,v2.ts}`、注册表及 main/preload/App    | 唯一按业务命名的创建/复制/运行/取消/详情/比较/删除/恢复/显式续跑方法；严格校验不可混版本。renderer 私有视图接收已验证数据，绝不直接持 Store/Node/通用 IPC。页面挂载在 `App.tsx` 由 owner 做。                                                                               |
+| T09 fixed manifest                                                              | 本线 `tests/fixtures/scenario/e5.json` 为专属算法测试素材；已按总控批准固定873c8c0的manifest和全17项输入逐项校验，公共E.5副本仅作本线资源/指标投影测试，不争写或采用T09未批服务。                                                                                           |
+| T10 导出                                                                        | 项目/场景输入、初始消费、参数、规则/行为完整内容及版本、引擎语义和逐轮状态齐全且实际支持才标可重放。缺任一项显示不可重放，跨设备另联验。                                                                                                                                    |
+
+私有服务的 ports 仅定义调用顺序和返回形状，不包含替代推理/行为/Store。测试适配器明确为合成编排探针，不能注册产品能力。拟成功样例：E.5 四轮每轮四事件，产能3→积压1/2/3/4、累计完成3/6/9/12；产能4→积压0、累计4/8/12/16，完整集合见 fixture。
+
+失败样例：计划1001动作→资源与提交均不执行；推理/动作/存储失败→保留上轮；提交前取消→当前轮消费、队列与指标均不提交；达到max=1且轮2仍有事件→保留待处理事件；V1晚返回且当前输入V2→只能展示历史；重复事件同ID同内容去重，不同内容拒绝；显式续跑校验快照来自同一配置与输入，独立重放从原始消费开始。
+
+补充：内部Definition与view身份现显式保留projectId/projectVersion、engineVersion/dependencyLockHash、scenario/input/rule/behavior/config/semantics；正式adapter必须完整带入、项目绑定并复验，不能只凭场景ID或页面当前选中项路由。FR-705删除运行需T01显式生命周期方法，当前不可变SQL触发器不得由本线绕过。
+
+私有编排口现显式传`Context(round, phase)`：initial/events/before/behavior/end，推理返回context须一致；不依赖适配器临时轮次计数。行为计划提供每个实际动作的`(eventId, behaviorId, actionIndex)`完整轨迹、动作数与冻结计划内容，Round保留该内容；这仍只是本线私有适配提案，公共契约由T00唯一确定。
+
+## 续跑实查的 I04 精确接线点
+
+批准base `5f910b5` 的 `packages/engine/src/ontolearn_engine/job_store.py`：
+
+- `start_job_run` 对 `test.rounds` 强制config等于测试runConfig；`commit_job_round` 对它强制状态恰好等于`pendingEvents/consumedEvents/inputEvents`的toy消费结果，传完整业务Round会得到`IDENTITY_CONFLICT`。本线不使用该能力冒充正式沙盘。
+- 正式业务接入需唯一owner提供真实scenario任务的参数、输入身份/规则行为/语义完整验证与执行器绑定；worker只计算不可变Round，不得持Store。
+- `commit_job_round` 必须通过coordinator同事务更新轮次与job进度。现有方法内部生成operation、按当前进度推断下一轮；响应丢失后若盲重发会推进下一轮，调用方必须按operation/job/期望round/完整载荷读回核对，不能把异常当零效果。
+- `finish_job_run` / `_check_summary` 用状态顶层`consumedEvents`、`pendingEvents`生成和校对证据。T07内部Checkpoint字段与之不同；该投影必须由唯一适配owner明确映射并保留完整Round，不能只交摘要指针。后续公开schema仍T00独占，本段不是新公共契约。
+- 已新增测试专用`test_scenario_persistence.py`，用真实批准Store落盘runner生成Round，验证事务、取消、真实READONLY及进程退出。它只证明Store提交边界，不注册正式任务、不绕过I04校验、不等于实际T01/I04业务联验。

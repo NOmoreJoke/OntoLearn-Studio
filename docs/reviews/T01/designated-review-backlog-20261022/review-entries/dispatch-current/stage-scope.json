@@ -1,0 +1,178 @@
+[
+  {
+    "id": "D-1",
+    "stage": "Dispatch/permanent drain R1（131>130反例）",
+    "kind": "historical-failed-implementation",
+    "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-dispatch-permanent-drain",
+    "branch": "feature/weekly-t01-dispatch-permanent-drain",
+    "integrationBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "productRef": "04ed06afca87ef8d21a71c68371bc19a849d98f8",
+    "processOrDocumentationRef": "4f270f0f5c648b730d4bdf13009f26da72909080",
+    "originalOwner": "01a15bba-0884-7401-b24f-f50c1fcf60aa",
+    "writeBoundary": "原owner T01；精确授权文件与产品/test writer如下；继承候选其余路径只读，当前盘点/补审不重开产品写窗。",
+    "actualProductCommitDeltaExcludingDocsAndAgents": [
+      "apps/desktop/src/main/engine-lifecycle.ts",
+      "apps/desktop/src/main/engine.ts",
+      "tests/unit/t01-dispatch-permanent-drain.test.ts"
+    ],
+    "historicalAcceptanceEvidence": "1167TS/2969Py/44skip；42专项；真实旧ping+completion+新hello峰值131",
+    "internalReview": "独审14062B不通过，另同步stop/token取消缺口",
+    "specifiedReviews": {
+      "zcode": {
+        "actualTaskId": null,
+        "actualSessionId": null,
+        "actualTurnId": null,
+        "actualSettings": null,
+        "actualReport": null,
+        "conclusion": "not-evidenced-in-local-stage-records"
+      },
+      "minimax": {
+        "actualTaskId": null,
+        "actualSessionId": null,
+        "actualTurnId": null,
+        "actualSettings": null,
+        "actualReport": null,
+        "conclusion": "not-evidenced-in-local-stage-records"
+      }
+    },
+    "oldPassValidity": "No evidenced specified Pass to invalidate. Historical internal/test results bind only their original execution candidate; successor changes do not inherit them.",
+    "currentGaps": "原fullcheck不能覆盖R2",
+    "nextIndependentAction": "可独立准备原固定候选的完整只读审查输入及历史覆盖映射；待root短桌面创建lease，不重跑未变验证，不把内部Pass当指定Pass。",
+    "successorRelationship": "cd506d5修实现→7dfa最终product D-2",
+    "evidence": [
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-dispatch-permanent-drain/docs/reviews/T01/dispatch-and-permanent-drain/independent-implementation-review.md",
+        "bytes": 25535,
+        "sha256": "8614f0d463d2fd089ff993250605547881612706a67b0ed30bcdabb969306b5e"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T01-dispatch-permanent-drain-implementation-authorization.md",
+        "bytes": 11686,
+        "sha256": "4ea8dede0ad911a0715f907ce8216364847f9f18324c9309b88d3542b0c93a2e"
+      }
+    ],
+    "notes": null,
+    "authorizationSource": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T01-dispatch-permanent-drain-implementation-authorization.md",
+      "bytes": 11686,
+      "sha256": "4ea8dede0ad911a0715f907ce8216364847f9f18324c9309b88d3542b0c93a2e"
+    },
+    "authorizedProductTestWriters": [
+      "apps/desktop/src/main/engine-lifecycle.ts",
+      "apps/desktop/src/main/engine.ts",
+      "tests/unit/t01-dispatch-permanent-drain.test.ts"
+    ],
+    "ownershipCaveat": "tests/unit/task-runtime.test.ts历史单文件窗2026-10-21T14:04:13.952488+08已关闭返I05；固定旧字节仅采用输入，不授T01当前维护权。"
+  },
+  {
+    "id": "D-2",
+    "stage": "当前Dispatch/permanent drain内部机制",
+    "kind": "retained-implementation",
+    "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-dispatch-permanent-drain",
+    "branch": "feature/weekly-t01-dispatch-permanent-drain",
+    "integrationBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "productRef": "7dfa9c8008727d469935181fc20beebb5ba4419a",
+    "processOrDocumentationRef": "8ecc37e25556970e86684df6bf94164ed55e950b",
+    "originalOwner": "01a15bba-0884-7401-b24f-f50c1fcf60aa",
+    "writeBoundary": "原owner T01；精确授权文件与产品/test writer如下；继承候选其余路径只读，当前盘点/补审不重开产品写窗。",
+    "actualProductCommitDeltaExcludingDocsAndAgents": [
+      "tests/unit/t01-dispatch-permanent-drain.test.ts"
+    ],
+    "historicalAcceptanceEvidence": "1175TS/2969Py/44skip；50专项；sources12；真实Node子进程失败排空机制",
+    "internalReview": "25535B/8614f0d4内部R2定点通过，root限定收件",
+    "specifiedReviews": {
+      "zcode": {
+        "actualTaskId": null,
+        "actualSessionId": null,
+        "actualTurnId": null,
+        "actualSettings": null,
+        "actualReport": null,
+        "conclusion": "not-evidenced-in-local-stage-records"
+      },
+      "minimax": {
+        "actualTaskId": null,
+        "actualSessionId": null,
+        "actualTurnId": null,
+        "actualSettings": null,
+        "actualReport": null,
+        "conclusion": "not-evidenced-in-local-stage-records"
+      }
+    },
+    "oldPassValidity": "No evidenced specified Pass to invalidate. Historical internal/test results bind only their original execution candidate; successor changes do not inherit them.",
+    "currentGaps": "真实issuer/terminal producer/unknown Job发现/Store-worker-native-VFS-cohort/首IO/目标OS真人CI未闭",
+    "nextIndependentAction": "可独立准备原固定候选的完整只读审查输入及历史覆盖映射；待root短桌面创建lease，不重跑未变验证，不把内部Pass当指定Pass。",
+    "successorRelationship": "e79d9d4采用52基础；作者process009e947→最终8ecc；无当前机制撤回",
+    "evidence": [
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-dispatch-permanent-drain/docs/reviews/T01/dispatch-and-permanent-drain/final-delivery.md",
+        "bytes": 4593,
+        "sha256": "a09240cec1e634c9326924f630b19d07edff9e7fb56535e1002eac688e34341f"
+      },
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T01-dispatch-permanent-drain-implementation-authorization.md",
+        "bytes": 11686,
+        "sha256": "4ea8dede0ad911a0715f907ce8216364847f9f18324c9309b88d3542b0c93a2e"
+      }
+    ],
+    "notes": null,
+    "authorizationSource": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/T01-dispatch-permanent-drain-implementation-authorization.md",
+      "bytes": 11686,
+      "sha256": "4ea8dede0ad911a0715f907ce8216364847f9f18324c9309b88d3542b0c93a2e"
+    },
+    "authorizedProductTestWriters": [
+      "tests/unit/t01-dispatch-permanent-drain.test.ts"
+    ],
+    "ownershipCaveat": "tests/unit/task-runtime.test.ts历史单文件窗2026-10-21T14:04:13.952488+08已关闭返I05；固定旧字节仅采用输入，不授T01当前维护权。"
+  },
+  {
+    "id": "N08",
+    "stage": "dispatch/permanent drain方案R1/R2",
+    "kind": "non-implementation-design",
+    "tree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-project-create-core",
+    "branch": "feature/weekly-t01-project-create-core",
+    "integrationBase": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "productRef": null,
+    "processOrDocumentationRef": "506e15744e47fd36f43bdbd645f6e65526cf0bf4",
+    "originalOwner": "01a15bba-0884-7401-b24f-f50c1fcf60aa",
+    "writeBoundary": "文档/分析或未实施范围；本条不产生产品writer权限；保留源树与原方案边界。",
+    "actualProductCommitDeltaExcludingDocsAndAgents": [],
+    "historicalAcceptanceEvidence": "只有静态文档；不填实现/产品Pass",
+    "internalReview": "R2方案Pass，首轮待修保持；非运行Pass",
+    "specifiedReviews": {
+      "zcode": {
+        "actualTaskId": null,
+        "actualSessionId": null,
+        "actualTurnId": null,
+        "actualSettings": null,
+        "actualReport": null,
+        "conclusion": "not-evidenced-in-local-stage-records"
+      },
+      "minimax": {
+        "actualTaskId": null,
+        "actualSessionId": null,
+        "actualTurnId": null,
+        "actualSettings": null,
+        "actualReport": null,
+        "conclusion": "not-evidenced-in-local-stage-records"
+      }
+    },
+    "oldPassValidity": "No evidenced specified Pass to invalidate. Historical internal/test results bind only their original execution candidate; successor changes do not inherit them.",
+    "currentGaps": "无可核指定两模型实际任务/设置/报告；方案包含未实施范围",
+    "nextIndependentAction": "登记纯方案审查范围和原内审/后继映射；可独立准备文档双审输入，实际创建待root短lease，不把文档Pass充作实现。",
+    "successorRelationship": "D-1→D-2",
+    "evidence": [
+      {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-project-create-core/docs/reviews/T01/dispatch-and-permanent-drain-plan/independent-plan-review.md",
+        "bytes": 16878,
+        "sha256": "a9244b2ef43731448451f58583c4d077f7c4f2afb1129d15e308e473f470fd5e"
+      }
+    ],
+    "notes": null,
+    "mainDocument": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-project-create-core/docs/iterations/T01/dispatch-and-permanent-drain-plan.md",
+      "bytes": 46175,
+      "sha256": "fc341d0c24ffb91ac170a0f393616e22551a8e22a53b35ac373346012e97b368"
+    }
+  }
+]

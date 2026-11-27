@@ -6,7 +6,9 @@ from pathlib import Path
 import pytest
 from ontolearn_engine.resources import CONTRACT
 
-CASES = json.loads((Path(CONTRACT.ROOT) / "binding-regressions.json").read_text())["cases"]
+CASES = json.loads((Path(CONTRACT.ROOT) / "binding-regressions.json").read_text(encoding="utf-8"))[
+    "cases"
+]
 
 
 @pytest.mark.parametrize("case", CASES, ids=lambda c: c["name"])

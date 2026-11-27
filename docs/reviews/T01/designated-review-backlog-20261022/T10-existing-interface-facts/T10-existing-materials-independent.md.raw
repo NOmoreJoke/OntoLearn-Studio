@@ -1,0 +1,15 @@
+# T10既有材料独立窄核
+
+结论：**静态准确性Pass，未见P2及以上问题。** 只核既有材料回件，不形成完整迁移规范、供方采用或产品/运行Pass。
+
+主摘要3537B，SHA256 `d9eea1832f90a1913084255a3968b47fed91681f7bf9e09c1d466dd61fda64c8`；事实原件4655B，SHA256 `c56c689f0a728f75b0a9ecf096fa47907e4ba5d6a69f7a8b2e7c12ac11469524`。全文读两文及两个identity JSON。
+
+普通Git固定对象核对13项ref/path/blob/bytes/SHA全部相符：423b7e4c799f188cf2ce6e8e7121893ce85624cd的八个源文件与errors.json，以及f51a9e10647d75cd07fe28007ab73c0e65451f63的四件设计/合同/验收资料。四docs当前同名原文逐bytes等固定f51；errors仅26个既有码，未被说成导入错误schema。
+
+必要源码段核同：vector过滤缺席/retired成员，不是完整versions账；state/snapshot无完整retirement，另有control/历史重建；CP引用domain snapshot并含应用JSON覆盖，不是完整typed包；workspace只取一个editor草稿。opaque保真、coverage数组及JSON校验未被冒称全部family业务闭包。同项目可信snapshot域restore、受限ontology/manual ChangeSet、metadata/draft CAS与receipt，没有被拼成import/export、跨项目typedID映射或完整导入幂等合同。
+
+摘要将f51历史设计与423已实现基础分开，未误说全部未实现，也未据设计宣称完整恢复/迁移已交付。未提供新API、错误枚举或补充施工授权。
+
+仅P3导航注记：facts.raw末句沿用`T10-checkpoint-source-identity.json`旧名，实包为`C1-existing-checkpoint-source-identities.json`；主摘要已链接正确文件，不阻断事实使用，保raw原件即可。
+
+实际只做文件/JSON/hash和固定Git读取，核验exit0；未重跑825/AST、未运行产品/测试/import/SQL/native/GUI/模型，未读发T10聊天或本轮模型意见。唯一写入本报告；原验收、HOLD与权限门不变。

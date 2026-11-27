@@ -43,23 +43,66 @@ def test_corpus_uses_utf8_when_default_file_encoding_is_cp1252(cp1252_contract_d
     assert default_cases[0]["expectedFrames"][0]["text"] == "中文😀".encode().decode("cp1252")
 
 
+@pytest.mark.parametrize(
+    "module_name,variable,fixture_name,section",
+    [
+        ("test_binding_regressions.py", "CASES", "binding-regressions.json", "cases"),
+        ("test_project_business3_contract.py", "PROFILE", "fixtures.json", "business3"),
+        (
+            "test_project_business3_contract.py",
+            "REGRESSIONS",
+            "binding-regressions.json",
+            "business3",
+        ),
+        ("test_project_source_table_material.py", "CORPUS", "fixtures.json", "sourceTable"),
+        ("test_query_definition_service.py", "FIXTURES", "fixtures.json", None),
+        ("test_query_definition_service.py", "BINDINGS", "binding-regressions.json", None),
+        ("test_query_presentation.py", "DATA", "fixtures.json", "queryConsumer"),
+    ],
+)
+def test_shared_corpus_modules_keep_utf8_under_cp1252(
+    cp1252_contract_default, module_name, variable, fixture_name, section
+):
+    # Exercise eager test collection with a Windows-style default, without
+    # changing process-wide encoding or replacing any contract validation.
+    loaded = runpy.run_path(str(Path(__file__).with_name(module_name)))
+    expected = json.loads((CONTRACT.ROOT / fixture_name).read_text(encoding="utf-8"))
+    if section is not None:
+        expected = expected[section]
+    assert loaded[variable] == expected
+
+
 def test_common_examples_use_utf8_when_default_file_encoding_is_cp1252(
     cp1252_contract_default, capsys
 ):
     contract_probe.main()
     captured = capsys.readouterr()
     assert captured.err == ""
+    # The adopted ordinary/Query/Wave 4 composite has 508 shape cases and 34 common
+    # response bindings. Retain full-set counts and the encoding/probe assertion.
+    expected_counts = {
+        "cases": 508,
+        "routing": 11,
+        "responses": 34,
+        "cursors": 9,
+        "jobListCursors": 7,
+        "trustedBindings": 41,
+        "rawFrames": 51,
+    }
+    fixtures = json.loads((CONTRACT.ROOT / "fixtures.json").read_text(encoding="utf-8"))
+    bindings = json.loads((CONTRACT.ROOT / "binding-regressions.json").read_text(encoding="utf-8"))
+    assert {
+        key: len(fixtures[key])
+        for key in ("cases", "routing", "responses", "cursors", "jobListCursors")
+    } == {
+        key: expected_counts[key]
+        for key in ("cases", "routing", "responses", "cursors", "jobListCursors")
+    }
+    assert len(bindings["cases"]) == expected_counts["trustedBindings"]
+    assert len(CORPUS) == expected_counts["rawFrames"]
     assert json.loads(captured.out) == {
         "status": "passed",
-        "counts": {
-            "cases": 321,
-            "routing": 11,
-            "responses": 30,
-            "cursors": 9,
-            "jobListCursors": 7,
-            "trustedBindings": 41,
-            "rawFrames": 51,
-        },
+        "counts": expected_counts,
     }
 
 

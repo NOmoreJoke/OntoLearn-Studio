@@ -38,12 +38,14 @@ if(q.method==='hello') {
  if(mode==='nohello') return;
  output(q,{selectedVersion:2,engineVersion:'0.1.0',engineSessionId:session,capabilities:JSON.parse(capsRaw),registryHash:mode==='badhash'?'0'.repeat(64):hash,limits:JSON.parse(limitsRaw)});return;
 }
-if(q.method==='session.ping') return output(q,{nonce:q.params.nonce});
+if(q.method==='session.ping') {
+ if(mode==='invalid' && q.params.nonce==='00000000-0000-4000-8000-000000000099') return process.stdout.write('{"bad":1,"bad":2}\\n');
+ return output(q,{nonce:q.params.nonce});
+}
 if(mode==='hang') return;
 if(mode==='business') return output(q,undefined,{ok:false,error:{code:'STORAGE_BUSY',messageKey:'storage.busy',params:{retryAfterMs:10},retryable:true}});
 output(q,{status:'ok',engineVersion:'0.1.0'});
 if(mode==='exit') setTimeout(()=>process.exit(11),10);
-if(mode==='invalid') setTimeout(()=>process.stdout.write('{"bad":1,"bad":2}\\n'),10);
 });
 `
 const active: EngineSupervisor[] = []
@@ -57,8 +59,8 @@ function create(mode = 'normal', options: SupervisorOptions = {}) {
     {
       registryPath,
       startupMs: 1000,
-      handshakeMs: 200,
-      requestMs: 200,
+      handshakeMs: 2000,
+      requestMs: 2000,
       heartbeatMs: 1000,
       command: {
         command: process.execPath,
@@ -141,6 +143,16 @@ describe('engine connection lifecycle', () => {
     })
     await engine.health()
     const identity = engine.engineSessionId
+    await expect(
+      engine.request('session.ping', { nonce: '00000000-0000-4000-8000-000000000099' }),
+    ).rejects.toMatchObject({
+      error: {
+        code: 'INVALID_REQUEST',
+        messageKey: 'protocol.invalidRequest',
+        params: { field: 'envelope' },
+        retryable: false,
+      },
+    })
     expect(await disconnected.promise).toEqual({
       state: 'disconnected',
       generation: 1,

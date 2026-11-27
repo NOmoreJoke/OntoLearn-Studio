@@ -1,0 +1,69 @@
+#transfer-workspace {
+  padding: var(--gap-lg);
+  display: grid;
+  gap: var(--gap-md);
+  max-width: 1180px;
+}
+#transfer-workspace section,
+#transfer-workspace fieldset {
+  background: var(--paper-surface);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  margin: 0 0 var(--gap-md);
+}
+#transfer-workspace legend {
+  padding: 0 8px;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+#transfer-workspace label {
+  display: block;
+  margin: 8px 0;
+}
+#transfer-workspace input[type='checkbox'] {
+  margin-right: 8px;
+}
+#transfer-workspace select {
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
+  background: var(--paper-surface);
+  color: var(--ink-primary);
+  padding: 6px 10px;
+}
+#transfer-workspace button {
+  margin: 6px 8px 6px 0;
+}
+#transfer-workspace table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+#transfer-workspace th {
+  background: var(--paper-subtle);
+  border-bottom: 1px solid var(--hair-strong);
+  padding: 8px 10px;
+  text-align: left;
+}
+#transfer-workspace td {
+  border-bottom: 1px solid var(--hair-border);
+  padding: 8px 10px;
+}
+#transfer-workspace code,
+#transfer-workspace pre {
+  font-family: var(--font-mono);
+}
+#transfer-workspace [role='alert'] {
+  background: var(--signal-warning-bg);
+  border-left: 3px solid var(--signal-warning);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  color: var(--ink-primary);
+}
+#transfer-workspace [role='status'] {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent-primary);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  color: var(--ink-primary);
+}

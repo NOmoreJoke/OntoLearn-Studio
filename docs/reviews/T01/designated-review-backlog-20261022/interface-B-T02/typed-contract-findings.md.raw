@@ -1,0 +1,149 @@
+# 固定 C1 typed ChangeSet 合同静态核对（B / T02）
+
+结论：固定 423b7e4 已有显式内部 business3 的实际链路：真实回滚预演 → 完整分段 Diff → 绑定确认回执 → durable queued Job / operation claim → 同 writer 原子 commit。它支持 ontology 定义与手工 fact 的 typed 子集；项目 metadata 另走私有 application 事务，没有同一 typed ChangeSet metadata proof。现有预算是结构、行数、JSON字节、页面、cursor / TTL 与协作 deadline；没有可交给 B / T02 的 whole-H / SQLite 物理预扣计费或真实 producer 接口。
+
+唯一来源 ref：`423b7e4c799f188cf2ce6e8e7121893ce85624cd`。读取方式仅为 `/Users/kyle/Documents/工作/知爻/本体/.worktrees/T01-project-create-core` 的 `git show <ref>:<path>`。没有读取两棵外审树、当前工作文件、模型报告或 C2 / S1 / producer WIP；没有 import 产品、测试 / collect、DB / SQL、native、GUI。只写本 /tmp 子报告，不形成运行 Pass。
+
+下文 D / J / C 等均指上述唯一 ref 的 blob；行号为一基行号、含端点。它们是固定 Git 来源定位，不是当前文件链接。
+
+| 简写 | 精确仓库路径 |
+| --- | --- |
+| D | packages/engine/src/ontolearn_engine/project/domain_changesets.py |
+| J | packages/engine/src/ontolearn_engine/job_store.py |
+| C | packages/engine/src/ontolearn_engine/coordinator.py |
+| S | packages/engine/src/ontolearn_engine/storage.py |
+| T | packages/engine/src/ontolearn_engine/project/transactions.py |
+| A | packages/engine/src/ontolearn_engine/project/applications.py |
+| L | packages/engine/src/ontolearn_engine/project/project_lifecycle.py |
+| SC | packages/contracts/v2/schema.json |
+| REG | packages/contracts/v2/registry.json |
+| CP | packages/contracts/python/contract_v2.py |
+| R | packages/engine/src/ontolearn_engine/resources.py |
+
+## 1. 实际 profile 与入口
+
+JobStore 已实现以下薄入口，直接调用 D 的逻辑（J:628–723）；并非只有设计签名：
+
+```python
+preview_changeset(self, project, base, request, *, host_client_id, engine_session_id, limits, hook=lambda _: None)
+changeset_diff_page(self, project, preview_hash, document_kind, page_size, cursor, *, host_client_id, engine_session_id, limits)
+confirm_changeset(self, project, preview_hash, completion_cursor, *, host_client_id, engine_session_id, hook=lambda _: None)
+create_changeset_job(self, project, operation, input_, confirmation_ref, implementation, limits, *, host_client_id, engine_session_id, hook=lambda _: None)
+```
+
+Coordinator 的 request 检查 strict3 Session / protocol 与一次性 request id（C:233–275）；hello 生成 Session，并保存 hello.params.clientId（C:277–289）。preview / page / confirm 仅在 version3、host与Session已具备时分派；job.create 的正式可执行分支仅显式 version3 + changeset.commit，普通正式能力不会因 schema 中存在名字自动启用（C:340–405）。
+
+C:136–137 明确 host 只是 trusted stdio client attribution，**不是人类同意证明**。C:162 用既给定 allowed_projects 集合检查项目，不能供应真实 FS 位置、lease、current_scope 或生产权限 issuer。
+
+REG:1–5 的默认 productRuntime 仍只有 health。全局 capabilities.changeset.commit 标作 design-only，但 REG:454–483 的 foundationProfiles.business3 有实际 override：explicit-internal-business3-runtime，新增 methods 为 preview / diff.page / confirm，newSourceOrLearningMethods=[]。因此“仍仅设计”和“默认正式产品已放行”都不准确。
+
+## 2. 实际 wire shapes 与 typed 写集合
+
+全部请求 DTO additionalProperties:false，不能追加 proof / metadata / cost-ticket。
+
+| 调用 | 请求 | 响应 | 固定源行块 |
+| --- | --- | --- | --- |
+| changeset.preview change | projectId, baseRevision, intent="change", plan | ready: projectId, baseRevision, previewHash, preparedPlanRef, inputSnapshotId, parametersHash, intent, targetOperationId=null, summary, manifest | SC:7712–7868 |
+| changeset.preview undo | projectId, baseRevision, intent="undo", targetOperationId | ready 同上；或 conflict: project/base/previewHash/targetOperationId/summary/impactComplete/undo-impact manifest | SC:7712–7868 |
+| changeset.diff.page | projectId, previewHash, documentKind, pageSize, cursor（首取null） | projectId, previewHash, documentKind, documentHash, segments, nextCursor, complete | SC:7869–7943 |
+| changeset.confirm | projectId, previewHash, completionCursor | projectId, previewHash, preparedPlanRef, confirmationRef, inputSnapshotId, parametersHash | SC:7944–7997 |
+| job.create | projectId, operationId, capability="changeset.commit", input, confirmationRef | queued Job：jobId/project/op、snapshot/dependencies、limits、stateVersion1、atomic commitProgress、resultRef/error等 | SC:2351–2392、2504–2563；J:962–1013 |
+
+Job input 形状为 inputSnapshotId/scope/definitionId/parametersHash/derivedResultIds/preparedPlanRef。formal accepted_plan 另要求 definitionId="changeset"、scope="asserted"、derivedResultIds=[]；snapshot/hash/plan ref 与真实 envelope 一致，confirmation 必须绑定该plan。新受理还核 host/session、当前 revision 与 before/control（D:842–872）。
+
+实际参数 blob 是 `{changeSetParametersVersion:1, previewHash, intent, targetOperationId}`，不是任意业务内容、metadata proof 或权限材料（D:450–476、568–580）。
+
+changeSetPlan 仅接受 definitions/remove_definitions/manual/edits/remove。定义新增及移除 layer 固定 ontology；value 仅 triples / singleValuedPredicates / references；manual fact 只有 id/subject/predicate/object，edits 用 hash 键。各列表最多4096，edits最多4096属性（SC:7444–7625）。references 可指已存在 family/id，但不能借此写其它 family。mapping / application / metadata / proof / compensate 都不是该 typed wire plan 字段。
+
+D:87–127 还检查实际 Diff 的 before/after 历史类型：definition必须ontology与限定payload；fact禁止owner/source_row/managed_value，mapped/managed历史不会伪装成manual。S:443–454、1014–1079 检查IRI、canonical RDF object N3、新fact内容衍生ID、引用存在与单值约束。此实现能表达的 RDF / ontology 变更不等于任意非RDF元数据。
+
+## 3. 真实预演与持久 proof 的边界
+
+T:146–178 的 preview 在实际 Store transaction 内取 before/control，调用真实 Store.commit，取 after/control，再抛 _PreviewRollback。S:120–146 实现嵌套savepoint / 外层BEGIN IMMEDIATE与rollback。因此这是**运行真实存储逻辑再回滚**的预演，不是仅凭调用方声明生成Diff；本审未执行它。D:378–497 外层随后持久化输入snapshot、参数blob、分段blob、prepared plan，尚未签confirmation。
+
+previewHash=ChangePreview.identity，覆盖 internal project、base、完整plan、before、after、intent、target、overwrittenOperations、controlBefore/After；plan fingerprint再含preview_identity/preview_control（T:35–65、125–144）。S:24–31 的 canonical 是 sort_keys / UTF8 / ensure_ascii=False / 紧凑分隔 / allow_nan=False，digest为其SHA256。
+
+prepared envelope含preparedChangeSetVersion1、public project、hostClientId、engineSessionId、pack(preview)、inputSnapshotId、parametersHash、manifest、segmentBlobRefs；preparedPlanRef为envelope digest。job_plans另存base/plan_hash/diff_hash。D:450–497、524–581 验证字段集合、哈希、snapshot所属project/revision/state、parameter blob以及完整Diff / segment blob；INSERT OR IGNORE后有真实读回，不把旧行存在当类型正确。
+
+完整 Diff / undo-impact 是 canonical JSON UTF8原文，最多16MiB，每32768字节一段；manifest带kind、整体SHA、totalBytes、segmentCount，descriptor带ordinal/offset/rawByteLength/段SHA，内容为base64（D:130–152）。CP:266–308还核offset连续与总字节、base64长度等语义。服务端由真实Diff重新生成并逐所存blob核同（D:524–533）。这是内容绑定，不是权限签名、真实用户选择或物理文件身份。
+
+page cursor绑定project、host、Session、previewHash、documentKind/hash、preparedPlanRef、baseRevision、page_size。position为startOffset/byteOffset/previousCursor，job_cursors还存expiry。完整最后一页也返回token；confirm要求原completionCursor整链回走至0，kind/host/session/size/expiry/循环/空隙不符拒绝（D:584–675、762–793；J:1685–1718）。
+
+confirm新签前核当前revision并重新实际preview，要求fresh==原preview。job_confirmations签字行与changesetConfirmationReceiptVersion1的job_details回执同一事务写；receipt含原request / requestHash、host/session、结果。已有二者必须成对且恰一份，精确同request返回原receipt，孤儿或替换completionCursor不默默重签（D:678–839）。
+
+这能证明服务记录了该内容绑定的完整传递页链，不能证明UI真的显示、真人阅读或点击同意。确认服务/可信host仍要提供自己的真实边界；不能把host/session UUID自签成当前物理授权。
+
+## 4. 先 durable 受理，再原子 commit
+
+create_changeset_job只薄传私有host tuple（J:700–723）。create_job的新operation在一外层事务中先校验真实snapshot / parameter / dependencies / confirmed prepared plan，构造context，其fingerprint绑定 input、confirmation、parameters、snapshot、plan、project、capability、implementation、limits、dependencyVector、manifests；再写queued jobs与全库operation_claims（J:854–1013）。Coordinator依据队列容量门和已有claim判断，受理成功后加入内存queue（C:366–405）。queued持久受理不是领域commit成功。
+
+已有operation在验证当前快照/状态之前先走_accepted_job（J:881–887、1015–1078）：核project/kind、真实job / context hash、原input/confirmation/implementation/limits，核frozen snapshot/parameter/plan，返回原Job。这条repeat分支没有把新host tuple作为当前Session物理权限重新认证；accepted_plan(host=None)也不重做新受理的current before条件（D:842–872）。它是已受理操作内部幂等读取边界，不能扩称复制库、新Session的正式resolve / 当前许可。
+
+C:500–554 对changeset.commit直接execute_changeset后return：同Coordinator / Store writer运行，**没有worker计算/worker memory guard**。先start_job持久运行态、通知、yield正常dispatcher一次，然后在boundary核cancel和total deadline。commit_job走同连接的应用outer transaction（J:1227–1272），再D:875–888 accepted_plan / frozen envelope核同 → T:201–240 ProjectTransactions.commit。
+
+实际commit先核confirmed_preview digest、before/control，调用Store.commit，再核after/control恰等preview。S:603–639保operation fingerprint/job幂等与base revision CAS；S:837–860写revision、commits、before/after snapshot evidence及format3 domain记录。Job的receipt result和succeeded终态在同外层事务提交（J:1227–1272）。嵌套函数仅savepoint，外层COMMIT之后才after_commit hook（S:120–146）。若提交后hook/交付失败，Coordinator见terminal则保留成功，不再写失败或删成果（C:541–547）。
+
+取消是dispatcher正常处理到cancelling以及协作boundary的事实，不是stdin已到达即自动线性化；deadline只在边界检查，不能用它替代单条内部操作的抢占式物理上界（C:500–527）。
+
+## 5. 已实现的成本限制与未实现的 whole-H 接口
+
+| 实际限制 | 值与时点 | 固定源行块 |
+| --- | --- | --- |
+| 结构/线包 | plan各列表或edits≤4096；一般validate encoded_size≤262144；数字保守按32B | SC:7575–7625；CP:40–52、249–263 |
+| Diff文档 | canonical raw≤16777216B；32768B段，≤512段；先建完整raw再比len | D:22–23、130–152；SC:7626–7711 |
+| ready/request wire | len(canonical.encode())+1024≤min(262144,maxFrameBytes) | D:155–159 |
+| 页面 | 各段须能独立一页；实际page+1024≤min(maxPageBytes,maxFrameBytes,262144) | D:162–178、620–650 |
+| cursor记录 | 默认256，构造接受1..4096；TTL默认60000ms、接受1..60000；满先删过期cursor/list | J:46–66、1672–1718 |
+| Job result | rows≤10000；canonical(rows)≤8388608B；changeset写一行receipt | J:1252–1270、1516–1538 |
+| 队列/并发/时间 | 默认queued32/concurrent2、total120000ms、frame262144B、page131072B、pageItems200；schema另限定数值范围 | R:33–46；SC:57–135；C:378–381、511–527 |
+
+这些是**逻辑结构/材料/协议预算**，不构成通用whole-H预扣账：
+
+- preview在Diff document cap之前已经实跑Store事务再回滚（T:159–165；D:378–450）。
+- _document先canonical完整原文再按len拒（D:130–134）。
+- diff_page先把全部segmentBlobRefs读为values，再选择有限页面（D:620–643）。
+- _envelope遍历项目job_plans / job_details，confirm查receipt、回走cursor和重新实际预演（D:500–521、740–803）。
+- API参数、strict envelope与limits没有可交接的cost gate / whole-H票 / 驻留释放ack / owner-bootstrap / SQLite物理前置接口；全量成本不因页面/JSON命名而得到证明。
+
+上述只报告固定代码的调用顺序与缺失接口，不研究底层物理路径、不推算峰值或触发任何损坏库实验。maxWorkerMemoryBytes虽然存在limits并写入Job frozen context，**该ChangeSet实际不进入worker分支**，不能给同进程JSON/SQLite工作提供已执行的worker限制（C:500–554）。
+
+C1新增blank creation确有另一组ReadLimits候选rows/SQL编码bytes/validation_work、catalog / page / workspace计价，例如total*(1+app_operations+snapshots)（L:307–374）。但它只由Store.commit(creation=...)专属分支消费，与application/domain分支互斥（S:481–519）。它不是typed ChangeSet通用whole-H接口，更不是损坏输入的物理认证，不得转移为B/T02已获得的供方。
+
+## 6. metadata proof的实际支持
+
+**同一typed ChangeSet：没有。** SC:7575–7625没有metadata / proof字段；D:110–127只支持definition / fact Diff，D:842–872 accepted_plan固定definitionId=changeset。不能往DTO加任意proof dict或把应用metadata receipt冒充该接口已消费的typed domain proof。
+
+**项目metadata私有事务：有。** A:85–120只认metadata和draft.save/delete/restore；metadata patch限name / archived / mode、expectedVersion。可选domain组合一份真实预演；A:200–306构造applicationPlanVersion1、domain before/after / control、application before/after、CAS，并重新推导核同。
+
+J:290–321 prepare_application返回preparedPlanRef、confirmationRef、planHash、before/afterCAS、application before/after与domain。J:323–420 apply_application明确是coordinator-owned **non-Job** transaction，通过applicationContextVersion1与global kind=application claim落到Store.commit(application=...)。普通纯metadata不带prepared refs时可由trusted caller直接构造；组合domain或draft.restore要求prepared confirmation；这不是changeset.confirm的分页确认链。
+
+actor UUID与permission="write"是可信调用方材料，J:266–277核其形状/格式3/262144B；不能由这些字面值证明外部身份、真人选择、scope或真实库位置。它的preparedApplicationVersion命名空间也不是preparedChangeSetVersion，不能交给changeset.commit受理自动通过（J:392–412；D:848–861）。
+
+A:1–5直接写明learning producer proof和full application restore需实现后才可接收。当前没有T02任意本体metadata proof消费方法、公开metadata RPC或生产producer供方可以由本合同自动继承。项目metadata逻辑receipt/CAS与T02业务本体元数据也不能仅凭同名互换。
+
+## 7. 可供主报告采用的事实与后继边界
+
+- 已实现：内部business3的typed域ChangeSet签名/DTO/实际预演/完整Diff与确认绑定/Job原子受理/commit；可固定引用原实现，不应重复造第二writer。
+- 未实现或未由此证明：任意metadata typed proof消费、可信人类确认、物理current_scope/issuer/位置绑定、C2/S1供方、whole-H计费/损坏输入保护、真实生产caller / producer。
+- 若B/T02需要缺项，应由原owner另交精确版本、字段、写面、消费与失败合同。本子报告不设计新API、不授权施工，不续被拒SQL/heap/OS研究，不把C2/S1 WIP充接口。
+- 本审仅固定blob静态核对，未运行功能、性能或测试，未读外审报告；不形成任何完整产品Pass。
+
+## 固定 blob 身份
+
+| 精确路径 | bytes | SHA256 |
+| --- | ---: | --- |
+| packages/engine/src/ontolearn_engine/project/domain_changesets.py | 34728 | e38f9d58a31f3bb38dc7b2da58f3da26811d3a6cfcc2a5f43a5a10f9b71dfb9a |
+| packages/engine/src/ontolearn_engine/job_store.py | 87227 | 8896c3e30007e1dec04eaf47ae5bb5c33a1e9b3a1d016cb9165f99d8b4deeacc |
+| packages/engine/src/ontolearn_engine/coordinator.py | 41168 | 6e057cbdd76c674813d9f90e231306cb9cf5611ef7fcbeb234de13d698afa18c |
+| packages/engine/src/ontolearn_engine/storage.py | 76042 | fbef0d0ace0a01b9ced5eaecaf83aeb9306258c0cbfa5fd98a6d79e46bc5a39a |
+| packages/engine/src/ontolearn_engine/project/transactions.py | 11924 | 13a9f9a104e2f7d0d71ba4b7f66a7adfb40e32631d6d67a9dbd5835ae590a123 |
+| packages/engine/src/ontolearn_engine/project/applications.py | 20012 | 888bac463c27156a012e08ebfe1df33769a2405c117174611b82a63576a8d90f |
+| packages/engine/src/ontolearn_engine/project/project_lifecycle.py | 20932 | a43365c1615082a0229de0d8e48569227fa930a7c3a7f869360975d72f30d104 |
+| packages/contracts/python/contract_v2.py | 34608 | 17aa68bc2271b45ffb70a023b9db9e441bb1b4e79fc9a42bb6932f60631be7b7 |
+| packages/contracts/v2/schema.json | 207256 | e913138e6f3ac632268ae7f8c2461577022e8298d1c03e0668416a0d654eaabf |
+| packages/contracts/v2/registry.json | 15962 | 1f2e298209e238433c02864a05c70b24482e4c1fd00e7309f63eac84a1f3706b |
+| packages/engine/src/ontolearn_engine/resources.py | 2415 | 8bba36a3f97eedf972b4d9165e71b8046b225948b0864542a1fc3f1095c6f188 |
+
+相对C1 adoption ba2，本报告范围在423b真正修改/新增的路径：`packages/engine/src/ontolearn_engine/job_store.py`, `packages/engine/src/ontolearn_engine/project/project_lifecycle.py`, `packages/engine/src/ontolearn_engine/storage.py`。domain_changesets/coordinator/transactions/applications/schema等沿原adoption保留；不能把C1空白创建新增误报成重做整个ChangeSet。
+
+同目录typed-contract-findings.json保存原schema值、registry profile、全部被读Python函数的实际签名/一基行块、blob SHA与Git blob id。

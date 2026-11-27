@@ -1,0 +1,57 @@
+{
+  "status": "receiver_accepted_exact_one_file_offer_pending_independent_and_root_effectiveness",
+  "recordedAt": "2026-10-21T02:13:58.123308+00:00",
+  "offer": {
+    "path": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/I05-semantic-validation/docs/reviews/I05/worker-owner-release/offer.json",
+    "sha256": "2593c8cb3dee3ada90b63c41299839e555b6cb51aca3318b5d86088a555bb440",
+    "actualDonorHead": "073c0e249f34003318c2c12924ec67bfaf98b1ca"
+  },
+  "receiver": {
+    "worktree": "/Users/kyle/Documents/\u5de5\u4f5c/\u77e5\u723b/\u672c\u4f53/.worktrees/T01-project-transactions",
+    "branch": "feature/weekly-t01-project-transactions",
+    "headAtAcceptance": "f51dd38dbdfd2fbb1b9923efee666a19d5b415cc",
+    "path": "packages/engine/src/ontolearn_engine/worker.py",
+    "bytes": 9314,
+    "sha256": "2fa848aa3a2148e59a24f01c9333701f0f03eed95cffe55a0a78b74f1d06f2f0",
+    "trackedDirty": false,
+    "equalsApproved5f": true,
+    "equalsC3": false
+  },
+  "fixedC3IdentityOnly": {
+    "commit": "3289d67dbfb19545c7a3b3b26753cdd0065741bb",
+    "gitBlob": "ff55d2adc039f82a3e2344c58da6669726dd9935",
+    "bytes": 13638,
+    "sha256": "3d934e79aff65288e1f249e2763f46b4eb86f50bd05ccc7628643951f4d4f99d",
+    "donorActualMatches": true,
+    "sourceCodeReadOrAdopted": false
+  },
+  "approvedImplementationBase": {
+    "commit": "5f910b52c69d86a1076b2032e5d3c63e715947f3",
+    "gitBlob": "abc2f8a925eed514d767e3ed3084eaaf523b7a2c",
+    "bytes": 9314,
+    "sha256": "2fa848aa3a2148e59a24f01c9333701f0f03eed95cffe55a0a78b74f1d06f2f0"
+  },
+  "explicitAcceptance": "T01 accepts sole future maintenance of worker.py only for agreed bounded source chunk/seal transport and worker first-frame changes, starting only from approved5f bytes after root registers effectiveness. This receipt does not itself make ownership effective or approve transport design/C3.",
+  "notExpanded": [
+    "protocol.py",
+    "resources.py",
+    "semantic modules",
+    "existing tests",
+    "build/locks/entrypoint/CI",
+    "I06 retained desktop paths",
+    "other paths not already governed by separate T01 agreements"
+  ],
+  "proposedNewTestsUnderExistingT01Scope": [
+    "packages/engine/tests/test_project_source_transport.py",
+    "packages/engine/tests/test_project_source_worker.py",
+    "tests/unit/t01-source-transport.test.ts"
+  ],
+  "untilEffective": "Do not edit worker.py; I05 remains sole current owner. Preserve f51dd38 CAS source/test freeze.",
+  "frozenC3AndReturn": "I05 frozen C3 worker remains unchanged and unadopted; review repair requires precise root temporary return, T01 first stops/saves exact state, never concurrent edits. Changed execution inputs create a new candidate and both fresh designated review tasks.",
+  "policy": {
+    "agentsSha256": "78df28251883651ea8a068a8a21daed6d6dc0f50348894d59a808b969a97a759",
+    "commonSha256": "b24c4c88404f422c5fae4bf6c01e231b678e46741250801e8100cc62a31fec39",
+    "guiOrProductRetest": false,
+    "pushPrCiMerge": false
+  }
+}

@@ -72,7 +72,18 @@
         "type": "object",
         "properties": {
           "resource": {
-            "enum": ["project", "job", "result", "snapshot", "operation", "subscription", "cursor"]
+            "enum": [
+              "project",
+              "job",
+              "result",
+              "snapshot",
+              "operation",
+              "subscription",
+              "cursor",
+              "checkpoint",
+              "preview",
+              "confirmation"
+            ]
           }
         },
         "required": ["resource"],
@@ -376,6 +387,106 @@
         "required": ["resource"],
         "additionalProperties": false
       }
+    },
+    "GATEWAY_INVALID_INPUT": {
+      "messageKey": "gateway.invalidInput",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "GATEWAY_LOCAL_ONLY": {
+      "messageKey": "gateway.localOnly",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "GATEWAY_AUTHORIZATION_REQUIRED": {
+      "messageKey": "gateway.authorizationRequired",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "GATEWAY_SCOPE_EXCEEDED": {
+      "messageKey": "gateway.scopeExceeded",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "GATEWAY_CONFIGURATION_CHANGED": {
+      "messageKey": "gateway.configurationChanged",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "GATEWAY_CREDENTIAL_UNAVAILABLE": {
+      "messageKey": "gateway.credentialUnavailable",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "GATEWAY_AUDIT_UNAVAILABLE": {
+      "messageKey": "gateway.auditUnavailable",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "GATEWAY_REDIRECT_REJECTED": {
+      "messageKey": "gateway.redirectRejected",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "GATEWAY_MODEL_UNAVAILABLE": {
+      "messageKey": "gateway.modelUnavailable",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "GATEWAY_RESPONSE_LIMIT": {
+      "messageKey": "gateway.responseLimit",
+      "retryable": false,
+      "paramsSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
     }
   },
   "parameterMeanings": {
@@ -395,7 +506,10 @@
       "snapshot": "Authorized immutable snapshot does not exist.",
       "operation": "Authorized operation identity does not exist; a missing marker may instead be a successful null read.",
       "subscription": "Authorized notification subscription does not exist.",
-      "cursor": "Authorized cursor identity does not exist; expired or mismatched cursors have separate codes."
+      "cursor": "Authorized cursor identity does not exist; expired or mismatched cursors have separate codes.",
+      "checkpoint": "Authorized whole-project checkpoint does not exist in the verified ledger.",
+      "preview": "Authorized restore impact preview document does not exist or has expired.",
+      "confirmation": "Authorized restore confirmation identity does not exist."
     },
     "TIMEOUT": {
       "startup": "Coordinator process startup deadline.",
@@ -445,6 +559,117 @@
       "semanticInput": "Actual semantic input text/blob byte or graph-size budget, never a type error or transport limit.",
       "semanticResult": "Total semantic result rows/triples/evidence payload budget, never just one page.",
       "semanticWork": "Cumulative closure/matching work or intermediate match-set budget, never behavior actions/rounds."
+    }
+  },
+  "foundationProfiles": {
+    "business3": {
+      "supportedVersions": [3],
+      "legacyIncompatibleDiagnosis": [2],
+      "nullSessionHelloCodes": ["VERSION_INCOMPATIBLE", "INVALID_REQUEST", "SESSION_MISMATCH"],
+      "invalidRequestField": "params",
+      "startupFailure": "no successful hello; bounded local startup diagnosis required before runtime activation"
+    }
+  },
+  "startup": {
+    "diagnosticVersion": 1,
+    "profile": "business3",
+    "maxPayloadBytes": 1024,
+    "codes": {
+      "PROJECT_FORMAT_UNSUPPORTED": {
+        "messageKey": "project.formatUnsupported",
+        "retryable": false,
+        "paramsSchema": {
+          "type": "object",
+          "properties": {
+            "supportedFormats": {
+              "type": "array",
+              "items": {
+                "const": 3
+              },
+              "minItems": 1,
+              "maxItems": 1
+            }
+          },
+          "required": ["supportedFormats"],
+          "additionalProperties": false
+        }
+      },
+      "STORAGE_BUSY": {
+        "messageKey": "storage.busy",
+        "retryable": true,
+        "paramsSchema": {
+          "type": "object",
+          "properties": {
+            "retryAfterMs": {
+              "const": 250
+            }
+          },
+          "required": ["retryAfterMs"],
+          "additionalProperties": false
+        }
+      },
+      "STORAGE_FAILURE": {
+        "messageKey": "storage.failure",
+        "retryable": false,
+        "paramsSchema": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "INTERNAL_ERROR": {
+        "messageKey": "engine.internal",
+        "retryable": false,
+        "paramsSchema": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  "wave4": {
+    "mappingIssueMessageKeys": {
+      "INVALID_SOURCE": "mapping.sourceInvalid",
+      "INVALID_CSV": "mapping.sourceInvalid",
+      "INVALID_XLSX": "mapping.sourceInvalid",
+      "INVALID_CELL": "mapping.sourceInvalid",
+      "XLSX_CELL_ERROR": "mapping.sourceInvalid",
+      "EMPTY_SOURCE": "mapping.sourceInvalid",
+      "EMPTY_HEADER": "mapping.sourceInvalid",
+      "INVALID_HEADER": "mapping.sourceInvalid",
+      "ROW_WIDTH": "mapping.sourceInvalid",
+      "SOURCE_LIMIT": "mapping.sourceLimit",
+      "ENCODING_UNSUPPORTED": "mapping.encodingUnsupported",
+      "INVALID_ENCODING": "mapping.encodingInvalid",
+      "ENCRYPTED_UNSUPPORTED": "mapping.sourceUnsafe",
+      "MACRO_UNSUPPORTED": "mapping.sourceUnsafe",
+      "UNSAFE_XML": "mapping.sourceUnsafe",
+      "XLSX_PARSER_UNAVAILABLE": "mapping.sourceUnavailable",
+      "SHEET_REQUIRED": "mapping.sheetInvalid",
+      "SHEET_NOT_FOUND": "mapping.sheetInvalid",
+      "FORMULA_CACHE_MISSING": "mapping.formulaCacheMissing",
+      "EMPTY_KEY": "mapping.emptyKey",
+      "DUPLICATE_KEY": "mapping.duplicateKey",
+      "DUPLICATE_IDENTITY": "mapping.duplicateKey",
+      "CONVERSION_FAILED": "mapping.conversionFailed",
+      "INVALID_VALUE": "mapping.conversionFailed",
+      "INVALID_REFERENCE": "mapping.referenceInvalid",
+      "MISSING_REFERENCE": "mapping.referenceInvalid",
+      "UNKNOWN_MAPPING_ISSUE": "mapping.issueUnknown"
+    },
+    "behaviorPublicMessageKeys": {
+      "conflict": "behavior.conflict",
+      "invalid_input": "behavior.invalidInput",
+      "unavailable": "behavior.unavailable",
+      "execution_failed": "behavior.executionFailed",
+      "cancel_failed": "behavior.cancelFailed"
+    },
+    "credentialRejection": {
+      "code": "PERMISSION_DENIED",
+      "messageKey": "permission.denied"
     }
   }
 }

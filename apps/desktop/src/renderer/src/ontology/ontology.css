@@ -1,0 +1,399 @@
+.ontology-page {
+  color: var(--ink-primary);
+  max-width: 1440px;
+  margin: auto;
+  padding: 28px 32px;
+}
+.ontology-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+.ontology-page h1 {
+  font-size: 32px;
+  margin: 8px 0;
+}
+.ontology-page h2 {
+  font-size: 20px;
+  margin-top: 24px;
+}
+.ontology-page p {
+  line-height: 1.7;
+}
+.ontology-note {
+  background: var(--accent-soft);
+  padding: 14px 16px;
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-sm);
+}
+.ontology-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 1fr);
+  gap: 28px;
+}
+.ontology-workbench > * {
+  min-width: 0;
+}
+.workspace-split[data-mentor-open='true'] .ontology-workbench {
+  grid-template-columns: minmax(0, 1fr);
+}
+.ontology-page nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+}
+.ontology-page button {
+  min-width: 0;
+  font: inherit;
+  color: var(--ink-primary);
+  padding: 8px 12px;
+  margin: 4px;
+  cursor: pointer;
+  border: 1px solid var(--hair-strong);
+  border-radius: var(--radius-md);
+  background: var(--paper-surface);
+}
+.ontology-page button[aria-pressed='true'] {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--ink-inverse);
+}
+.ontology-page button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.ontology-page label {
+  display: grid;
+  gap: 6px;
+  margin: 14px 0;
+  font-size: 14px;
+}
+.ontology-page input,
+.ontology-page textarea,
+.ontology-page select {
+  box-sizing: border-box;
+  width: 100%;
+  font: inherit;
+  padding: 10px;
+  color: var(--ink-primary);
+  border: 1px solid var(--hair-strong);
+  border-radius: var(--radius-md);
+  background: var(--paper-surface);
+}
+.ontology-page textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+.ontology-page :focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+.ontology-page table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  background: var(--paper-surface);
+}
+.ontology-page caption {
+  text-align: left;
+  margin: 12px 0;
+}
+.ontology-page th {
+  background: var(--paper-subtle);
+}
+.ontology-page th,
+.ontology-page td {
+  border-bottom: 1px solid var(--hair-border);
+  padding: 12px 8px;
+}
+.ontology-page small {
+  display: block;
+  color: var(--ink-secondary);
+}
+.ontology-tree {
+  list-style: none;
+  padding: 0;
+}
+.ontology-local-graph li {
+  padding: 12px;
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+  background: var(--paper-card);
+}
+.ontology-page code,
+.ontology-page pre {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+.ontology-diff {
+  margin-top: 28px;
+  border-top: 2px solid var(--accent-primary);
+  padding-top: 16px;
+}
+@media (max-width: 850px) {
+  .ontology-workbench {
+    grid-template-columns: 1fr;
+  }
+  .ontology-page {
+    padding: 16px;
+  }
+  .ontology-heading {
+    align-items: flex-start;
+  }
+}
+
+.ontology-local-graph svg {
+  width: 100%;
+  max-height: 520px;
+  background: var(--paper-card);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
+}
+.ontology-local-graph svg line,
+.ontology-local-graph svg path {
+  stroke: var(--graph-node-stroke);
+  stroke-width: 1.5;
+  fill: none;
+}
+.ontology-local-graph svg circle {
+  fill: var(--graph-node-fill);
+  stroke: var(--graph-node-stroke);
+}
+.ontology-local-graph svg .ontology-focus-node {
+  fill: var(--graph-node-selected);
+  stroke-width: 2;
+}
+.ontology-local-graph svg text {
+  fill: var(--ink-primary);
+  font: 11px var(--font-ui);
+}
+
+.ontology-heading > button {
+  white-space: nowrap;
+}
+
+/* W3b S2-4: import / export and Agent draft diff review. */
+.ontology-import-export,
+.ontology-draft-diff {
+  border: 1px solid var(--hair-border);
+  background: var(--paper-surface);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  margin-block: 1.25rem;
+  min-width: 0;
+}
+.ontology-import-export h2,
+.ontology-draft-diff h2 {
+  margin-top: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.ontology-import-export ul,
+.ontology-draft-diff ul {
+  margin: 0.5rem 0;
+  padding-inline-start: 1.25rem;
+}
+.ontology-import-export pre,
+.ontology-draft-diff pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 0.75rem;
+  background: var(--accent-soft);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  max-height: 22rem;
+  overflow: auto;
+  border-radius: var(--radius-sm);
+}
+.ontology-import-export button,
+.ontology-draft-diff button {
+  border: 1px solid var(--hair-border);
+  background: var(--accent-soft);
+  color: var(--accent-primary);
+  border-radius: var(--radius-md);
+  padding: 0.45rem 0.8rem;
+  font: inherit;
+  cursor: pointer;
+}
+.ontology-import-export button:disabled,
+.ontology-draft-diff button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+/* W7-3: Zero-code triple builder & ReadableBusinessDiff (tokens.css only) */
+.ontology-mode-bar {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  margin: 12px 0;
+  background: var(--paper-subtle);
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
+}
+.ontology-mode-bar button {
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+}
+.ontology-mode-bar button[aria-pressed='true'] {
+  background: var(--paper-surface);
+  color: var(--accent-primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-subtle);
+}
+
+.zero-code-builder-card {
+  margin: 16px 0 24px;
+  padding: 18px 20px;
+  border: 1px solid var(--hair-strong);
+  border-radius: var(--radius-lg);
+  background: var(--paper-card);
+  display: grid;
+  gap: 14px;
+}
+.zero-code-builder-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.zero-code-builder-head h2 {
+  margin: 6px 0 0;
+  font-size: 18px;
+}
+.zc-badge,
+.zc-namespace-pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent-primary);
+}
+.zc-namespace-pill {
+  background: var(--paper-surface);
+  color: var(--ink-secondary);
+  border: 1px solid var(--hair-border);
+}
+.zc-draft-strip {
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--signal-info-bg);
+  border: 1px solid var(--hair-border);
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+}
+.zc-draft-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ontology-page .zc-draft-chip {
+  margin: 0;
+  font-size: 12px;
+  padding: 5px 10px;
+  background: var(--paper-surface);
+  border-color: var(--signal-info);
+  color: var(--signal-info);
+}
+.zc-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+.zc-slot-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.zc-slot-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+.zc-sentence-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--paper-surface);
+  border: 1px solid var(--hair-border);
+}
+.zc-sentence-bar p {
+  margin: 0;
+  font-size: 13px;
+}
+.ontology-page .zc-preview-btn {
+  margin: 0;
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--ink-inverse);
+  font-weight: 600;
+}
+.ontology-page .zc-preview-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+.zc-status-hint {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--paper-subtle);
+  color: var(--ink-primary);
+  font-size: 12px;
+}
+
+.readable-diff-wrap {
+  display: grid;
+  gap: 12px;
+  margin: 12px 0;
+  overflow-x: auto;
+}
+.diff-action-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+}
+.diff-action-badge.is-新增 {
+  background: var(--signal-success-bg);
+  color: var(--signal-success);
+}
+.diff-action-badge.is-修改 {
+  background: var(--signal-warning-bg);
+  color: var(--signal-warning);
+}
+.diff-action-badge.is-移除 {
+  background: var(--signal-danger-bg);
+  color: var(--signal-danger);
+}
+.raw-diff-drawer {
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
+  background: var(--paper-subtle);
+  padding: 10px 14px;
+}
+.raw-diff-drawer summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}

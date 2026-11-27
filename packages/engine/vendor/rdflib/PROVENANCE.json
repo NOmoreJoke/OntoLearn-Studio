@@ -1,0 +1,193 @@
+{
+  "schema": "ontolearn.rdflib.local-artifact-provenance/3",
+  "artifactVersion": "7.6.0+ontolearn.fr201.3",
+  "upstreamVersion": "7.6.0",
+  "state": "IMMUTABLE_LIBRARY_ARTIFACT_SUPPLIER_CREATION_RECORD",
+  "lifecycle": {
+    "stateMeaning": "This file records creation and library validation of this exact supplier artifact. It is not a live repository adoption status.",
+    "atCreation": "Library-only verified; ROOT qualification and consumer adoption are separate later records.",
+    "historicalBaseline": "fr201.2 remains preserved, its old NOT_ADOPTED state describes its historical supply creation only; ROOT/T01 later adopted it separately.",
+    "currentConsumerStatus": "Not asserted by this supplier. Consult ROOT/T01 exact adoption record for the target candidate.",
+    "supplierRole": "T03 source/vendor/repack only",
+    "consumerRole": "T01 sole pyproject/uv.lock/application adopter after ROOT qualification",
+    "noticeBuildRole": "T11 owns NOTICE and physical package checks"
+  },
+  "pathSemantics": {
+    "repositoryPaths": "Fields repositoryRelativePath name intended future target files, not an assertion they are currently installed.",
+    "externalEvidence": "All scope=repository-external entries are absolute files under this supplier output domain, not files committed to repository. Preserve ENTRY and delivery-manifest as external seals.",
+    "wheelMembers": "Upstream source and LICENSE are identified by member within pinned upstream wheel, not fictitious unpacked repo paths.",
+    "externalSupplyRoot": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001",
+    "externalEntry": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/ENTRY.json",
+    "externalManifest": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/delivery-manifest.json",
+    "manifestSelfBinding": "Final ENTRY+manifest pin all non-fixture payloads; fixture inventory separately binds fixture files/symlinks. No circular hashes."
+  },
+  "upstream": {
+    "wheel": {
+      "repositoryRelativePath": "packages/engine/vendor/rdflib/upstream/rdflib-7.6.0-py3-none-any.whl",
+      "bytes": 615416,
+      "sha256": "30c0a3ebf4c0e09215f066be7246794b6492e054e782d7ac2a34c9f70a15e0dd"
+    },
+    "source": {
+      "wheelMember": "rdflib/plugins/parsers/notation3.py",
+      "bytes": 67404,
+      "sha256": "a3e361632567b5326a06318e93e081f31f93c7497d1b52cbb91f2ef460a9d3ca"
+    },
+    "license": {
+      "wheelMember": "rdflib-7.6.0.dist-info/LICENSE",
+      "repositoryRelativePath": "packages/engine/vendor/rdflib/LICENSE",
+      "bytes": 1524,
+      "sha256": "53a705e51bfd199e8c97d0442376cb4bbd4ffcf13ba4f2c4c2794211400e4012",
+      "unchanged": true
+    }
+  },
+  "artifact": {
+    "repositoryRelativePath": "packages/engine/vendor/rdflib/rdflib-7.6.0+ontolearn.fr201.3-py3-none-any.whl",
+    "bytes": 2379774,
+    "sha256": "99fab7bdd9148267ac0fcbd49363fc10d9a1edd47a4744726c14a7d14fc51edf",
+    "officialUpstreamUnchanged": false,
+    "transparentLocalVersion": true,
+    "metadataChange": "Only Version 7.6.0→7.6.0+ontolearn.fr201.3; original dist-info renamed and RECORD rebuilt.",
+    "verifiedRuntime": "CPython 3.12.12 macOS arm64 (project >=3.12,<3.13); no claim for older Python or other platforms."
+  },
+  "patch": {
+    "repositoryRelativePath": "packages/engine/vendor/rdflib/notation3-input-types.patch",
+    "bytes": 5012,
+    "sha256": "de5755d6cd8053a4d1a40fdf55f967a8bd1a660a22c83de00bbe2e72e711e5c8",
+    "sourceAfter": {
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/after/notation3.py",
+        "bytes": 69477,
+        "sha256": "a78a592a7994fc5c24b93582bc40cdc27b00c963488546256e4df388bf0ac454"
+      }
+    },
+    "incrementFromFr201_2": {
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/fr201.2-to-fr201.3.patch",
+        "bytes": 1874,
+        "sha256": "3188557f2a6ea355f58b845b7966256124e12b6d19b87d2b959f02af24389b40"
+      }
+    },
+    "changeScope": [
+      "notation3 imports existing private _is_valid_langtag from already loaded rdflib.term, no term.py edit or new cycle",
+      "InvalidLanguageTagError(Notation3InputError, ValueError), before existing Literal validation on non-empty lang branch",
+      "Preserve dt truthiness precedence, empty/None language acceptance and raw values; no supplier normalization",
+      "IntegerDigitLimitError(Notation3InputError, ValueError), only original matched ASCII signed-decimal token over actual active conversion digit limit",
+      "No catch added; no message/cause/traceback classifier; no integer settings/cap/policy writes; all other exceptions propagate"
+    ],
+    "modifiedExistingFunctions": ["nodeOrLiteral", "RDFSink.newLiteral"],
+    "priorFr201_1And2ChangesRetained": true
+  },
+  "repack": {
+    "repositoryRelativePath": "scripts/repack-rdflib-input-types.py",
+    "bytes": 7112,
+    "sha256": "166b0919890891d3a493ea7271021b6330a9e55e52173b9886aebebcaad977f9",
+    "deltaFromFr201_2": "VERSION/PATCH_SHA/AFTER_SHA constants only; all functions AST identical",
+    "finalRuns": [
+      {
+        "scope": "repository-external supplier original",
+        "file": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/evidence/repack-003/receipt.json",
+          "bytes": 1756,
+          "sha256": "ff8f0e4ce2a9ded66911a2a237a03e21014dbd57dfc9481a9de46b2ee8918f24"
+        }
+      },
+      {
+        "scope": "repository-external supplier original",
+        "file": {
+          "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/evidence/repack-004/receipt.json",
+          "bytes": 1757,
+          "sha256": "2a1c54d73d4e4ac5ed20c5c364c60834f1b8adb126fbc03e87f3f2fe3295976e"
+        }
+      }
+    ],
+    "naturalExits": [0, 0],
+    "entireWheelBytesEqual": true,
+    "format": "ZIP_STORED, sorted names, fixed timestamp 1980-01-01, fixed modes"
+  },
+  "regression": {
+    "harness": {
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/tests/language_integer_regression.py",
+        "bytes": 8460,
+        "sha256": "2d00d75533a38bd77b5ce307f2af1c1f320a3acad0422f4e5b425dbb0b17f990"
+      }
+    },
+    "inheritedHarness": {
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/tests/inherited-158.py",
+        "bytes": 30741,
+        "sha256": "d5815d33b2721fc6aa379a3e4c101c549287af5d74435a8c5dcf59170a6cd9bd"
+      }
+    },
+    "comparison": {
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/evidence/regression-comparison.json",
+        "bytes": 8863,
+        "sha256": "715eb55b6b9d9601878dcf1c50d696414110297538d150c5a4924aa2a6750e9a"
+      }
+    },
+    "newCases": 172,
+    "inheritedCases": 158,
+    "oldExtendedNaturalExit": 1,
+    "oldExtendedTargetFailures": 36,
+    "oldExtendedExpectedBaselineFailures": 0,
+    "finalNaturalExits": [0, 0],
+    "inheritedOldNaturalExit": 0,
+    "successfulRawExactlyEqual": 155,
+    "unknownExactObjectInjection": {
+      "inherited": 60,
+      "new": 20
+    },
+    "corruptInternalOutputsInherited": 3,
+    "actualIntegerLimit": 4300,
+    "integerBoundary": "4299/4300/4301 digits; unsigned/plus/minus; repeated 9 and leading-zero/all-zero; Graph and direct parser; no settings modification",
+    "languageBoundary": "first segment digits rejected; en-001/de-CH-1901 retained as syntax; preserves case/canonical policies of consumer; truthy datatype ignores lang as before; empty/None sink controls accepted",
+    "reviewRegression": "Initial167 green missed direct empty lang. Reviewer found it; original draft, actual5-case natural1 red, final five acceptance controls preserved.",
+    "reviewDisposition": {
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/evidence/review-finding-disposition.json",
+        "bytes": 2090,
+        "sha256": "076f1973ffba566e63a8b8afe9e0106d093e21721887c1d660c25cc4ac6f211f"
+      }
+    },
+    "installedIdentity": {
+      "scope": "repository-external supplier original",
+      "file": {
+        "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/evidence/installed-identity-summary.json",
+        "bytes": 608,
+        "sha256": "56150ee0bc0efe18a9f65256e07d0c0ad7ad6aeee003524e5e925987a18f6035"
+      }
+    },
+    "noParserWideExhaustiveness": true,
+    "applicationSuiteNotRun": true
+  },
+  "memberIntegrity": {
+    "scope": "repository-external supplier original",
+    "file": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261025_t03_rdflib_fr201_language_integer_types_001/evidence/wheel-members-record.json",
+      "bytes": 117341,
+      "sha256": "605d79c659ab774e95dbdb4504aa6a9639a9a3ad0173af37ec59312a966e56c6"
+    }
+  },
+  "license": "BSD-3-Clause original retained byte-for-byte; T11 retains NOTICE aggregation ownership",
+  "limitations": [
+    "No pyproject.toml or uv.lock changes/supplier adoption in any checkout; consumer must choose version/path/hash under ROOT ticket",
+    "No application new/edit/Read/HOLD/Store/stdio/GUI validation by this supplier",
+    "No product fullcheck/build/package/signing/notarization/cross-platform/designated external review",
+    "Old45f64/.2/package092 Fail is not closed by library artifact alone; other Q6/capacity/damagedSQLite/payment/remote gates unchanged"
+  ],
+  "authorization": {
+    "scope": "repository-external supplier original",
+    "file": {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/user-grants/T02-D8-choice-A-20261025.json",
+      "bytes": 2172,
+      "sha256": "72c8fca8376d421e4fe8593ffccd5f79de5e605b34763a7008685d8be746b26c"
+    }
+  }
+}

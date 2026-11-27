@@ -1,0 +1,136 @@
+--- a/rdflib/plugins/parsers/notation3.py
++++ b/rdflib/plugins/parsers/notation3.py
+@@ -67,6 +67,7 @@
+     Node,
+     URIRef,
+     Variable,
++    _is_valid_langtag,
+     _unique_id,
+ )
+ 
+@@ -119,6 +120,34 @@
+ _StrT = TypeVar("_StrT", bound=str)
+ 
+ 
++class Notation3InputError(Exception):
++    """A known caller-input rejection identified at its parser source."""
++
++
++class RelativeIRIBaseError(Notation3InputError, ValueError):
++    """A relative IRI cannot be resolved against the supplied opaque base."""
++
++
++class UnicodeCodePointError(Notation3InputError, ValueError):
++    """An escaped code point exceeds the range accepted by chr()."""
++
++
++class UnterminatedStringError(Notation3InputError, AssertionError):
++    """A string's remaining input cannot contain its closing delimiter."""
++
++
++class MissingDatatypeError(Notation3InputError, IndexError):
++    """A literal datatype suffix has no syntactically valid URI reference."""
++
++
++class InvalidLanguageTagError(Notation3InputError, ValueError):
++    """A language tag fails the Literal constructor's existing validation."""
++
++
++class IntegerDigitLimitError(Notation3InputError, ValueError):
++    """A bare decimal integer exceeds Python's active conversion digit limit."""
++
++
+ def join(here: str, there: str) -> str:
+     """join an absolute URI and URI reference
+     (non-ascii characters are supported/doctested;
+@@ -184,7 +213,7 @@
+ 
+     # join('mid:foo@example', '../foo') bzzt
+     if here[bcolonl + 1 : bcolonl + 2] != "/":
+-        raise ValueError(
++        raise RelativeIRIBaseError(
+             "Base <%s> has no slash after "
+             "colon - with relative '%s'." % (here, there)
+         )
+@@ -360,10 +389,11 @@
+ 
+ 
+ def unicodeExpand(m: Match) -> str:
+-    try:
+-        return chr(int(m.group(1), 16))
+-    except Exception:
+-        raise Exception("Invalid unicode code point: " + m.group(1))
++    hexadecimal = m.group(1)
++    code_point = int(hexadecimal, 16)
++    if code_point > 0x10FFFF:
++        raise UnicodeCodePointError("Invalid unicode code point: " + hexadecimal)
++    return chr(code_point)
+ 
+ 
+ unicodeEscape4 = re.compile(r"\\u([0-9a-fA-F]{4})")
+@@ -1553,6 +1583,12 @@
+                 m = integer_syntax.match(argstr, i)
+                 if m:
+                     j = m.end()
++                    # The matched token is an ASCII decimal integer with an optional sign.
++                    # Preserve the active runtime limit and let all other conversion errors escape.
++                    digit_limit = sys.get_int_max_str_digits()
++                    digit_count = j - i - (argstr[i] in "+-")
++                    if digit_limit and digit_count > digit_limit:
++                        raise IntegerDigitLimitError("Integer exceeds active conversion digit limit")
+                     res.append(long_type(argstr[i:j]))
+                     return j
+ 
+@@ -1586,6 +1622,8 @@
+                 if argstr[j : j + 2] == "^^":
+                     res2: typing.List[Any] = []
+                     j = self.uri_ref2(argstr, j + 2, res2)  # Read datatype URI
++                    if j < 0:
++                        raise MissingDatatypeError("Datatype URI expected after ^^")
+                     dt = res2[0]
+                 res.append(self._store.newLiteral(s, dt, lang))
+                 return j
+@@ -1636,10 +1674,11 @@
+ 
+             m = interesting.search(argstr, j)  # was argstr[j:].
+             # Note for pos param to work, MUST be compiled  ... re bug?
+-            assert m, "Quote expected in string at ^ in %s^%s" % (
+-                argstr[j - 20 : j],
+-                argstr[j : j + 20],
+-            )  # at least need a quote
++            if m is None:
++                raise UnterminatedStringError(
++                    "Quote expected in string at ^ in %s^%s"
++                    % (argstr[j - 20 : j], argstr[j : j + 20])
++                )
+ 
+             i = m.start()
+             try:
+@@ -1684,6 +1723,8 @@
+ 
+             elif ch == "\\":
+                 j = i + 1
++                if j == len_argstr:
++                    raise UnterminatedStringError("unterminated string literal (2)")
+                 ch = argstr[j]  # Will be empty if string ends
+                 if not ch:
+                     raise BadSyntax(
+@@ -1724,7 +1765,7 @@
+             )
+         try:
+             return i + n, reg.sub(unicodeExpand, "\\" + prefix + argstr[i : i + n])
+-        except Exception:
++        except UnicodeCodePointError:
+             raise BadSyntax(
+                 self._thisDoc,
+                 startline,
+@@ -1869,6 +1910,9 @@
+         if dt:
+             return Literal(s, datatype=dt)
+         else:
++            # Reuse Literal's pinned validator; datatype literals continue to ignore lang.
++            if lang is not None and lang != "" and not _is_valid_langtag(lang):
++                raise InvalidLanguageTagError("Invalid language tag")
+             return Literal(s, lang=lang)
+ 
+     def newList(self, n: typing.List[Any], f: Optional[Formula]) -> IdentifiedNode:

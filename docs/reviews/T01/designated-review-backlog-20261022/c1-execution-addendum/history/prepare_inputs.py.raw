@@ -1,0 +1,31 @@
+from pathlib import Path
+import json,hashlib,subprocess,shutil
+ROOT=Path('/Users/kyle/Documents/工作/知爻/本体');PKG=ROOT/'outputs/20261022_review_backlog/T01-complete-engineering';OUT=ROOT/'outputs/20261022_review_backlog/T01-C1-execution-prep';OUT.mkdir(exist_ok=True)
+product='423b7e4c799f188cf2ce6e8e7121893ce85624cd';current='c0b61fd245c1b3bd2a84e488f00a742a1942fd8c';base='5f910b52c69d86a1076b2032e5d3c63e715947f3'
+source=json.loads((PKG/'candidates/E13/source-manifest.json').read_text());records=[]
+for model in ['zcode','minimax']:
+ tree=ROOT/'.worktrees'/('T01-c1-'+model+'-review-423b7e4');assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=tree,text=True).strip()==current
+ status=subprocess.check_output(['git','status','--porcelain'],cwd=tree,text=True).splitlines();assert status in [[],[' M AGENTS.md']],status
+ assert not subprocess.check_output(['git','diff','--cached','--name-only'],cwd=tree)
+ names=subprocess.check_output(['git','diff','--name-only',base,product],cwd=tree,text=True).splitlines();names=[p for p in names if not p.startswith(('docs/','iteration-control/')) and p!='AGENTS.md'];assert len(names)==52
+ matched=[];guidance=[]
+ for row in source['files']:
+  b=(tree/row['path']).read_bytes()
+  if len(b)!=row['bytes'] or hashlib.sha256(b).hexdigest()!=row['sha256']:
+   assert row['path']=='AGENTS.md',row['path']
+   fixed=subprocess.check_output(['git','show',current+':'+row['path']],cwd=tree);assert len(fixed)==row['bytes'] and hashlib.sha256(fixed).hexdigest()==row['sha256']
+   assert b==(ROOT/'OntoLearn-Studio/AGENTS.md').read_bytes()
+   guidance.append({'path':row['path'],'actualBytes':len(b),'actualSha256':hashlib.sha256(b).hexdigest(),'meaning':'Root propagated current protected policy, not implementation change'})
+  else:matched.append(row['path'])
+ for name in names:
+  assert (tree/name).read_bytes()==subprocess.check_output(['git','show',product+':'+name],cwd=tree),name
+ changed=subprocess.check_output(['git','diff','--name-only',product,current],cwd=tree,text=True).splitlines();assert len(changed)==90 and all(p.startswith('docs/') for p in changed)
+ local=OUT/model
+ for name in ['inputs','reports','raw/environment','raw/review','scratch/tmp','scratch/pytest','scratch/counterexamples','cache/npm','cache/uv','cache/xdg','cache/pycache']:(local/name).mkdir(parents=True,exist_ok=True)
+ original=PKG/'review-entries/C1-cumulative'/(model+'-prompt.md');shutil.copyfile(original,local/'inputs/original-prompt.md.raw')
+ records.append({'model':model,'tree':str(tree),'head':current,'detached':subprocess.run(['git','symbolic-ref','-q','HEAD'],cwd=tree,stdout=subprocess.PIPE).returncode==1,'gitStatus':status,'stagingEmpty':True,'product':product,'base':base,'fullProductTestDeltaCount':52,'fullProductTestDelta':[dict(path=n,bytes=len((tree/n).read_bytes()),sha256=hashlib.sha256((tree/n).read_bytes()).hexdigest()) for n in names],'productSnapshot825Mapping':{'actualFilesSame':len(matched),'protectedGuidanceOverride':guidance,'all825GitSourceBytesMatch':True},'productToHeadOnlyDocs':90,'originalPrompt':{'path':str(original),'bytes':original.stat().st_size,'sha256':hashlib.sha256(original.read_bytes()).hexdigest()},'archiveProjectSnapshot':str(PKG/'candidates/E13/project'),'completeRetainedHistoryRoot':str(PKG),'ownRoot':str(local)})
+(OUT/'identity-and-source-mapping.json').write_text(json.dumps({'models':records,'productSnapshotCanonicalSha256':source['canonicalManifestSha256'],'policyCorrection':'Old control/AGENTS.md navigation missing; actual current main rules supplied in separate addendum, old frozen prompt unchanged','initialPreparationObservation':'Initial clean-tree assertion caught concurrent root AGENTS propagation; corrected to preserve/verify protected current guide M, no source modified or test executed'},ensure_ascii=False,indent=2)+'\n')
+control=OUT/'current-guidance';control.mkdir(exist_ok=True)
+for src,dst in [(ROOT/'OntoLearn-Studio/AGENTS.md','AGENTS-current.md'),(ROOT/'iteration-control/2026-10-21-weekly-release/developer-common-instructions.md','developer-common-instructions.md'),(ROOT/'iteration-control/2026-10-21-weekly-release/desktop-operation-policy-20261022.md','desktop-operation-policy.md'),(ROOT/'iteration-control/2026-10-21-weekly-release/T01-project-create-core-C1-implementation-authorization.md','C1-original-authorization.md')]:shutil.copyfile(src,control/dst)
+for n in ['prepare_env.py','prepare_inputs.py']:shutil.copyfile(Path('/tmp/t01-c1-execution-prep-20261022')/n,OUT/n)
+print(json.dumps({'trees':2,'full52Each':True,'snapshot825Each':True,'actual824EachPlusCurrentGuide':True,'docsOnly90Each':True,'output':str(OUT)},ensure_ascii=False))

@@ -1,0 +1,85 @@
+.project-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-xs);
+  margin: var(--gap-sm) 0;
+}
+.project-toolbar [aria-pressed='true'] {
+  background: var(--accent-deep);
+  color: var(--ink-inverse);
+  border-color: var(--accent-deep);
+}
+.project-catalog {
+  list-style: none;
+  padding: 0;
+}
+.project-catalog li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hair-border);
+}
+.project-settings,
+.project-confirmation {
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-lg);
+  background: var(--paper-card);
+}
+.project-confirmation {
+  background: var(--paper-surface);
+  border-color: var(--hair-strong);
+}
+.project-confirmation dl {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  gap: 8px;
+}
+.project-confirmation dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.project-confirmation code {
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+}
+.project-confirmation button {
+  margin: 8px 8px 0 0;
+}
+.workspace-freeze {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.project-quickstart {
+  display: flex;
+  gap: var(--gap-sm);
+  flex-wrap: wrap;
+  padding: 14px 0;
+}
+.project-location {
+  border-top: 1px solid var(--hair-border);
+  margin-top: 18px;
+  padding-top: 12px;
+}
+.project-management label {
+  display: block;
+  margin-top: 12px;
+}
+.project-management input:not([type='checkbox']),
+.project-management select {
+  max-width: 100%;
+}
+[data-workspace-mode='assisted'] .guided-help {
+  display: none;
+}
+.guided-help {
+  padding: 14px;
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-sm);
+}

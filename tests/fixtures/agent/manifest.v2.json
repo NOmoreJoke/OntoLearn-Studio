@@ -1,0 +1,27 @@
+{
+  "version": "t08-agent-eval-v2",
+  "inherits": {
+    "file": "manifest.v1.json",
+    "sha256": "19fe2e407368a21a081b83cbd92c70478cbbf3f45006148d02d404724ce4100f"
+  },
+  "fixedInputAuthorization": {
+    "sourceCommit": "873c8c051b9870aa12fc7e1dbbd3e0c358e7c380",
+    "originManifestSha256": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+    "sourcePrdSha256": "7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb",
+    "scope": "Inputs only; T09 services/helper/changes after fixed commit are not dependencies."
+  },
+  "files": {
+    "fixed-input-cases.v2.json": "ca3df8cbe46dc82f92ae1663fbdb792e87b7e1b7bbd11512c297b8c074c77952",
+    "fixed-input-probe.py": "6ca511b904a0bfe7b99cd3c9cbd19b13556786680735f7c65b53f30391a0f854",
+    "t09-873c8c0/G-base.json": "306d41b332d223b47929eb90f196c71e4965a0e9ff81100c9469ed32612e8845",
+    "t09-873c8c0/equipment.csv": "cf85db51de82f9f42266bd83bcba72795cb4f6dd12ffb7553c3f0e575bea02b8",
+    "t09-873c8c0/origin-manifest.json": "aaaef2c023320038bc155640566bdc69e0bb862a2836d7cc6ef49f4a632ac39e",
+    "t09-873c8c0/unclosed-high.rq": "8efbacd589c42ac40abbb55475cdd088e407a88a23e0db61dc8375e04e4dd386"
+  },
+  "reset": "Each fixed probe builds a fresh in-memory RDFLib graph from verified facts only; Q-02 explicitly changes A01 to Closed. No Store/expected preload. CSV read preserves strings.",
+  "execution": "npx vitest run tests/unit/t08-fixed-input.test.ts",
+  "observations": "Real locked RDFLib 7.6.0 SELECT and standard-library CSV observations; protocol messages/candidates hand-authored, not from actual model.",
+  "providerAcceptance": "not-run",
+  "productDomainAcceptance": "not-run",
+  "fullRealAcceptance": "All manifest.v1 requiredRealAcceptance and original 11.3/12.2 remain required."
+}

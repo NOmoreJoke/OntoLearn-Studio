@@ -1,0 +1,232 @@
+{
+  "kind": "T08_B3_minimum_query_draft_preparation",
+  "date": "2026-10-28",
+  "status": "PREPARED_FOR_ROOT_ZCODE_SLOT_NOT_CREATED",
+  "ownerWorktree": "/Users/kyle/Documents/工作/知爻/本体/.worktrees/T08-agent-model",
+  "branch": "feature/weekly-t08-agent-model",
+  "preparationBaseCommit": "e61fa1bf4e0e1f361947e009a569a262f84c7b2b",
+  "frozenProduct": "e3c727dd90e22e7add5f0db94cefb57901af61f0",
+  "selectedGap": "structured query-draft proposal decoding;existing generic summary/detail is not typed editor draft",
+  "scope": "B3 only;B2b ontology operations and real transport/integration remain separate",
+  "artifactCount": 3,
+  "artifacts": [
+    {
+      "path": "batch-plan.md",
+      "bytes": 11369,
+      "sha256": "6191b9e6784e82756e428188e705c813d408370dc20db75eaef785f8910dcbe1"
+    },
+    {
+      "path": "case-vectors.json",
+      "bytes": 19472,
+      "sha256": "16cbbc04e7ecf2d84b0c1e918644510017101749a4469d2eeb14ccdb411938bb"
+    }
+  ],
+  "thisIndexExcludedFromOwnHash": true,
+  "policySources": [
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/replan-20261028/execution-policy.md",
+      "bytes": 3058,
+      "sha256": "f5e3825f5fe049bfa77334e458353e7cd5c8fb2e524b7da33264454327267851"
+    },
+    {
+      "path": "/Users/kyle/Documents/工作/知爻/本体/iteration-control/2026-10-21-weekly-release/review-policy-20261024/review-task-appendix.md",
+      "bytes": 12748,
+      "sha256": "f295abc3666426b2ca3db7340a513c814501de7af873f581e68ed834482a5ac9"
+    }
+  ],
+  "sourceFacts": [
+    {
+      "revision": "e3c727dd90e22e7add5f0db94cefb57901af61f0",
+      "path": "apps/desktop/src/main/agent/deepseek-codec.ts",
+      "bytes": 6698,
+      "sha256": "f89db7df0298f2fd56cb7c98adccbfc3d42709f75e96f47d0372c541cac07065",
+      "gitBlobOID": "570ab5b7dee2bea8469d6fc1aa2f73076b968277",
+      "use": "T08 existing pure module"
+    },
+    {
+      "revision": "e3c727dd90e22e7add5f0db94cefb57901af61f0",
+      "path": "apps/desktop/src/main/agent/conversation.ts",
+      "bytes": 9325,
+      "sha256": "0304e444d925eb7d44603471fcde2d04b1900eb5a08ca6765a1ddff4be10aacd",
+      "gitBlobOID": "8a1f751c8b679377ee7766868bc2d60ceb566cd6",
+      "use": "T08 existing pure module"
+    },
+    {
+      "revision": "e3c727dd90e22e7add5f0db94cefb57901af61f0",
+      "path": "apps/desktop/src/main/agent/agent-service.ts",
+      "bytes": 13639,
+      "sha256": "15fa3d3f5eaab97ea4e5ad14cdeb9b8067b62c601db8bdb974aa4eb401cec3c3",
+      "gitBlobOID": "e791aaed441e8fb9a2859f46d9b751f82d26ac4f",
+      "use": "T08 existing pure module"
+    },
+    {
+      "revision": "e3c727dd90e22e7add5f0db94cefb57901af61f0",
+      "path": "apps/desktop/src/main/agent/tools.ts",
+      "bytes": 3537,
+      "sha256": "be30f3d9a88e23ed3cacc6c63de9ebba2668283be98ee1933b5dc213ce2370c8",
+      "gitBlobOID": "cd720ee5bdbfa64115fc2a5a6bac5b0da86da9c2",
+      "use": "T08 existing pure module"
+    },
+    {
+      "revision": "e3c727dd90e22e7add5f0db94cefb57901af61f0",
+      "path": "docs/iterations/T08/design-and-integration.md",
+      "bytes": 18378,
+      "sha256": "83b4f4ae3fb5b810dfd168e459ec7e43f917ed4005b7c67a57d70447ae61351b",
+      "gitBlobOID": "14d9fb30a32afcf24adb14e419175700cf5dddcc",
+      "use": "T08 existing pure module"
+    },
+    {
+      "revision": "e3c727dd90e22e7add5f0db94cefb57901af61f0",
+      "path": "docs/prd/PRD-本体学习与落地Agent工作台.md",
+      "bytes": 93584,
+      "sha256": "7586b2c4784b8c691d510e2be16310ed551e110af6df96b7c6aeb86152f60fbb",
+      "gitBlobOID": "8e7190748fe321c8dc3116fb3f9ec119a3628ac5",
+      "use": "T08 existing pure module"
+    },
+    {
+      "revision": "04e1dfdf5865155c5daf2fb76fdeabb6262d0afb",
+      "path": "apps/desktop/src/main/model-gateway/gateway.ts",
+      "bytes": 13893,
+      "sha256": "3f6005fe33dba7275c0e7a45a640cd94e17e62dc1609347f1c644dcf2f610126",
+      "gitBlobOID": "e5187212ebfd2a28301eaf459ee2a1ba92b51e3e",
+      "use": "I06 fixed source;not runtime-consumption grant"
+    },
+    {
+      "revision": "04e1dfdf5865155c5daf2fb76fdeabb6262d0afb",
+      "path": "apps/desktop/src/main/model-gateway/gateway-application.ts",
+      "bytes": 13777,
+      "sha256": "2542730ba42406c1b2ab86c30f3bacfac2386be2f537b1f166a0a1da2d64f1d4",
+      "gitBlobOID": "de3f280148ec132cc7de2b44170b727f4c9bfec4",
+      "use": "I06 fixed source;not runtime-consumption grant"
+    },
+    {
+      "revision": "04e1dfdf5865155c5daf2fb76fdeabb6262d0afb",
+      "path": "apps/desktop/src/main/model-gateway/model-service.ts",
+      "bytes": 22303,
+      "sha256": "be3cb0c91ead9a84d34b14429e5284789c205dd234d61eba3513c89a1f075098",
+      "gitBlobOID": "76e85096f3df13b10d158d93f28cbca90114ea75",
+      "use": "I06 fixed source;not runtime-consumption grant"
+    },
+    {
+      "revision": "04e1dfdf5865155c5daf2fb76fdeabb6262d0afb",
+      "path": "apps/desktop/src/main/model-gateway/policy.ts",
+      "bytes": 2486,
+      "sha256": "dd09203ebe7e7f655cee40e01c84149a8c121e48ece916fa816cbc2c320d1ced",
+      "gitBlobOID": "c7d572dc5ce471cdc26ed9064e6c1be09a8dc2ac",
+      "use": "I06 fixed source;not runtime-consumption grant"
+    },
+    {
+      "revision": "04e1dfdf5865155c5daf2fb76fdeabb6262d0afb",
+      "path": "packages/contracts/src/index.ts",
+      "bytes": 11668,
+      "sha256": "76c44e3465b5ad5c76b9b1bb6ad5ad61a206531ec8717455286a95f7665ffa28",
+      "gitBlobOID": "d8694c540c4a84c45abf8b649f4c5139ceefd110",
+      "use": "I06 fixed source;not runtime-consumption grant"
+    },
+    {
+      "revision": "04e1dfdf5865155c5daf2fb76fdeabb6262d0afb",
+      "path": "docs/iterations/I06/main-integration-handoff.md",
+      "bytes": 10812,
+      "sha256": "3deb9558dd2d1ab13b7da680c9591259ab7a46c97a8fee2aad5c10896af61035",
+      "gitBlobOID": "b7867cec9da71ace99cc430625a4ecfd1ae1d5f6",
+      "use": "I06 fixed source;not runtime-consumption grant"
+    },
+    {
+      "revision": "04e1dfdf5865155c5daf2fb76fdeabb6262d0afb",
+      "path": "docs/iterations/I06/narrow-interface-draft.md",
+      "bytes": 16371,
+      "sha256": "619a97612bcd2d8305278c6d4299fd1cc89da035c399815c07f4a23a77e03484",
+      "gitBlobOID": "d00a289cb456591fdd67b3e4557d9a65110dd084",
+      "use": "I06 fixed source;not runtime-consumption grant"
+    },
+    {
+      "revision": "5070004ec8e3219bea33960bd88f57f1976e9cf8",
+      "path": "apps/desktop/src/renderer/src/query/draft.ts",
+      "bytes": 6047,
+      "sha256": "1e00403422f99aa615c6cec4b9c6b51463f11f99a7300502e34f5008f9879440",
+      "gitBlobOID": "99c417cf46a6ed6dab2ef69c8ea8f78dca8c0823",
+      "use": "T04 historical fixed consumer reference;new baseline still required"
+    },
+    {
+      "revision": "45e6ba3955e05a4a9d15f59d561fdcc73faddb5f",
+      "path": "apps/desktop/src/main/index.ts",
+      "bytes": 12236,
+      "sha256": "79fe7912f18bdbb89b05f6d0db9c8284cc3eaf10510cfe1c1ee4218caf559053",
+      "gitBlobOID": "2f56e979fe28a8292a8528b7a6c27b2bffda6a3f",
+      "use": "current T01 fixed observation only;not adoption"
+    },
+    {
+      "revision": "45e6ba3955e05a4a9d15f59d561fdcc73faddb5f",
+      "path": "apps/desktop/src/preload/index.ts",
+      "bytes": 4377,
+      "sha256": "809710c48ac2827c383bf62ad6b19f4cc676ab2927fd0364dcb223a16eaf0276",
+      "gitBlobOID": "82dcaf80b09de25873fed9b28f75bf78bfb20a15",
+      "use": "current T01 fixed observation only;not adoption"
+    }
+  ],
+  "checksPerformed": {
+    "referencedFixedGitObjectsReadAndHashed": 16,
+    "currentT08Source28SameFrozen": true,
+    "literalExpectedMappingStaticConsistency": true,
+    "i06C01AndRepairCoreAppBytesSame": true,
+    "protectedAgentsUnchanged": true,
+    "caseVectorJsonSyntaxAnd26UniqueIDs": true,
+    "authoredDocumentPrettierExit": 0,
+    "supplemented26VectorStaticMappingAndLengths": true
+  },
+  "plannedProductWritePaths": [
+    "apps/desktop/src/main/agent/query-draft/proposal.ts",
+    "tests/unit/t08-query-draft-proposal.test.ts",
+    "tests/fixtures/agent/query-draft/proposal-cases.v1.json"
+  ],
+  "implementationGate": "ROOT schedules actual ZCode GLM-5.3/highest UI creation first;current source is planning only;T02 desktop/CI priority",
+  "actualZcodeTask": null,
+  "actualModelSettingsReadback": null,
+  "actualModelSendEvidence": null,
+  "independentLightReview": {
+    "agent": "/root/t08_internal_review",
+    "verdict": "可交ROOT安排实际ZCode创建，无计划阻断项",
+    "reviewedScope": "initial plan+13vectors and necessary fixed source snippets;not product test/designated review",
+    "conclusions": [
+      "new query-specific schema and host scope/context wrapper reuses generic decoder",
+      "private proposal/T04 revalidation/raw text/human review boundaries clear",
+      "I06 fixed body/public-explain/preview-repair facts and bounded T01 observations match"
+    ],
+    "suggestionsAdopted": "added empty/whitespace,exact-limit success,bad host/extra host keys and all4 string lone-surrogate vectors;26 total",
+    "supplementCheck": "owner static input/output and difference verification only;no product runtime or repeated whole review",
+    "originalReply": "retained in this chat;not a fabricated raw export"
+  },
+  "tests": {
+    "plannedNewBoundaryVectors": 26,
+    "productTestsRun": 0,
+    "acceptedOldSuitesRerun": false,
+    "futureRequired": "new targeted test and actual-diff npm run check;main-process E2E internally scheduled by ROOT;real gateway/provider integration separate"
+  },
+  "i06Dependencies": [
+    "approved draft-purpose main entry and final DeepSeek-body authorization",
+    "question/history/tools/reasoning provenance plus current privacy/config/subject",
+    "tested provider identity and invocation/context/exchange response binding",
+    "cancel/failure/actual budget semantics;no raw explanation-text cast"
+  ],
+  "consumerDependencies": [
+    "T00 current TrustedContext/queryScope/selection mapping",
+    "T04 approved baseline:review/validate actual modelDraft;save/execute remain original consumer",
+    "T01 ChangeSet/confirmation/transaction/undo ownership unchanged"
+  ],
+  "actionsPerformed": {
+    "productSourceWrite": false,
+    "sharedContractGatewayStoreOrLocksWrite": false,
+    "productRuntime": false,
+    "testProbeDbApi": false,
+    "guiOrQuota": false,
+    "goalOrAutomationChange": false,
+    "pushMerge": false
+  },
+  "limitations": [
+    "no real model/no credentials/no FR204 or400 closure",
+    "I06 historical source not adopted current T01 public shell",
+    "no whole-repo/security/runtime audit",
+    "source-locator file-name query was initially too broad;no unrelated file bodies read;subsequent reads pinned to relevant sources"
+  ],
+  "protectedAgentsSha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+}

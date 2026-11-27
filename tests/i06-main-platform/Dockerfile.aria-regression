@@ -1,0 +1,20 @@
+# Own frozen dependency/package image; incoming lock files are verified unchanged.
+FROM i06-main-packaged:9fcba663-base2
+USER root
+WORKDIR /workspace
+ENV UV_CACHE_DIR=/opt/i06-aria-uv-cache
+COPY --chown=i06:i06 source/ ./
+# Official build rebuilds BOTH source app outputs and the actual unpacked executable.
+RUN npm run package:dir \
+    && test -x release/linux-arm64-unpacked/@ontolearndesktop \
+    && chown -R i06:i06 /workspace/release \
+    && chown root:root /workspace/release/linux-arm64-unpacked/chrome-sandbox \
+    && chmod 4755 /workspace/release/linux-arm64-unpacked/chrome-sandbox \
+    && chown -R i06:i06 /workspace/.venv /opt/i06-aria-uv-cache
+COPY --chown=i06:i06 harness/ ./tests/i06-main-platform/
+COPY --chown=i06:i06 identity.json /opt/i06-main-identity.json
+USER i06
+RUN uv sync --frozen \
+    && npm exec -- eslint tests/i06-main-platform --max-warnings 0 \
+    && node tests/i06-main-platform/runtime-manifest.mjs /workspace/.i06-main-build-manifest.json
+ENTRYPOINT ["bash", "/workspace/tests/i06-main-platform/aria-regression-run.sh"]

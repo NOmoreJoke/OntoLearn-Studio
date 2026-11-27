@@ -1,0 +1,657 @@
+/** Learning fixture boundaries and the standalone headless component harness. */
+import { randomUUID } from 'node:crypto'
+import { mkdir } from 'node:fs/promises'
+import type { MainlineProjectReadDTO } from '@ontolearn/contracts'
+import { validateBusiness3 } from '@ontolearn/contracts/v2'
+import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { chromium, type Browser, type Page } from '@playwright/test'
+import { build } from 'vite'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import {
+  learningFixtureData,
+  offlineCourse,
+} from '../../apps/desktop/src/renderer/src/learning/content'
+import { buildLearningFixturePlan } from '../../apps/desktop/src/renderer/src/learning/task-fixture'
+import publishedCourse from '../../content/learning/course.json'
+import extensions from '../../content/learning/extensions.json'
+import transferInputs from '../../content/learning/transfer-inputs.json'
+import baseline from '../fixtures/product-baselines/G-base.json'
+import type {
+  CheckFeedbackView,
+  LearningRecordView,
+  LearningWorkspaceProps,
+  TaskContext,
+} from '../../apps/desktop/src/renderer/src/learning/types'
+
+function fixtureSource(
+  statements: Array<{ subject: string; predicate: string; object: string }> = [],
+): MainlineProjectReadDTO {
+  const projectId = randomUUID()
+  const inputSnapshotId = '0'.repeat(64)
+  return {
+    readVersion: 1,
+    projectId,
+    inputSnapshotId,
+    workspace: {
+      workspaceVersion: 1,
+      projectId,
+      domainRevision: 0,
+      metadataVersion: 1,
+      operationSequence: 1,
+      checkpointRef: inputSnapshotId,
+      inputSnapshotId,
+      metadata: {
+        name: 'Fixture test',
+        templateRef: null,
+        archived: false,
+        mode: 'guided',
+        origin: 'created',
+      },
+      draft: { editor: 'quality', state: 'missing' },
+    },
+    domain: {
+      projectRevision: 0,
+      dependencyVector: {},
+      state: {
+        definitions: [],
+        facts: statements.map((statement) => ({
+          ...statement,
+          id: randomUUID(),
+          owner: null,
+          source_row: null,
+          managed_value: null,
+        })),
+        mappingState: {},
+      },
+    },
+  }
+}
+
+describe('learning task fixture inputs', () => {
+  it('keeps offline course content current while redacting the transfer demonstration answer', () => {
+    const expected = structuredClone(publishedCourse)
+    const publishedHint = expected.tasks
+      .find((task) => task.id === 'transfer-repair')!
+      .hints.find(({ level }) => level === 4)!
+    const rendererHint = offlineCourse.tasks
+      .find((task) => task.id === 'transfer-repair')!
+      .hints.find(({ level }) => level === 4)!
+    expect(rendererHint.text).not.toContain('供水泵')
+    expect(rendererHint.text).toContain('参考清单')
+    publishedHint.text = rendererHint.text
+    expect(offlineCourse).toStrictEqual(expected)
+  })
+
+  it('projects only initial data from the published datasets', () => {
+    expect(learningFixtureData('transfer-repair')).toStrictEqual({
+      ontology: transferInputs.repair.ontology,
+      constraints: transferInputs.repair.constraints,
+      facts: transferInputs.repair.facts,
+      inputScope: 'current-asserted',
+    })
+    expect(learningFixtureData('transfer-classify')).toStrictEqual({
+      ontology: transferInputs.classification.ontology,
+      rules: transferInputs.classification.rules,
+      facts: transferInputs.classification.facts,
+      inputScope: transferInputs.classification.inputScope,
+    })
+    const prerequisites = learningFixtureData('quality')
+    expect([...prerequisites.ontology, ...prerequisites.facts]).toStrictEqual(
+      extensions.extensions.find(({ id }) => id === 'LX-01')!.prerequisites.assertedTriples,
+    )
+  })
+
+  it.each(['transfer-repair', 'transfer-classify'] as const)(
+    'builds a formal, schema-valid ChangeSet for %s only on a blank project',
+    async (taskId) => {
+      const source = fixtureSource()
+      const plan = (await buildLearningFixturePlan(source, taskId))!
+      expect(plan.definitions?.map(({ layer }) => layer)).toEqual([
+        'ontology',
+        taskId === 'transfer-repair' ? 'constraint' : 'rule',
+      ])
+      expect(
+        validateBusiness3('params_changeset.preview', {
+          projectId: source.projectId,
+          baseRevision: source.domain.projectRevision,
+          intent: 'change',
+          plan,
+        }),
+      ).toBe(true)
+      await expect(buildLearningFixturePlan(fixtureSource(baseline.facts), taskId)).rejects.toThrow(
+        'LEARNING_FIXTURE_REQUIRES_BLANK_PROJECT',
+      )
+    },
+  )
+
+  it('adds only missing LX-01 prerequisites on the G-base project', async () => {
+    const source = fixtureSource(baseline.facts)
+    const plan = (await buildLearningFixturePlan(source, 'quality'))!
+    expect(plan.manual).toHaveLength(2)
+    expect(plan.definitions).toHaveLength(1)
+    const ontology = plan.definitions![0]!
+    source.domain.state.definitions.push({
+      id: ontology.id,
+      layer: ontology.layer,
+      payload: JSON.stringify(ontology.value),
+    })
+    source.domain.state.facts.push(
+      ...plan.manual!.map((fact) => ({
+        ...fact,
+        owner: null,
+        source_row: null,
+        managed_value: null,
+      })),
+    )
+    await expect(buildLearningFixturePlan(source, 'quality')).resolves.toBeUndefined()
+    await expect(buildLearningFixturePlan(fixtureSource(), 'quality')).rejects.toThrow(
+      'LEARNING_FIXTURE_REQUIRES_G_BASE',
+    )
+  })
+})
+
+type Harness = {
+  props: LearningWorkspaceProps
+  maxHint: number
+  version: number
+  assistance: LearningRecordView['assistance']
+  failHint: boolean
+  forgedIndependent: boolean
+  deferred: boolean
+  malicious: boolean
+  resolveCheck?: (value: CheckFeedbackView) => void
+  pendingContext?: TaskContext
+  reply(context: TaskContext): CheckFeedbackView
+}
+declare global {
+  interface Window {
+    mountLearning(props: LearningWorkspaceProps): void
+    learningHarness: Harness
+  }
+}
+const ROOT = fileURLToPath(new URL('../../', import.meta.url))
+let browser: Browser
+let page: Page
+let javascript = ''
+let css = ''
+const errors: string[] = []
+const requests: string[] = []
+
+async function mount(
+  options: {
+    initialTaskId?: string
+    connected?: boolean
+    projectId?: string
+    generation?: number
+  } = {},
+) {
+  await page.evaluate(
+    ({ options, taskIds }) => {
+      const projectId = options.projectId ?? 'project-A'
+      const contexts = Object.fromEntries(
+        taskIds.map((taskId) => [
+          taskId,
+          { projectId, taskId, attemptId: 'attempt:' + taskId, inputVersion: 'input-1' },
+        ]),
+      )
+      const state: Harness = {
+        props: {
+          generation: options.generation ?? 1,
+          projectId: options.connected === false ? null : projectId,
+          contexts: options.connected === false ? {} : contexts,
+          records: [],
+          initialTaskId: options.initialTaskId,
+        },
+        maxHint: 0,
+        version: 0,
+        assistance: 'independent',
+        failHint: false,
+        forgedIndependent: false,
+        deferred: false,
+        malicious: false,
+        reply(context) {
+          state.version++
+          const record: LearningRecordView = {
+            context,
+            recordVersion: state.version,
+            maxHintLevel: state.forgedIndependent ? 0 : state.maxHint,
+            assistance: state.forgedIndependent ? 'independent' : state.assistance,
+            operationComplete: true,
+            independentTransferSuccess:
+              state.forgedIndependent ||
+              (context.taskId.startsWith('transfer-') &&
+                state.assistance === 'independent' &&
+                state.maxHint === 0),
+            checkStatus: 'passed',
+            evidenceIds: ['unit-only-result'],
+          }
+          return {
+            context,
+            record,
+            completed: [
+              state.malicious
+                ? '<img src="https://probe.invalid/x" onerror="alert(1)">'
+                : '实际结果条目',
+            ],
+            repairs: [],
+            suggestions: ['查看相关知识点'],
+            knowledgePoints: ['SHACL'],
+          }
+        },
+      }
+      if (options.connected !== false)
+        state.props.actions = {
+          async recordHint(context, level) {
+            if (state.failHint) throw new Error('synthetic-sensitive-message')
+            state.maxHint = Math.max(state.maxHint, level)
+            if (state.assistance !== 'agent-full-assistance')
+              state.assistance = state.maxHint === 4 ? 'full-demonstration' : 'partial-hints'
+            state.version++
+            return {
+              context,
+              level,
+              record: {
+                context,
+                recordVersion: state.version,
+                maxHintLevel: state.maxHint,
+                assistance: state.assistance,
+                operationComplete: false,
+                independentTransferSuccess: false,
+                checkStatus: 'not-checked',
+                evidenceIds: [],
+              },
+            }
+          },
+          async checkTask(context) {
+            if (state.deferred) {
+              state.pendingContext = context
+              return new Promise((done) => {
+                state.resolveCheck = done
+              })
+            }
+            return state.reply(context)
+          },
+        }
+      window.learningHarness = state
+      window.mountLearning(state.props)
+    },
+    { options, taskIds: offlineCourse.tasks.map((task) => task.id) },
+  )
+  await page.getByRole('heading', { name: '一步一步，把知识用起来。' }).waitFor()
+}
+
+describe.skipIf(process.env.T09_HEADLESS_UI !== '1')(
+  'headless component verification (explicit runtime)',
+  () => {
+    beforeAll(async () => {
+      const entry = '\0t09-learning-component-harness'
+      const result = await build({
+        root: ROOT,
+        configFile: false,
+        logLevel: 'error',
+        oxc: { jsx: { runtime: 'automatic', development: false } },
+        plugins: [
+          {
+            name: 't09-headless-component-entry',
+            resolveId(id) {
+              return id === 't09-component-entry' || id === resolve(ROOT, 't09-component-entry')
+                ? entry
+                : undefined
+            },
+            load(id) {
+              if (id !== entry) return undefined
+              return `import React from 'react'; import {createRoot} from 'react-dom/client';
+          import {LearningWorkspace} from ${JSON.stringify(resolve(ROOT, 'apps/desktop/src/renderer/src/learning/LearningWorkspace.tsx'))};
+          const root=createRoot(document.getElementById('root'));
+          window.mountLearning=props=>root.render(React.createElement(LearningWorkspace,props));`
+            },
+          },
+        ],
+        define: { 'process.env.NODE_ENV': JSON.stringify('production') },
+        build: {
+          write: false,
+          minify: false,
+          cssCodeSplit: false,
+          lib: { entry: 't09-component-entry', formats: ['iife'], name: 'T09LearningHarness' },
+        },
+      })
+      for (const output of Array.isArray(result) ? result : [result]) {
+        if (!('output' in output)) throw new Error('Unexpected watched build')
+        for (const item of output.output) {
+          if (item.type === 'chunk') javascript += item.code
+          else if (item.fileName.endsWith('.css'))
+            css +=
+              typeof item.source === 'string' ? item.source : new TextDecoder().decode(item.source)
+        }
+      }
+      expect(javascript).not.toBe('')
+      expect(css).not.toBe('')
+      browser = await chromium.launch({
+        headless: true,
+        chromiumSandbox: true,
+        ignoreDefaultArgs: ['--disable-hang-monitor', '--use-mock-keychain'],
+      })
+    }, 30000)
+
+    beforeEach(async () => {
+      errors.length = 0
+      requests.length = 0
+      page = await browser.newPage({ viewport: { width: 1440, height: 1050 } })
+      page.on('pageerror', (error) => errors.push(error.message))
+      page.on('request', (request) => requests.push(request.url()))
+      await page.route('**/*', (route) => route.abort())
+      await page.setContent(
+        '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>T09 component test</title></head><body style="margin:0"><div id="root"></div></body></html>',
+      )
+      await page.addStyleTag({ content: css })
+      await page.addScriptTag({ content: javascript })
+    })
+    afterEach(async () => {
+      await page?.close()
+      expect(errors).toEqual([])
+      expect(requests).toEqual([])
+    })
+    afterAll(async () => {
+      await browser?.close()
+    })
+
+    async function capture(name: string) {
+      if (process.env.T09_UI_CAPTURE !== '1') return
+      const directory = resolve(ROOT, 'docs/reviews/T09/evidence/ui')
+      await mkdir(directory, { recursive: true })
+      await page.screenshot({ path: resolve(directory, name + '.png'), fullPage: true })
+    }
+
+    describe('offline learning workspace in a headless browser', () => {
+      it('reads all four offline hint levels without a model and never invents a completed check', async () => {
+        await mount({ connected: false })
+        await capture('desktop-course')
+        for (const name of ['概念提示', '操作提示', '部分示范', '完整示范']) {
+          await page.getByRole('button', { name: new RegExp(name) }).click()
+          await page.getByRole('heading', { name, exact: true }).waitFor()
+        }
+        expect(
+          await page.getByText('课程预览 · 提示可阅读，当前不会保存学习进度。').isVisible(),
+        ).toBe(true)
+        await page.getByRole('button', { name: '检查我的操作', exact: true }).click()
+        expect(await page.getByText('此任务的检查暂不可用，可先查看离线提示。').isVisible()).toBe(
+          true,
+        )
+        await page.getByLabel('选择一个术语').selectOption('开放世界假设')
+        expect(await page.getByText('没记录不等于证明不存在。', { exact: true }).isVisible()).toBe(
+          true,
+        )
+        await page.getByText('查看技术定义', { exact: true }).click()
+        expect(await page.getByText(/RDF缺少陈述不能推出其否定/).isVisible()).toBe(true)
+      })
+      it('persists assistance before showing the answer and rejects forged independent completion', async () => {
+        await mount({ initialTaskId: 'transfer-repair' })
+        await page.evaluate(() => {
+          window.learningHarness.failHint = true
+        })
+        await page.getByRole('button', { name: /完整示范/ }).click()
+        expect(await page.getByText('提示使用记录未保存，请重试。').isVisible()).toBe(true)
+        expect(await page.getByRole('heading', { name: '完整示范', exact: true }).count()).toBe(0)
+        expect(await page.locator('body').innerText()).not.toContain('synthetic-sensitive-message')
+        await page.evaluate(() => {
+          window.learningHarness.failHint = false
+        })
+        await page.getByRole('button', { name: /完整示范/ }).click()
+        await page.getByRole('heading', { name: '完整示范', exact: true }).waitFor()
+        await page.evaluate(() => {
+          window.learningHarness.forgedIndependent = true
+        })
+        await page.getByRole('button', { name: '检查我的操作', exact: true }).click()
+        expect(
+          await page.getByText('检查结果与当前输入或提示记录不一致，请重新检查。').isVisible(),
+        ).toBe(true)
+        await page.evaluate(() => {
+          window.learningHarness.forgedIndependent = false
+        })
+        await page.getByRole('button', { name: '检查我的操作', exact: true }).click()
+        expect(await page.getByText('本次未计入独立迁移成功。', { exact: true }).isVisible()).toBe(
+          true,
+        )
+        expect(await page.getByLabel('当前输入学习进度').innerText()).toContain(
+          '独立迁移成功 0 / 2',
+        )
+      })
+      it('separates actual Agent full assistance from an independently solved transfer', async () => {
+        await mount({ initialTaskId: 'transfer-classify' })
+        await page.evaluate(() => {
+          window.learningHarness.assistance = 'agent-full-assistance'
+        })
+        await page.getByRole('button', { name: '检查我的操作', exact: true }).click()
+        const feedback = page.getByRole('region', { name: '检查反馈' })
+        expect(await feedback.getByText('使用 Agent 完整辅助', { exact: true }).isVisible()).toBe(
+          true,
+        )
+        expect(await feedback.getByText('本次未计入独立迁移成功。').isVisible()).toBe(true)
+      })
+      it('ignores a late check after switching project and generation', async () => {
+        await mount({ initialTaskId: 'query' })
+        await page.evaluate(() => {
+          window.learningHarness.deferred = true
+        })
+        await page.getByRole('button', { name: '检查我的操作', exact: true }).click()
+        await page.getByRole('button', { name: '正在检查…', exact: true }).waitFor()
+        await page.evaluate(() => {
+          const state = window.learningHarness
+          const old = state.pendingContext!
+          const contexts = Object.fromEntries(
+            Object.entries(state.props.contexts!).map(([id, ctx]) => [
+              id,
+              { ...ctx, projectId: 'project-B' },
+            ]),
+          )
+          window.mountLearning({
+            ...state.props,
+            generation: 2,
+            projectId: 'project-B',
+            contexts,
+            initialTaskId: 'mapping',
+          })
+          setTimeout(() => state.resolveCheck!(state.reply(old)), 0)
+        })
+        await page
+          .getByRole('heading', { name: '从两行CSV形成稳定的设备身份和可追溯事实。', exact: true })
+          .waitFor()
+        expect(await page.getByText('实际结果条目', { exact: true }).count()).toBe(0)
+        expect(await page.getByLabel('当前输入学习进度').innerText()).toContain('0 / 9')
+      })
+      it('renders imported feedback as text without tags, handlers or network requests', async () => {
+        await mount()
+        await page.evaluate(() => {
+          window.learningHarness.malicious = true
+        })
+        await page.getByRole('button', { name: '检查我的操作', exact: true }).click()
+        await page
+          .getByText('<img src="https://probe.invalid/x" onerror="alert(1)">', { exact: true })
+          .waitFor()
+        expect(await page.locator('img, script[src], iframe').count()).toBe(0)
+      })
+      it('reconciles newer assistance records instead of showing an older independent result', async () => {
+        await mount({ initialTaskId: 'transfer-repair' })
+        await page.getByRole('button', { name: '检查我的操作', exact: true }).click()
+        await page.getByText('本次独立迁移成功。', { exact: true }).waitFor()
+        await page.evaluate(() => {
+          const state = window.learningHarness
+          const context = state.props.contexts!['transfer-repair']
+          const record: LearningRecordView = {
+            context,
+            recordVersion: 99,
+            maxHintLevel: 4,
+            assistance: 'agent-full-assistance',
+            operationComplete: false,
+            independentTransferSuccess: false,
+            checkStatus: 'not-checked',
+            evidenceIds: [],
+          }
+          window.mountLearning({ ...state.props, records: [record] })
+        })
+        await page.getByText('学习记录已更新，请重新检查。', { exact: true }).waitFor()
+        expect(await page.getByText('本次独立迁移成功。', { exact: true }).count()).toBe(0)
+        expect(await page.getByLabel('当前输入学习进度').innerText()).toContain(
+          '独立迁移成功 0 / 2',
+        )
+      })
+
+      it('requires a real recorded attempt before revealing any transfer hint in preview', async () => {
+        await mount({ connected: false, initialTaskId: 'transfer-repair' })
+        for (const name of ['概念提示', '操作提示', '部分示范', '完整示范']) {
+          await page.getByRole('button', { name: new RegExp(name) }).click()
+          await page
+            .getByText('请先打开迁移练习，记录提示使用后查看提示。', { exact: true })
+            .waitFor()
+          expect(await page.getByRole('heading', { name, exact: true }).count()).toBe(0)
+        }
+      })
+      it('does not reveal an actual attempt hint when its recording capability is missing', async () => {
+        await mount({ initialTaskId: 'transfer-repair' })
+        await page.evaluate(() => {
+          const state = window.learningHarness
+          window.mountLearning({
+            ...state.props,
+            actions: { checkTask: state.props.actions!.checkTask },
+          })
+        })
+        await page.getByRole('button', { name: /完整示范/ }).click()
+        await page.getByText('提示使用记录暂不可用，请稍后重试。', { exact: true }).waitFor()
+        expect(await page.getByRole('heading', { name: '完整示范', exact: true }).count()).toBe(0)
+      })
+      it.each(['newer-lower', 'same-version-conflict', 'contradictory-newer'] as const)(
+        'rejects %s owner records after acknowledged assistance',
+        async (variant) => {
+          await mount({ initialTaskId: 'transfer-repair' })
+          await page.getByRole('button', { name: /完整示范/ }).click()
+          await page.getByRole('heading', { name: '完整示范', exact: true }).waitFor()
+          await page.evaluate((variant) => {
+            const state = window.learningHarness
+            const record = state.reply(state.props.contexts!['transfer-repair']).record
+            if (variant === 'newer-lower') {
+              record.maxHintLevel = 0
+              record.assistance = 'independent'
+              record.independentTransferSuccess = true
+            } else if (variant === 'same-version-conflict') {
+              record.recordVersion = 1
+            } else {
+              record.assistance = 'independent'
+              record.independentTransferSuccess = true
+            }
+            window.mountLearning({ ...state.props, records: [record] })
+          }, variant)
+          await page.getByText('学习记录不一致，请重新检查。', { exact: true }).waitFor()
+          expect(await page.getByLabel('当前输入学习进度').innerText()).toContain(
+            '独立迁移成功 0 / 2',
+          )
+          await page.getByRole('button', { name: /本体构建/ }).click()
+          await page
+            .getByRole('button', { name: /迁移任务/ })
+            .first()
+            .click()
+          await page.getByText('学习记录不一致，请重新检查。', { exact: true }).waitFor()
+        },
+      )
+      it('retains assistance when inputs change inside the same transfer attempt', async () => {
+        await mount({ initialTaskId: 'transfer-repair' })
+        await page.getByRole('button', { name: /完整示范/ }).click()
+        await page.getByRole('heading', { name: '完整示范', exact: true }).waitFor()
+        await page.evaluate(() => {
+          const state = window.learningHarness
+          const context = { ...state.props.contexts!['transfer-repair'], inputVersion: 'input-2' }
+          const record = state.reply(context).record
+          record.maxHintLevel = 0
+          record.assistance = 'independent'
+          record.independentTransferSuccess = true
+          window.mountLearning({
+            ...state.props,
+            contexts: { ...state.props.contexts, 'transfer-repair': context },
+            records: [record],
+          })
+        })
+        await page.getByText('学习记录不一致，请重新检查。', { exact: true }).waitFor()
+        expect(await page.getByLabel('当前输入学习进度').innerText()).toContain(
+          '独立迁移成功 0 / 2',
+        )
+      })
+      it.each(['task', 'attemptId', 'inputVersion'] as const)(
+        'ignores a late check after changing %s',
+        async (field) => {
+          await mount({ initialTaskId: 'query' })
+          await page.evaluate(() => {
+            window.learningHarness.deferred = true
+          })
+          await page.getByRole('button', { name: '检查我的操作', exact: true }).click()
+          await page.getByRole('button', { name: '正在检查…', exact: true }).waitFor()
+          if (field === 'task') await page.getByRole('button', { name: /数据映射/ }).click()
+          else
+            await page.evaluate((field) => {
+              const state = window.learningHarness
+              const contexts = {
+                ...state.props.contexts,
+                query: { ...state.props.contexts!.query, [field]: 'changed' },
+              }
+              window.mountLearning({ ...state.props, contexts })
+            }, field)
+          await page.getByRole('button', { name: '检查我的操作', exact: true }).waitFor()
+          await page.evaluate(() => {
+            const state = window.learningHarness
+            state.resolveCheck!(state.reply(state.pendingContext!))
+          })
+          expect(await page.getByText('实际结果条目', { exact: true }).count()).toBe(0)
+          expect(await page.getByLabel('当前输入学习进度').innerText()).toContain('0 / 9')
+        },
+      )
+      it('keeps the learning path and help usable on a narrow screen', async () => {
+        await page.setViewportSize({ width: 390, height: 844 })
+        await mount({ connected: false, initialTaskId: 'behavior' })
+        await page.getByRole('button', { name: /概念提示/ }).click()
+        await page.getByRole('heading', { name: '概念提示', exact: true }).waitFor()
+        expect(
+          await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+        ).toBe(true)
+        await capture('mobile-behavior')
+      })
+
+      it('shows a mounted reading as read-only material that never scores', async () => {
+        await mount({ initialTaskId: 'business-ontology' })
+        const readings = page.getByRole('region', { name: '任务阅读' })
+        await readings.getByText('只读理解，不计为实作完成', { exact: true }).waitFor()
+        await readings.getByText('展开阅读正文', { exact: true }).click()
+        await readings.getByText(/能力问题则是可以被模型直接回答/).waitFor()
+        // The optional self assessment uses the local fixed answer key only.
+        await readings.getByRole('radio').first().check()
+        await readings.getByRole('button', { name: '查看解析', exact: true }).first().click()
+        await readings
+          .getByText(/回答不正确。/)
+          .first()
+          .waitFor()
+        expect(await page.getByLabel('当前输入学习进度').innerText()).toContain('0 / 9')
+        expect(await page.getByText('只读理解，不计为实作完成', { exact: true }).isVisible()).toBe(
+          true,
+        )
+      })
+
+      it('reaches the identity term through an alias search and shows its boundary', async () => {
+        await mount()
+        await page.getByLabel('搜索术语或别名').fill('主键')
+        await page.getByRole('heading', { name: 'IRI / 稳定身份', exact: true }).waitFor()
+        await page.getByText(/Palantir 主键 ≠ 本软件 IRI/).waitFor()
+        await page.getByLabel('搜索术语或别名').fill('PK')
+        await page.getByRole('heading', { name: 'IRI / 稳定身份', exact: true }).waitFor()
+      })
+
+      it('labels the check state with text and keeps the task card collapsible', async () => {
+        await mount({ initialTaskId: 'transfer-repair' })
+        await page.getByRole('button', { name: '检查我的操作', exact: true }).click()
+        await page.getByText('已通过', { exact: true }).first().waitFor()
+        await page.getByRole('button', { name: '收起任务卡', exact: true }).click()
+        await page.getByRole('button', { name: /展开任务卡/ }).waitFor()
+        expect(await page.getByRole('heading', { name: '检查反馈', exact: true }).count()).toBe(0)
+        await page.getByRole('button', { name: /展开任务卡/ }).click()
+        await page.getByRole('heading', { name: '检查反馈', exact: true }).waitFor()
+      })
+    })
+  },
+)

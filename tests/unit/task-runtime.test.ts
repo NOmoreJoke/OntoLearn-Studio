@@ -1,15 +1,46 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { spawnSync, type ChildProcessWithoutNullStreams } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { EngineSupervisor, getEngineCommand } from '../../apps/desktop/src/main/engine'
+import { JsonlReader } from '../../apps/desktop/src/main/jsonl'
 import { TaskService } from '../../apps/desktop/src/main/task-service'
+import { ProjectMainlineService } from '../../apps/desktop/src/main/project-mainline-service'
 import { explainError } from '../../apps/desktop/src/renderer/src/task-presentation'
-import { validateV2 } from '../../packages/contracts/src/v2'
-import type { JobView, TaskUpdate, TaskView } from '@ontolearn/contracts'
+import { matchesResponse, validateV2 } from '../../packages/contracts/src/v2'
+import {
+  reassembleChangeSetDocument,
+  type BridgeResult,
+  type ChangeSetPage,
+  type JobView,
+  type TaskUpdate,
+  type TaskView,
+} from '@ontolearn/contracts'
 
+// Test-owned interception observes actual child stdio, without reflecting private engine state.
+const spawnControl = vi.hoisted(() => ({
+  observe: undefined as undefined | ((child: ChildProcessWithoutNullStreams) => void),
+  fail: false,
+}))
+vi.mock('node:child_process', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('node:child_process')>()
+  return {
+    ...actual,
+    spawn: (...args: unknown[]) => {
+      const child = Reflect.apply(
+        actual.spawn,
+        undefined,
+        spawnControl.observe && spawnControl.fail
+          ? [args[0], ['-I', '-c', 'raise SystemExit(73)'], args[2]]
+          : args,
+      ) as ChildProcessWithoutNullStreams
+      spawnControl.observe?.(child)
+      return child
+    },
+  }
+})
 const workspace = resolve('.')
 // Development-only read of another checkout's sources; dependencies, database,
 // Python process and Node runtime always belong to this test's own worktree.
@@ -18,6 +49,57 @@ const workspace = resolve('.')
 const source = process.env.ROOT_SOURCE_PATH ? resolve(process.env.ROOT_SOURCE_PATH) : workspace
 const location = { packaged: false, appPath: join(workspace, 'apps/desktop'), resourcesPath: '' }
 const python = getEngineCommand(location).command
+
+// Trusted-test-only engine launchers (the same trusted-command seam as the
+// ROOT_SOURCE_PATH probe above): they run the REAL serve(), REAL Store and
+// REAL workers, injecting only the coordinator's test-mode scheduling hooks.
+// round1Gate: parks after the REAL round-1 commit, so round 2 is structurally
+// uncommittable while parked (the kill IS the release). subscriptionGate:
+// before the worker launches it waits for the job's first REAL subscription
+// binding (S1) and records its identity per jobId; after the real round-1
+// commit it waits until a REAL DIFFERENT binding exists for the job (S2,
+// whose subscribe response was emitted synchronously with the binding) and
+// only then lets round 2 begin. No frame, ID, seq or DTO is ever changed.
+const gateLauncher = (hooks: string) => ({
+  command: python,
+  args: [
+    '-I',
+    '-c',
+    `import asyncio,sys;sys.path.insert(0,${JSON.stringify(join(source, 'packages/engine/src'))});\n${hooks}`,
+  ],
+})
+const round1GateCommand = () =>
+  gateLauncher(String.raw`
+from ontolearn_engine.coordinator import serve
+async def after_round(coordinator, job, round_number):
+    if round_number >= 1:
+        await asyncio.Future()
+asyncio.run(serve(_test_schedule={'after_round_commit': after_round}))
+`)
+const subscriptionGateCommand = () =>
+  gateLauncher(String.raw`
+from ontolearn_engine.coordinator import serve
+first_by_job = {}
+async def before_worker(coordinator, job):
+    while True:
+        ids = [i for i, b in coordinator.subscriptions.items() if b['jobId'] == job['jobId']]
+        if ids:
+            first_by_job.setdefault(job['jobId'], ids[0])
+            return
+        await asyncio.sleep(0.01)
+async def after_round(coordinator, job, round_number):
+    if round_number != 1:
+        return
+    first = first_by_job.get(job['jobId'])
+    while True:
+        if any(
+            i != first and b['jobId'] == job['jobId']
+            for i, b in coordinator.subscriptions.items()
+        ):
+            return
+        await asyncio.sleep(0.01)
+asyncio.run(serve(_test_schedule={'before_worker': before_worker, 'after_round_commit': after_round}))
+`)
 
 function pythonJson(script: string, args: string[]): unknown {
   const result = spawnSync(python, ['-I', '-c', script, ...args], {
@@ -110,6 +192,7 @@ async function runtime(
   dropFirstState = false,
   coalesceAtomicCompletion = false,
   commitBeforeFirstJobRead = false,
+  gateSubscriptions = false,
 ) {
   const directory = await mkdtemp(join(tmpdir(), 'ontolearn-task-runtime-'))
   try {
@@ -144,9 +227,28 @@ async function runtime(
             },
           }
         : {}),
+      // The gating launcher wins over any source-probe default: it already
+      // launches the same real sources through gateLauncher's own path.
+      ...(gateSubscriptions ? { command: subscriptionGateCommand() } : {}),
     })
     const calls: Array<{ method: string; params: Record<string, unknown> }> = []
     const received: Notification[] = []
+    // Events actually handed to the TaskService listener AND matched to a
+    // view TaskUpdate: consumption proof is the observed update, not merely
+    // the hand-off.
+    const forwarded: Notification[] = []
+    const jobReads: JobView[] = []
+    const subscribeResponses: Array<{
+      subscriptionId: string
+      projectId: string
+      jobId: string
+      seq: number
+      stateVersion: number
+      requestJobId: string
+      requestProjectId: string
+      engineSessionId: string
+      precedingReadStateVersion: number | undefined
+    }> = []
     const allReceived: WireNotification[] = []
     let dropped: Notification | undefined
     let jobId = ''
@@ -165,6 +267,34 @@ async function runtime(
       async request(method: string, params: Record<string, unknown>) {
         calls.push({ method, params: structuredClone(params) })
         const response = await supervisor.request(method, params)
+        if (method === 'job.get' && String(params.jobId) === jobId) {
+          // The real durable read preceding each subscribe: kept in order so
+          // every subscription can be tied to the state version its own
+          // preceding read actually returned.
+          jobReads.push(structuredClone(response as JobView))
+        }
+        if (method === 'job.subscribe') {
+          // Recorded ONLY after the real request succeeded: the full real
+          // binding validated against its actual result schema, plus the
+          // request params, the engine session and the LAST preceding real
+          // job.get state version, so S1/S2 association is proven on real
+          // protocol values — never on call counting.
+          const binding = response as {
+            subscriptionId: string
+            projectId: string
+            jobId: string
+            seq: number
+            stateVersion: number
+          }
+          expect(validateV2('result_job.subscribe', binding)).toBe(true)
+          subscribeResponses.push({
+            ...binding,
+            requestJobId: String(params.jobId),
+            requestProjectId: String(params.projectId),
+            engineSessionId: supervisor.engineSessionId ?? '',
+            precedingReadStateVersion: jobReads.at(-1)?.stateVersion,
+          })
+        }
         if (commitBeforeFirstJobRead && method === 'project.get' && !heldProject) {
           heldProject = structuredClone(response)
           // Only delay a real response: the worker and every returned DTO stay real.
@@ -233,6 +363,11 @@ async function runtime(
               return
             }
           }
+          const handedOff =
+            event.event === 'job.state' && event.jobId === jobId
+              ? structuredClone(event)
+              : undefined
+          if (handedOff) forwarded.push(handedOff)
           listener(value)
         })
       },
@@ -240,8 +375,37 @@ async function runtime(
     const tasks = new TaskService(transport)
     const waiting = terminalWait()
     const views: TaskView[] = []
+    // Causal (event → observed TaskUpdate) pairs. The snapshot is taken in a
+    // pass-through spy on the REAL TaskService.receive: the constructor's
+    // listener AND the pendingSubscription early-event replay both call
+    // this.receive dynamically, so a job update observed while receive
+    // processes one exact notification — including replayed early events —
+    // pairs with precisely that notification. The original receiver, its
+    // this-binding, arguments, return value and exceptions are all
+    // preserved; nothing is called extra and no frame is altered.
+    const jobUpdates: Array<{ event: Notification; job: JobView }> = []
+    let inFlight: Notification | undefined
+    const tasksAny = tasks as unknown as {
+      receive: (value: unknown) => void
+    }
+    const realReceive = tasksAny.receive.bind(tasks)
+    const receiveSpy = vi.spyOn(tasksAny, 'receive').mockImplementation(function (
+      this: unknown,
+      value: unknown,
+    ) {
+      const event = value as Notification
+      const previous = inFlight
+      if (event.event === 'job.state' && event.jobId === jobId) inFlight = structuredClone(event)
+      try {
+        return Reflect.apply(realReceive, this, [value])
+      } finally {
+        inFlight = previous
+      }
+    })
     const observe = (update: TaskUpdate) => {
       if (update.kind === 'restored') views.push(update.view)
+      if (update.kind === 'job' && inFlight)
+        jobUpdates.push({ event: structuredClone(inFlight), job: structuredClone(update.job) })
       waiting.observe(update)
     }
     tasks.attachView(observe)
@@ -280,6 +444,10 @@ async function runtime(
         job: result.data,
         evidence,
         received,
+        forwarded,
+        jobUpdates,
+        jobReads,
+        subscribeResponses,
         allReceived,
         dropped,
         calls,
@@ -291,6 +459,7 @@ async function runtime(
       }
     } finally {
       waiting.stop()
+      receiveSpy.mockRestore()
       tasks.dispose()
       supervisor.stop()
     }
@@ -299,7 +468,11 @@ async function runtime(
   }
 }
 
-async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', failRestarts = false) {
+async function disconnectRuntime(
+  capability: 'test.rounds' | 'test.atomic',
+  failRestarts = false,
+  gateRound1 = false,
+) {
   const directory = await mkdtemp(join(tmpdir(), 'ontolearn-disconnect-runtime-'))
   let supervisor: EngineSupervisor | undefined
   let tasks: TaskService | undefined
@@ -313,12 +486,62 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
       capability,
     ]) as Fixture
     const command = getEngineCommand(location)
+    const observed: Array<{
+      child: ChildProcessWithoutNullStreams
+      pending: Map<string, Record<string, unknown>>
+      framingFailed: boolean
+      bufferedBytes: () => number
+    }> = []
+    spawnControl.fail = false
+    spawnControl.observe = (child) => {
+      const item: (typeof observed)[number] = {
+        child,
+        pending: new Map(),
+        framingFailed: false,
+        bufferedBytes: () => outgoing.bufferedBytes + incoming.bufferedBytes,
+      }
+      observed.push(item)
+      const outgoing = new JsonlReader(
+        (value) => {
+          const request = value as Record<string, unknown>
+          if (validateV2('request', request)) item.pending.set(String(request.id), request)
+          else item.framingFailed = true
+        },
+        () => {
+          item.framingFailed = true
+        },
+      )
+      const incoming = new JsonlReader(
+        (value) => {
+          const response = value as Record<string, unknown>
+          const request = item.pending.get(String(response.id))
+          if (request && matchesResponse(request, response))
+            item.pending.delete(String(response.id))
+        },
+        () => {
+          item.framingFailed = true
+        },
+      )
+      child.stdout.on('data', (bytes: Buffer) => incoming.push(bytes))
+      const write = child.stdin.write
+      child.stdin.write = new Proxy(write, {
+        apply(target, receiver, args: unknown[]) {
+          outgoing.push(typeof args[0] === 'string' ? Buffer.from(args[0]) : (args[0] as Buffer))
+          return Reflect.apply(target, receiver, args)
+        },
+      })
+    }
     supervisor = new EngineSupervisor(location, {
       dataPath: database,
       allowedProjects: [fixture.projectId],
       testMode: true,
       registryPath: join(source, 'packages/contracts/v2/registry.json'),
       command,
+      // The round-1 gating launcher overrides the resolved command: it runs
+      // the same real serve()/Store/worker with only the test-mode scheduling
+      // hook, parking after the REAL round-1 commit so the post-checkpoint
+      // SIGKILL lands while round 2 is structurally uncommittable.
+      ...(gateRound1 ? { command: round1GateCommand() } : {}),
     })
     const engine = supervisor
     const calls: Array<{ method: string; params: Record<string, unknown> }> = []
@@ -396,23 +619,21 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     if (!initial.ok) throw new Error('initial real view missing')
     const before = await bounded(checkpointReady)
     await new Promise<void>((done) => setImmediate(done))
-    const internal = engine as unknown as {
-      session?: { child: ChildProcessWithoutNullStreams; pending: Map<unknown, unknown> }
-      starts: number[]
-    }
-    const old = internal.session!
+    const old = observed.at(-1)!
+    expect(old.framingFailed).toBe(false)
     expect(old.pending.size).toBe(0)
+    expect(old.bufferedBytes()).toBe(0)
     const oldPid = old.child.pid
     const oldSession = engine.engineSessionId
     const callCount = calls.length
-    if (failRestarts) command.args = ['-I', '-c', 'raise SystemExit(73)']
+    if (failRestarts) spawnControl.fail = true
     const closed = new Promise<void>((done) => old.child.once('close', () => done()))
     expect(old.child.kill('SIGKILL')).toBe(true)
     await bounded(closed)
     let firstManual: Awaited<ReturnType<TaskService['restore']>> | undefined
     if (failRestarts) {
       await bounded(offline)
-      expect(internal.starts).toHaveLength(4) // one original and exactly three real failed child starts
+      expect(observed).toHaveLength(4) // one original and exactly three real failed child starts
       expect(engine.engineSessionId).toBeUndefined()
       expect(
         updates.filter(
@@ -421,8 +642,8 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
         ),
       ).toEqual([])
       await new Promise((done) => setTimeout(done, 800))
-      expect(internal.starts).toHaveLength(4)
-      command.args = getEngineCommand(location).args
+      expect(observed).toHaveLength(4)
+      spawnControl.fail = false
       firstManual = await bounded(service.restore())
     } else {
       // A user's first read during automatic recovery shares its pending result.
@@ -432,7 +653,7 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     const view = await bounded(restored)
     expect(firstManual.ok && firstManual.data).toEqual(view)
     expect(engine.engineSessionId).not.toBe(oldSession)
-    expect(internal.session?.child.pid).not.toBe(oldPid)
+    expect(observed.at(-1)?.child.pid).not.toBe(oldPid)
     const evidence = pythonJson(evidenceScript, [database, created.jobId]) as {
       job: JobView
       rounds: number[]
@@ -449,18 +670,23 @@ async function disconnectRuntime(capability: 'test.rounds' | 'test.atomic', fail
     expect(view.jobs[0]).toEqual(evidence.job)
     expect(evidence.jobs).toBe(1)
     expect(evidence.claims).toBe(1)
-    return { before, view, evidence, marker, updates, starts: internal.starts.length, raw }
+    return { before, view, evidence, marker, updates, starts: observed.length, raw }
   } finally {
     clearTimeout(deadline)
     tasks?.dispose()
     supervisor?.stop()
+    spawnControl.observe = undefined
+    spawnControl.fail = false
     await rm(directory, { recursive: true, force: true, maxRetries: 20, retryDelay: 50 })
   }
 }
 
 describe('actual Python → supervisor → task service runtime', () => {
   it('automatically reconciles a real coordinator exit with zero pending requests and retained rounds', async () => {
-    const result = await disconnectRuntime('test.rounds')
+    // gateRound1: the coordinator parks after the REAL round-1 commit, so
+    // the post-checkpoint SIGKILL lands while round 2 is structurally
+    // uncommittable — the fixed [1] assertion is deterministic, not timed.
+    const result = await disconnectRuntime('test.rounds', false, true)
     expect(result.starts).toBe(2)
     expect(result.before.state).toBe('running')
     expect(result.view.jobs[0].state).toBe('failed')
@@ -490,7 +716,7 @@ describe('actual Python → supervisor → task service runtime', () => {
     expect(result.view.jobs[0].commitProgress).toEqual(result.before.commitProgress)
   }, 20000)
   it('enters explicit offline after three real failed restarts, then permits an explicit read recovery', async () => {
-    const result = await disconnectRuntime('test.rounds', true)
+    const result = await disconnectRuntime('test.rounds', true, true)
     expect(result.starts).toBe(5)
     const states = result.updates.filter((update) => update.kind === 'connection')
     expect(
@@ -501,7 +727,18 @@ describe('actual Python → supervisor → task service runtime', () => {
     expect(result.evidence.rounds).toEqual([1])
   }, 20000)
   it('recovers one omitted real state notification through a durable read and fresh subscription', async () => {
-    const result = await runtime('test.rounds', { workMs: 200, maxRounds: 3 }, true)
+    // gateSubscriptions: S1 is established (real response emitted) BEFORE the
+    // worker launches, and round 2 only begins after a REAL different
+    // subscription binding S2 exists — so the ≥2-IDs, fresh-subscription and
+    // S2-consumption assertions below are deterministic, not timing luck.
+    const result = await runtime(
+      'test.rounds',
+      { workMs: 200, maxRounds: 3 },
+      true,
+      false,
+      false,
+      true,
+    )
     expect(
       result.terminal.state,
       JSON.stringify({
@@ -519,8 +756,41 @@ describe('actual Python → supervisor → task service runtime', () => {
       jobs: 1,
       claims: 1,
     })
-    expect(result.dropped).toBeDefined()
-    expect(validateV2('notification', result.dropped)).toBe(true)
+    // S1/S2 association on REAL protocol values: both are real successful
+    // job.subscribe results for the same job/project in the same engine
+    // session, with distinct IDs, and each subscribe's stateVersion EQUALS
+    // the state version of its own preceding real durable job.get read.
+    const subs = result.subscribeResponses
+    expect(subs.length).toBeGreaterThanOrEqual(2)
+    const s1 = subs[0]!
+    const s2 = subs.find((binding) => binding.subscriptionId !== s1.subscriptionId)
+    expect(s2).toBeDefined()
+    for (const binding of [s1, s2!]) {
+      expect(binding.jobId).toBe(result.job.jobId)
+      expect(binding.projectId).toBe(result.job.projectId)
+      expect(binding.requestJobId).toBe(result.job.jobId)
+      expect(binding.requestProjectId).toBe(result.job.projectId)
+      expect(binding.engineSessionId).toBe(s1.engineSessionId)
+      expect(binding.seq).toBe(0)
+      expect(binding.precedingReadStateVersion).toBeDefined()
+      expect(binding.stateVersion).toBe(binding.precedingReadStateVersion)
+    }
+    // The dropped frame is EXACTLY the round-1 running state on the
+    // established S1 — the original gap proof, made precise (not "any first
+    // state"): same job/project as S1, running, one committed round.
+    const dropped = result.dropped!
+    expect(dropped).toBeDefined()
+    expect(validateV2('notification', dropped)).toBe(true)
+    expect(dropped.subscriptionId).toBe(s1.subscriptionId)
+    expect(dropped.projectId).toBe(result.job.projectId)
+    expect(dropped.engineSessionId).toBe(s1.engineSessionId)
+    const droppedView = dropped.data as JobView
+    expect(droppedView.state).toBe('running')
+    expect(droppedView.jobId).toBe(result.job.jobId)
+    expect(
+      (droppedView.commitProgress as { committedProgress?: { lastCommittedRound: number } })
+        .committedProgress?.lastCommittedRound,
+    ).toBe(1)
     // A genuine progress frame can expose the missing state sequence before
     // another state arrives. It must trigger the same durable reconciliation.
     const later = result.allReceived.find(
@@ -544,6 +814,18 @@ describe('actual Python → supervisor → task service runtime', () => {
           call.method,
         ),
       ),
+    ).toBe(true)
+    // S2 must be genuinely USABLE, not merely established: the exact S2
+    // state notification was processed by the real TaskService pipeline —
+    // proven by a strict causal pair (same job/project, payload stateVersion
+    // EXACTLY matching the event), never by counting calls or >= ranges.
+    expect(
+      result.jobUpdates.some((pair) => {
+        if (pair.event.subscriptionId !== s2!.subscriptionId) return false
+        if (pair.event.projectId !== result.job.projectId) return false
+        if (pair.event.jobId !== result.job.jobId) return false
+        return pair.job.stateVersion === (pair.event.data as JobView).stateVersion
+      }),
     ).toBe(true)
   }, 20000)
   it('observes real atomic commit revision and sends a rebuilt historical-input view', async () => {
@@ -619,3 +901,284 @@ describe('actual Python → supervisor → task service runtime', () => {
     expect(explanation.detail).toContain('INTERNAL_ERROR')
   }, 20000)
 })
+
+it('restores real business3 selection, original Jobs and atomic marker through a fresh coordinator without test grants', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'ontolearn-business3-recovery-'))
+  const database = join(directory, 'owned.sqlite')
+  const children: Array<{
+    child: ChildProcessWithoutNullStreams
+    calls: Array<Record<string, unknown>>
+    closed: Promise<void>
+  }> = []
+  const updates: TaskUpdate[] = []
+  let supervisor: EngineSupervisor | undefined
+  let tasks: TaskService | undefined
+  let projects: ProjectMainlineService | undefined
+  const deadline = Date.now() + 25000
+  const step = async <T>(operation: Promise<T>): Promise<T> => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+    try {
+      return await Promise.race([
+        operation,
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(
+            () => reject(Error('business3 recovery source test deadline')),
+            Math.max(1, deadline - Date.now()),
+          )
+        }),
+      ])
+    } finally {
+      clearTimeout(timer)
+    }
+  }
+  const take = <T>(reply: BridgeResult<T>): T => {
+    if (!reply.ok) throw Error(`Real business3 refused ${JSON.stringify(reply.error)}`)
+    return reply.data
+  }
+  try {
+    spawnControl.fail = false
+    spawnControl.observe = (child) => {
+      const calls: Array<Record<string, unknown>> = []
+      const reader = new JsonlReader(
+        (frame) => calls.push(frame as Record<string, unknown>),
+        () => {
+          throw Error('invalid real outgoing frame')
+        },
+      )
+      const write = child.stdin.write
+      child.stdin.write = new Proxy(write, {
+        apply(target, receiver, args: unknown[]) {
+          reader.push(typeof args[0] === 'string' ? Buffer.from(args[0]) : (args[0] as Buffer))
+          return Reflect.apply(target, receiver, args)
+        },
+      })
+      children.push({
+        child,
+        calls,
+        closed: new Promise<void>((done) => child.once('close', () => done())),
+      })
+    }
+    // Real production authority, no testMode, allowedProjects, worker fixture or SQL.
+    supervisor = new EngineSupervisor(location, { profile: 'business3', dataPath: database })
+    const engine = supervisor
+    tasks = new TaskService(engine)
+    const taskService = tasks
+    projects = new ProjectMainlineService(engine, taskService, () =>
+      taskService.attachView((update) => updates.push(update)),
+    )
+    const service = projects
+    const receiver = engine.mainlineReplyReceiver()
+    const receive = async <T>(work: () => Promise<BridgeResult<T>>): Promise<T> => {
+      const delivery = await step(receiver.receive(work))
+      if (delivery.value.ok) receiver.consume(delivery.receipt)
+      return take(delivery.value)
+    }
+    const created = await receive(() =>
+      service.createBlankProject({
+        requestVersion: 1,
+        operationId: randomUUID(),
+        name: '真实生产恢复',
+        initialization: { kind: 'blank' },
+      }),
+    )
+    const selected = await receive(() => service.openProject({ projectId: created.projectId }))
+    const preview = await receive(() =>
+      service.previewProjectChangeset({
+        baseRevision: selected.projectRevision,
+        intent: 'change',
+        plan: {
+          definitions: [
+            {
+              layer: 'ontology',
+              id: 'Recovery',
+              value: { triples: [], references: [], singleValuedPredicates: [] },
+            },
+            {
+              layer: 'query',
+              id: 'Q1',
+              value: {
+                text: 'ASK {}',
+                references: [{ layer: 'ontology', id: 'Recovery' }],
+                descriptor: {
+                  version: 1,
+                  name: '恢复原查询',
+                  description: '真实有限ASK',
+                  scope: 'asserted',
+                  capabilityQuestion: 'Can the original result survive?',
+                  source: 'editor',
+                },
+              },
+            },
+          ],
+        },
+      }),
+    )
+    if (preview.status !== 'ready') throw Error('Expected actual baseline preview')
+    const pages: ChangeSetPage[] = []
+    let cursor: string | null = null
+    for (let count = 0; count < 8; count++) {
+      const page = await receive(() =>
+        service.getProjectDiffPage({
+          previewHash: preview.previewHash,
+          documentKind: 'diff',
+          pageSize: 2,
+          cursor,
+        }),
+      )
+      pages.push(page)
+      cursor = page.nextCursor
+      if (page.complete) break
+    }
+    expect(pages.at(-1)?.complete).toBe(true)
+    expect(await step(reassembleChangeSetDocument(preview, pages))).toHaveLength(2)
+    const confirmation = await receive(() =>
+      service.confirmProjectChangeset({
+        previewHash: preview.previewHash,
+        completionCursor: cursor!,
+      }),
+    )
+    const accepted = await receive(() =>
+      service.commitProjectChangeSet({ operationId: randomUUID(), confirmation }),
+    )
+    const terminal = async (job: JobView): Promise<JobView> => {
+      while (Date.now() < deadline) {
+        const value = take(await step(taskService.getJob(job.jobId)))
+        expect(value.jobId).toBe(job.jobId)
+        expect(value.operationId).toBe(job.operationId)
+        if (['succeeded', 'failed', 'cancelled'].includes(value.state)) return value
+        await step(new Promise<void>((done) => setTimeout(done, 10)))
+      }
+      throw Error('real original Job did not terminate')
+    }
+    const baseline = await terminal(accepted)
+    expect(baseline.state).toBe('succeeded')
+    const marker = take(await step(taskService.getOperation(baseline.operationId)))
+    expect(marker?.jobId).toBe(baseline.jobId)
+    // Establish the committed baseline through the real public read before
+    // testing coordinator recovery; this does not assert automatic refresh.
+    const preparedDomain = await receive(() => service.readProject({ editor: 'query' }))
+    const atomic = baseline.commitProgress as {
+      mode: string
+      operationId?: string
+      marker?: {
+        projectRevision: number
+        beforeSnapshotId: string
+        afterSnapshotId: string
+        planHash: string
+      } | null
+    }
+    if (atomic.mode !== 'atomic' || !atomic.marker) throw Error('Expected real atomic marker')
+    expect(atomic.operationId).toBe(baseline.operationId)
+    expect(marker).toEqual({
+      projectId: created.projectId,
+      operationId: baseline.operationId,
+      jobId: baseline.jobId,
+      ...atomic.marker,
+    })
+    expect(preparedDomain.domain.projectRevision).toBe(atomic.marker.projectRevision)
+    expect(preparedDomain.workspace.domainRevision).toBe(atomic.marker.projectRevision)
+    expect(preparedDomain.inputSnapshotId).toBe(atomic.marker.afterSnapshotId)
+    const preparedSource = service.source.current()!
+    expect(preparedSource.project.projectId).toBe(created.projectId)
+    expect(preparedSource.project.projectRevision).toBe(atomic.marker.projectRevision)
+    expect(preparedSource.project.inputSnapshotId).toBe(atomic.marker.afterSnapshotId)
+    expect(preparedSource.project.dependencyVector['query:Q1']).toBeGreaterThan(0)
+    const loaded = await receive(() =>
+      service.queries.loadQueryDefinition({ definitionId: 'Q1', selection: { kind: 'current' } }),
+    )
+    if (loaded.kind !== 'managed') throw Error('Expected actual managed query')
+    expect(loaded.projectId).toBe(created.projectId)
+    expect(loaded.baseProjectRevision).toBe(preparedSource.project.projectRevision)
+    expect(loaded.inputSnapshotId).toBe(preparedSource.project.inputSnapshotId)
+    expect(loaded.definitionVersion).toBe(preparedSource.project.dependencyVector['query:Q1'])
+    const executed = await receive(() =>
+      service.queries.executeSavedQuery({
+        operationId: randomUUID(),
+        loadRef: loaded.loadRef,
+        visibleDraft: loaded.draft,
+        selection: { kind: 'current' },
+      }),
+    )
+    const query = await terminal(executed.acceptedJob)
+    expect(query.state).toBe('succeeded')
+    const domainBefore = await receive(() => service.readProject({ editor: 'query' }))
+    const oldSource = service.source.current()!
+    const replyBookBeforeFault = receiver.diagnostic()
+    const old = children[0]
+    const watermark = updates.length
+    const oldSession = engine.engineSessionId
+    expect(children).toHaveLength(1)
+    expect(old.child.kill('SIGKILL')).toBe(true)
+    await step(old.closed)
+    // Manual and automatic recovery share the authentic same-project reauthorization.
+    const restored = take(await step(taskService.restore()))
+    expect(engine.engineSessionId).not.toBe(oldSession)
+    expect(children).toHaveLength(2)
+    const successor = children[1]
+    expect(successor.child.pid).not.toBe(old.child.pid)
+    const openIndex = successor.calls.findIndex((call) => call.method === 'project.open')
+    const firstProjectRead = successor.calls.findIndex((call) => call.method === 'project.get')
+    expect(openIndex).toBeGreaterThanOrEqual(0)
+    expect(firstProjectRead).toBeGreaterThan(openIndex)
+    expect(successor.calls.filter((call) => call.method === 'project.open')).toHaveLength(1)
+    expect(successor.calls[openIndex].params).toEqual({ projectId: created.projectId })
+    expect(
+      successor.calls.some((call) => ['job.create', 'job.cancel'].includes(String(call.method))),
+    ).toBe(false)
+    expect(restored.project?.projectId).toBe(created.projectId)
+    expect(new Set(restored.jobs.map((job) => job.jobId))).toEqual(
+      new Set([baseline.jobId, query.jobId]),
+    )
+    expect(restored.jobs.find((job) => job.jobId === baseline.jobId)).toEqual(baseline)
+    expect(restored.jobs.find((job) => job.jobId === query.jobId)).toEqual(query)
+    expect(take(await step(taskService.getOperation(baseline.operationId)))).toEqual(marker)
+    expect(take(await step(taskService.getOperation(query.operationId)))).toBeNull()
+    const domainAfter = await receive(() => service.readProject({ editor: 'query' }))
+    expect(domainAfter.domain).toEqual(domainBefore.domain)
+    expect(service.source.current()?.engineSessionId).toBe(engine.engineSessionId)
+    expect(service.source.current()?.owner).not.toBe(oldSource.owner)
+    const faultUpdates = updates.slice(watermark)
+    const reconnect = faultUpdates.findIndex(
+      (u) =>
+        u.kind === 'connection' && u.projectId === created.projectId && u.state === 'reconnecting',
+    )
+    const ready = faultUpdates.findIndex(
+      (u) => u.kind === 'restored' && u.view.project?.projectId === created.projectId,
+    )
+    expect(reconnect).toBeGreaterThanOrEqual(0)
+    expect(ready).toBeGreaterThan(reconnect)
+    const replyBookAfterRecovery = receiver.diagnostic()
+    expect(replyBookAfterRecovery.orphans).toBe(replyBookBeforeFault.orphans)
+    expect(replyBookAfterRecovery.offered).toBe(0)
+    expect(replyBookAfterRecovery.computing).toBe(0)
+    expect(replyBookAfterRecovery.unknown).toBeGreaterThanOrEqual(replyBookBeforeFault.unknown)
+    expect(replyBookAfterRecovery.holdingCount).toBeGreaterThan(0)
+    // This completed-Job/atomic-marker positive does not claim an active query fault,
+    // rounds recovery or GUI evidence; those remain distinct actual acceptance gates.
+  } finally {
+    projects?.dispose()
+    tasks?.dispose()
+    supervisor?.stop()
+    try {
+      await Promise.all(
+        children.map(async (entry) => {
+          let timer: ReturnType<typeof setTimeout> | undefined
+          try {
+            await Promise.race([
+              entry.closed,
+              new Promise<never>((_, reject) => {
+                timer = setTimeout(() => reject(Error('owned business3 child close missing')), 3500)
+              }),
+            ])
+          } finally {
+            clearTimeout(timer)
+          }
+        }),
+      )
+      await rm(directory, { recursive: true, force: true, maxRetries: 20, retryDelay: 50 })
+    } finally {
+      spawnControl.observe = undefined
+      spawnControl.fail = false
+    }
+  }
+}, 30000)

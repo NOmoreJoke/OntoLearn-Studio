@@ -8,7 +8,7 @@ export default tseslint.config(
     ignores: [
       '**/out/**',
       '**/dist/**',
-      '**/release/**',
+      'release/**',
       'build/**',
       '.venv/**',
       'playwright-report/**',

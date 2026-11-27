@@ -1,0 +1,35 @@
+# T01 学习尝试与不可洗白辅助账本设计
+
+状态：私有事务下一阶段设计，真实检查/辅助producer未接入；不修改受审f51dd38实现，不注册learning能力或接受客户端passed。依据PRD FR-100–105/804、format3-foundation-contract§3/4/7，T09 UI固定7659665文档SHA0fb4982377c2904663e1f3ac625281a663d5cfaccefcdc368003eb23f96367ce，stage固定e651993文档SHA637daea093465952aab800e329317f31514325285077850b81589e5cdd1e4ce7。独立设计挑战已完成，仅为机制边界，不代替实际producer。
+
+## 1. 身份、激活与输入
+
+attempt由owner显式分配不可复用UUID，绑定project/course/task、真实课程/task定义版本与digest、root输入和attemptEpoch。保留所有旧attempt；页面context为project/task/attempt/inputVersion，窗口generation只负责丢弃迟到响应。app_learning.record_version是该attempt持续递增CAS，输入、提示、检查、恢复均不重置。
+
+新attempt必须核当前course/task的activation身份/CAS，不能仅检查“新UUID未存在”。可由本项目真实attempt链的最后activationEpoch与previousAttempt/recordVersion固定当前头；两个窗口从同一头启动仅一个成功，旧头保留superseded证据，不出现“无active→恢复空头”的ABA。是否采用此无新增表方案或单独activation header须实施前冻结真实DDL/结构验证，当前尚未改schema。
+
+换attempt须与旧Agent写入fence/对账串行，或在真正提交时重验epoch。不能在创建新attempt后把旧在途完整修改错误归入新attempt，也不能让旧辅助事件落入新attempt。尚无真实task定义/课程批准来源则拒绝start，不由测试manifest给产品造课程。
+
+bindInput由owner分配新的inputVersion，绑定实际domainSnapshot、task/StagePlan版本、定义/参数及检查真正读取的草稿generation/contentHash。输入变化保留旧检查/辅助，当前检查变为待重查；maxHintLevel与assistance在同attempt跨input单调。新attempt使用新身份和自己的真实证据，不因另一attempt曾看过示范永久失去独立评价。
+
+## 2. 最小事务与辅助来源
+
+start、bindInput、recordAssistance、supersede均复用全局operation claim、Store.commit、同连接app_learning/app_assistance、sequence/receipt/checkpoint；不建第二幂等账本。source producer和完整覆盖不足时，不开放recordCheck、stage完成或独立迁移成功。机制测试中的合成owner仅证明CAS/原子性，不计领域通过。
+
+辅助事件不可变且先持久化再展示内容：绑定project/task/attempt/input/epoch、实际source类型及身份、提示层级/辅助类别、内容digest、操作/父Job等来源引用。离线hint从批准课程真实资源取内容/摘要；I06/T08模型/Agent必须给实际请求与授权/提交依据，caller自报assisted=false/full=false无效。完整Agent修改的辅助事件与真正域写同事务；撤销域写不删除辅助事实。仅生成未展示的草稿、展示答案、接受正式修改的归因边界须由各producer明确，不能按模型一句自述决定。
+
+辅助全集为空只有在相关离线/模型/项目模式入口覆盖**整个attempt历史区间**时才可表示未使用。start时持久固定批准producer集合、覆盖版本、起始epoch/账本序号；后续版本/集合变更以不可变区间记录起止和真实覆盖证据。早期入口未覆盖不能被“现在producer齐全＋账本为空”洗白；已知缺口保持coverage不全，需真正新attempt才能从完整起点重新评价独立性。恢复旧当前视图时重新投影原attempt全部真实辅助历史与覆盖区间，保留最高hint/完整代做/覆盖缺口；recordVersion、input代次与activationEpoch始终向前。
+
+## 3. stage completion与真实检查
+
+先持久保存StagePlan/version/context/epoch/root和实际slot输入选择，选择与完成序号严格交替递增，允许其他全局操作穿插。真实结果成功发布current、Job succeeded时，在**同一外层事务**保存对应StageCompletion：原plan/stage、实际job/result、inputSnapshot/版本、capability、definition/scope/parameters、dependency/definition-set/完整implementation及payload/rows摘要、选择与完成账本序号。
+
+可分配独立owner application operation并绑定父Job，不能复用父Job已占用的application claim或制造假Job。若原结果已发布而当时没有completion，不得事后补“当时current”。今天stale的前置结果保留stale，以既有completion证明当时有效；终态今天仍须current且属于当前input。payload驱逐后仍不能仅凭completion通过完整结果比较。
+
+真正recordCheck在同CAS事务重验当前Plan/epoch/input与完整证据，消费T09真实检查器的完整比较，不能仅凭Job succeeded、非空rows、假StageCompletion或客户端passed。operationComplete、使用部分/完整提示完成、independentTransferSuccess分别计算，FR-105须实际迁移任务、真正通过、未用提示/代做及完整覆盖；工具失败/过期/缺依赖不变成成功。
+
+## 4. 精确缺口与实施顺序
+
+T09须交批准课程/task/StagePlan和检查比较政策、完整分页消费与require_current；I05/T03/T05/T06/T07须提供真正领域执行结果、输入和版本；I06/T08/T09提供辅助实际发生/展示/提交与attempt归因、入口覆盖证明。FR-700–703运行依据仍取真实round/run账本，轮次停止不等于事件全部处理完成或可重放。
+
+先独立实施身份/activation CAS、input换代、追加事件与恢复投影机制并给异常/进程退出/精确重试反例；publisher hook仅在同事务真实结果边界来源齐全后启用。再接真实producer、检查/完成和UI恢复；完整app restore和T10业务学习投影据该账本接线。缺来源的动作严格拒绝，不以骨架或空表登记完整产品能力。

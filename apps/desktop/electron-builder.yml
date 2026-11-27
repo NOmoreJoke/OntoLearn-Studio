@@ -10,12 +10,36 @@ extraResources:
     to: engine
   - from: ../../packages/contracts/v2
     to: contracts/v2
+  - from: ../../build/release-resources/fr003-bundle-v2/examples/equipment-maintenance
+    to: examples/equipment-maintenance
+  - from: ../../node_modules/electron/dist/LICENSE
+    to: licenses/electron/LICENSE
+  - from: ../../node_modules/electron/dist/LICENSES.chromium.html
+    to: licenses/electron/LICENSES.chromium.html
+  - from: ../../licenses
+    to: licenses
 asar: true
 npmRebuild: false
+forceCodeSigning: true
 mac:
-  identity: null
-  target: dir
+  icon: build/icon.icns
+  hardenedRuntime: true
+  notarize: true
+  target:
+    - target: dmg
+      arch:
+        - arm64
 win:
-  target: dir
+  icon: build/icon.ico
+  signAndEditExecutable: true
+  signExecutable: true
+  target:
+    - target: nsis
+      arch:
+        - x64
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
 linux:
+  icon: build/icon.png
   target: dir

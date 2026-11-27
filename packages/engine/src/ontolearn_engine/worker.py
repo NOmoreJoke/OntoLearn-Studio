@@ -1,7 +1,9 @@
-"""Isolated test workload. No database, project path, network or business capability."""
+"""Owned isolated computation. No database, project path or external I/O authority."""
 
 import ctypes
+import hashlib
 import json
+import math
 import os
 import sys
 import threading
@@ -13,7 +15,7 @@ from ontolearn_engine.memory_guard import (
     MemoryGuardUnavailable,
     install_memory_guard,
 )
-from ontolearn_engine.protocol import MAX_REQUEST_BYTES, decode_frame
+from ontolearn_engine.protocol import MAX_DEPTH, MAX_REQUEST_BYTES, ProtocolFault, decode_frame
 
 
 def emit(value: dict) -> None:
@@ -211,6 +213,12 @@ def run() -> None:
 def _execute() -> None:
     request = decode_frame(sys.stdin.buffer.readline(MAX_REQUEST_BYTES + 1).rstrip(b"\n"))
     guard = install_memory_guard(request["memoryBytes"])
+    if request["capability"] in ("query.execute", "reasoning.execute", "validation.execute"):
+        try:
+            _query(request)
+        finally:
+            guard.close()
+        return
     parameters = request["parameters"]
     delay = parameters.get("workMs", 0) / 1000
     rounds = parameters.get("maxRounds", 1) if request["capability"] == "test.rounds" else 1
@@ -253,6 +261,208 @@ def _execute() -> None:
             emit({"type": "ready", "rows": parameters.get("rows", [])})
     emit({"type": "complete"})
     guard.close()
+
+
+def query_transport_limits(limits):
+    """Intersect current frame/memory limits with the supplier's serialized envelope.
+
+    The same conservative envelope bounds the request too. This is not a new
+    graph or workload capacity policy; the supplier still applies its own limits.
+    """
+    from ontolearn_engine.resources import LIMITS
+    from ontolearn_engine.semantic_execution import MAX_OUTPUT_BYTES
+
+    if any(
+        type(limits[k]) is not int or limits[k] < 1
+        for k in ("maxFrameBytes", "maxWorkerMemoryBytes")
+    ):
+        raise ProtocolFault()
+    frame = min(limits["maxFrameBytes"], LIMITS["maxFrameBytes"], MAX_REQUEST_BYTES)
+    size = min(MAX_OUTPUT_BYTES, limits["maxWorkerMemoryBytes"], LIMITS["maxWorkerMemoryBytes"])
+    if frame <= 256 or size < 1:
+        raise ProtocolFault()
+    return frame, size
+
+
+def query_encode(value, maximum):
+    # Bound scalar and container visits before JSON encoding. No unbounded input
+    # chunk is appended; UTF-8 allocation is at most four times this finite cap.
+    stack = [(value, 0)]
+    visits = 0
+    while stack:
+        item, depth = stack.pop()
+        visits += 1
+        if visits > maximum or depth > MAX_DEPTH:
+            raise ProtocolFault()
+        if type(item) is str:
+            if len(item) > maximum or any(0xD800 <= ord(c) <= 0xDFFF for c in item):
+                raise ProtocolFault()
+        elif type(item) is dict:
+            if len(item) > maximum - visits or any(type(k) is not str for k in item):
+                raise ProtocolFault()
+            stack.extend((v, depth + 1) for pair in item.items() for v in pair)
+        elif type(item) is list:
+            if len(item) > maximum - visits:
+                raise ProtocolFault()
+            stack.extend((v, depth + 1) for v in item)
+        elif type(item) in {int, float}:
+            if abs(item) > 9007199254740991 or not math.isfinite(item):
+                raise ProtocolFault()
+        elif item is not None and type(item) is not bool:
+            raise ProtocolFault()
+    output, size = [], 0
+    encoder = json.JSONEncoder(
+        ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False
+    )
+    for text in encoder.iterencode(value):
+        if len(text) > maximum - size:
+            raise ProtocolFault()
+        part = text.encode("utf-8", errors="strict")
+        if len(part) > maximum - size:
+            raise ProtocolFault()
+        size += len(part)
+        output.append(part)
+    return b"".join(output)
+
+
+def query_decode(raw, maximum):
+    if not raw or len(raw) > maximum or raw.startswith(b"\xef\xbb\xbf"):
+        raise ProtocolFault()
+    quoted = escaped = False
+    depth = 0
+    for byte in raw:
+        if quoted:
+            if escaped:
+                escaped = False
+            elif byte == 92:
+                escaped = True
+            elif byte == 34:
+                quoted = False
+        elif byte == 34:
+            quoted = True
+        elif byte in (91, 123):
+            depth += 1
+            if depth > MAX_DEPTH:
+                raise ProtocolFault()
+        elif byte in (93, 125):
+            depth -= 1
+
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            if key in result:
+                raise ProtocolFault()
+            result[key] = value
+        return result
+
+    try:
+        value = json.loads(
+            raw.decode("utf-8", errors="strict"),
+            object_pairs_hook=pairs,
+            parse_constant=lambda _: (_ for _ in ()).throw(ProtocolFault()),
+        )
+        if query_encode(value, maximum) != raw:
+            raise ProtocolFault()
+        return value
+    except (ValueError, UnicodeError, RecursionError) as error:
+        raise ProtocolFault() from error
+
+
+def query_parts(raw, frame):
+    # A Unicode scalar takes <=4 UTF-8 bytes, and JSON escaping <=6 bytes.
+    # Twelve per scalar plus 256 fixed bytes conservatively covers the wrapper.
+    width = (frame - 256) // 12
+    if width < 1:
+        raise ProtocolFault()
+    text = raw.decode("utf-8", errors="strict")
+    return [text[i : i + width] for i in range(0, len(text), width)]
+
+
+def _query(header):
+    # run() established the original owner monitor; _execute() installed the
+    # memory guard from the bounded bootstrap before these imports/body reads.
+    from ontolearn_engine.resources import CONTRACT, safe_error
+    from ontolearn_engine.semantic_execution import SemanticExecutionFault, execute_request
+
+    required = {"capability", "memoryBytes", "frameBytes", "byteLimit", "parts", "bytes", "sha256"}
+    if set(header) != required:
+        raise ProtocolFault()
+    frame, maximum = query_transport_limits(
+        {"maxFrameBytes": header["frameBytes"], "maxWorkerMemoryBytes": header["memoryBytes"]}
+    )
+    if (
+        type(header["byteLimit"]) is not int
+        or header["byteLimit"] != maximum
+        or type(header["parts"]) is not int
+        or not 1 <= header["parts"] <= maximum
+        or type(header["bytes"]) is not int
+        or not 1 <= header["bytes"] <= maximum
+    ):
+        raise ProtocolFault()
+    parts, size = [], 0
+    for index in range(header["parts"]):
+        raw = sys.stdin.buffer.readline(frame + 2)
+        if not raw.endswith(b"\n") or len(raw) > frame + 1:
+            raise ProtocolFault()
+        part = decode_frame(raw[:-1])
+        if (
+            type(part) is not dict
+            or set(part) != {"index", "text"}
+            or type(part["index"]) is not int
+            or part["index"] != index
+            or type(part["text"]) is not str
+            or not part["text"]
+            or len(part["text"]) > (frame - 256) // 12
+        ):
+            raise ProtocolFault()
+        encoded = part["text"].encode("utf-8", errors="strict")
+        if len(encoded) > header["bytes"] - size:
+            raise ProtocolFault()
+        size += len(encoded)
+        parts.append(encoded)
+    if size != header["bytes"] or sys.stdin.buffer.read(1):
+        raise ProtocolFault()
+    raw = b"".join(parts)
+    if hashlib.sha256(raw).hexdigest() != header["sha256"]:
+        raise ProtocolFault()
+    bundle = query_decode(raw, maximum)
+    if (
+        type(bundle) is not dict
+        or bundle.get("capability") != header["capability"]
+        or bundle.get("capability")
+        not in ("query.execute", "reasoning.execute", "validation.execute")
+    ):
+        raise ProtocolFault()
+    scope = bundle.get("input", {}).get("scope")
+    if scope not in ("asserted", "asserted+derived"):
+        raise ProtocolFault()
+    # Only validation (and derived-scope query) may carry a selected reasoning
+    # result; plain asserted query/reasoning bundles never select one.
+    if bundle.get("selected") is not None and scope != "asserted+derived":
+        raise ProtocolFault()
+    if scope == "asserted+derived" and bundle.get("selected") is None:
+        raise ProtocolFault()
+    try:
+        output = execute_request(
+            bundle, error_catalog=CONTRACT.ERROR_CATALOG, error_schema=CONTRACT.DOCUMENT
+        )
+        encoded = query_encode(output, maximum)
+        pieces = query_parts(encoded, frame)
+        for index, text in enumerate(pieces):
+            emit({"type": "query.chunk", "index": index, "text": text})
+        emit(
+            {
+                "type": "query.done",
+                "parts": len(pieces),
+                "bytes": len(encoded),
+                "sha256": hashlib.sha256(encoded).hexdigest(),
+            }
+        )
+    except SemanticExecutionFault as error:
+        emit({"type": "query.error", "error": error.error})
+    except ProtocolFault:
+        emit({"type": "query.error", "error": safe_error("RESOURCE_LIMIT", {"resource": "memory"})})
+    emit({"type": "complete"})
 
 
 def main() -> None:

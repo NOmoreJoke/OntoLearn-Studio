@@ -1,7 +1,151 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { isTaskUpdate, type DesktopBridge } from '@ontolearn/contracts'
+import {
+  agentIpcMethods,
+  isTaskUpdate,
+  mainlineDeliveryEnvelopeSchema,
+  mainlineDeliveryAcceptedSchema,
+  internalError,
+  mainlineNoDeliverySchema,
+  type DesktopBridge,
+  type DesktopIpcChannel,
+  type DesktopIpcMap,
+} from '@ontolearn/contracts'
+
+/** Private receipt confirmation; renderer receives only the named business result. */
+async function receiveMainline<Channel extends DesktopIpcChannel>(
+  channel: Channel,
+  ...args: DesktopIpcMap[Channel]['args']
+): Promise<DesktopIpcMap[Channel]['result']> {
+  const raw: unknown = await ipcRenderer.invoke(channel, ...args)
+  const delivery = mainlineDeliveryEnvelopeSchema.safeParse(raw)
+  if (!delivery.success) {
+    // A denied route can reply before any delivery lease is admitted.
+    const denied = mainlineNoDeliverySchema.safeParse(raw)
+    if (denied.success) return denied.data as DesktopIpcMap[Channel]['result']
+    return { ok: false, error: internalError } as DesktopIpcMap[Channel]['result']
+  }
+  let timer: ReturnType<typeof setTimeout> | undefined
+  try {
+    const accepted: unknown = await Promise.race([
+      ipcRenderer.invoke('project:reply-received', {
+        deliveryVersion: 1,
+        deliveryId: delivery.data.deliveryId,
+      }),
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error('delivery acknowledgment timeout')), 5000)
+      }),
+    ])
+    const parsed = mainlineDeliveryAcceptedSchema.safeParse(accepted)
+    if (!parsed.success || parsed.data.deliveryId !== delivery.data.deliveryId)
+      throw new Error('delivery acknowledgment rejected')
+  } catch {
+    // The payload was actually received. Preserve its known durable outcome.
+    // Main keeps the original unacknowledged lease; no retry/clear is fabricated.
+  } finally {
+    clearTimeout(timer)
+  }
+  return delivery.data.payload as DesktopIpcMap[Channel]['result']
+}
 
 const bridge: DesktopBridge = {
+  selectMappingSource: (args) => receiveMainline('project:mapping-source-select', args),
+  previewMapping: (args) => receiveMainline('project:mapping-preview', args),
+  prepareMappingCommit: (args) => receiveMainline('project:mapping-prepare-commit', args),
+  readMappingDraft: (args) => receiveMainline('project:mapping-draft-read', args),
+  saveMappingDraft: (args) => receiveMainline('project:mapping-draft-save', args),
+  runBehaviorSample: (args) => receiveMainline('project:behavior-run', args),
+  readBehaviorRun: (args) => receiveMainline('project:behavior-read', args),
+  cancelBehaviorRun: (args) => receiveMainline('project:behavior-cancel', args),
+  createScenario: (args) => receiveMainline('project:scenario-create', args),
+  copyScenario: (args) => receiveMainline('project:scenario-copy', args),
+  listScenarios: (args) => receiveMainline('project:scenario-list', args),
+  readScenario: (args) => receiveMainline('project:scenario-read', args),
+  readScenarioRun: (args) => receiveMainline('project:scenario-run-read', args),
+  startScenarioRun: (args) => receiveMainline('project:scenario-run', args),
+  cancelScenarioRun: (args) => receiveMainline('project:scenario-cancel', args),
+  resumeScenarioRun: (args) => receiveMainline('project:scenario-resume', args),
+  compareScenarioRuns: (args) => receiveMainline('project:scenario-compare', args),
+  deleteScenarioRun: (args) => receiveMainline('project:scenario-run-delete', args),
+  restoreScenarioBaseline: (args) => receiveMainline('project:scenario-restore', args),
+  checkProjectPackageExport: (args) =>
+    receiveMainline('project:transfer-package-export-check', args),
+  exportProjectPackage: (args) => receiveMainline('project:transfer-package-export', args),
+  checkProjectPackageImport: (args) =>
+    receiveMainline('project:transfer-package-import-check', args),
+  importProjectPackage: (args) => receiveMainline('project:transfer-package-import', args),
+  prepareProjectHtmlReport: (args) => receiveMainline('project:transfer-report-prepare', args),
+  exportProjectHtmlReport: (args) => receiveMainline('project:transfer-report-export', args),
+  selectTransferFile: (args) => receiveMainline('project:transfer-select', args),
+  listProjectCheckpoints: (args) => receiveMainline('project:checkpoint-list', args),
+  createProjectCheckpoint: (args) => receiveMainline('project:checkpoint-create', args),
+  getPendingProjectRestoreOperations: () => receiveMainline('project:restore-pending'),
+  previewProjectRestore: (args) => receiveMainline('project:restore-preview', args),
+  getProjectRestorePage: (args) => receiveMainline('project:restore-page', args),
+  confirmProjectRestore: (args) => receiveMainline('project:restore-confirm', args),
+  restoreProject: (args) => receiveMainline('project:restore-apply', args),
+  getProjectRestoreOperation: (args) => receiveMainline('project:restore-operation', args),
+  getProjectQualityState: (args) => receiveMainline('project:quality-read', args),
+  prepareProjectQualityCheck: (args) => receiveMainline('project:quality-prepare', args),
+  runProjectQualityCheck: (args) => receiveMainline('project:quality-check', args),
+  getProjectLearningState: (args) => receiveMainline('project:learning-read', args),
+  startLearningAttempt: (args) => receiveMainline('project:learning-attempt-start', args),
+  recordLearningHint: (args) => receiveMainline('project:learning-hint-record', args),
+  recordLearningObservation: (args) => receiveMainline('project:learning-observation-record', args),
+  checkLearningTask: (args) => receiveMainline('project:learning-task-check', args),
+  getPendingProjectManagementOperations: () => receiveMainline('project:management-pending'),
+  getProjectManagementCatalog: (args) => receiveMainline('project:management-catalog', args),
+  getProjectManagementState: () => receiveMainline('project:management-state'),
+  previewProjectManagement: (args) => receiveMainline('project:management-preview', args),
+  confirmProjectManagement: (args) => receiveMainline('project:management-confirm', args),
+  applyProjectManagement: (args) => receiveMainline('project:management-apply', args),
+  getProjectManagementOperation: (args) => receiveMainline('project:management-operation', args),
+  getLibraryLocation: () => ipcRenderer.invoke('library:location'),
+  chooseLibraryLocation: (args) => ipcRenderer.invoke('library:choose', args),
+  reportLibraryWorkspace: (args) => ipcRenderer.invoke('library:workspace', args),
+  switchLibraryLocation: (args) => ipcRenderer.invoke('library:switch', args),
+  getProjectCatalog: (args) => receiveMainline('project:catalog', args),
+  createBlankProject: (args) => receiveMainline('project:create-blank', args),
+  createExampleProject: (args) => receiveMainline('project:create-example', args),
+  saveProjectDraft: (args) => receiveMainline('project:draft-save', args),
+  openProject: (args) => receiveMainline('project:open', args),
+  readProject: (args) => receiveMainline('project:read', args),
+  getOwnershipConflictDetailPage: (args) => receiveMainline('project:ownership-detail', args),
+  exportProjectOntology: () => receiveMainline('project:ontology-export'),
+  checkProjectOntologyImport: (args) => receiveMainline('project:ontology-import-check', args),
+  previewProjectChangeset: (args) => receiveMainline('project:changeset-preview', args),
+  getProjectDiffPage: (args) => receiveMainline('project:changeset-diff-page', args),
+  confirmProjectChangeset: (args) => receiveMainline('project:changeset-confirm', args),
+  commitProjectChangeSet: (args) => receiveMainline('project:changeset-commit', args),
+  getQueryDefinitionBase: () => receiveMainline('query:definition-base'),
+  loadQueryDefinition: (args) => receiveMainline('query:definition-load', args),
+  executeSavedQuery: (args) => receiveMainline('query:execute-saved', args),
+  getQueryResultDescriptor: (args) => receiveMainline('query:result-describe', args),
+  getQueryExecutedTextPage: (args) => receiveMainline('query:result-text-page', args),
+  getQueryRowsPage: (args) => receiveMainline('query:result-rows-page', args),
+  [agentIpcMethods['agent:context']]: (args) => ipcRenderer.invoke('agent:context', args),
+  [agentIpcMethods['agent:set-mode']]: (args) => ipcRenderer.invoke('agent:set-mode', args),
+  [agentIpcMethods['agent:dispatch']]: (args) => ipcRenderer.invoke('agent:dispatch', args),
+  [agentIpcMethods['agent:state']]: (args) => ipcRenderer.invoke('agent:state', args),
+  [agentIpcMethods['agent:cancel']]: (args) => ipcRenderer.invoke('agent:cancel', args),
+  [agentIpcMethods['agent:draft-plan']]: (args) => ipcRenderer.invoke('agent:draft-plan', args),
+  [agentIpcMethods['agent:commit-draft']]: (args) => ipcRenderer.invoke('agent:commit-draft', args),
+  [agentIpcMethods['agent:audit']]: (args) => ipcRenderer.invoke('agent:audit', args),
+  [agentIpcMethods['agent-model:set-enabled']]: (args) =>
+    ipcRenderer.invoke('agent-model:set-enabled', args),
+  [agentIpcMethods['agent-model:remove']]: (args) => ipcRenderer.invoke('agent-model:remove', args),
+  [agentIpcMethods['agent-model:probe']]: (args) => ipcRenderer.invoke('agent-model:probe', args),
+  getModelAccessStatus: (params) => ipcRenderer.invoke('model:status', params),
+  configureModel: (params) => ipcRenderer.invoke('model:configure', params),
+  storeModelCredential: (params) => ipcRenderer.invoke('model:credential', params),
+  setModelPrivacy: (params) => ipcRenderer.invoke('model:privacy', params),
+  selectModelResults: (params) => ipcRenderer.invoke('model:select-results', params),
+  getModelFieldCatalog: (params) => ipcRenderer.invoke('model:field-catalog', params),
+  selectModelFields: (params) => ipcRenderer.invoke('model:select-fields', params),
+  previewModelExplanation: (params) => ipcRenderer.invoke('model:preview', params),
+  confirmModelAuthorization: (params) => ipcRenderer.invoke('model:confirm', params),
+  startModelExplanation: (params) => ipcRenderer.invoke('model:start', params),
+  getModelExplanationOutcome: (params) => ipcRenderer.invoke('model:outcome', params),
+  cancelModelExplanation: (params) => ipcRenderer.invoke('model:cancel', params),
   getEngineHealth: () => ipcRenderer.invoke('engine:health'),
   restoreTasks: () => ipcRenderer.invoke('tasks:restore'),
   getActiveProject: () => ipcRenderer.invoke('project:active'),

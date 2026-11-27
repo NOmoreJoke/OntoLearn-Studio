@@ -71,6 +71,13 @@ def launch(coordinator, job):
     return task, active
 
 
+async def wait_until(predicate, timeout=4.0, label="condition"):
+    deadline = time.monotonic() + timeout
+    while not predicate():
+        assert time.monotonic() < deadline, f"timed out waiting for {label}"
+        await asyncio.sleep(0.01)
+
+
 def assert_no_success(store, job):
     actual = store.get_job(job["projectId"], job["jobId"])
     assert actual["state"] in {"failed", "cancelled"}
@@ -127,13 +134,23 @@ def test_complete_waiting_for_worker_exit_cannot_extend_total(store, monkeypatch
         'print(\'{"type":"ready","rows":[]}\');'
         'print(\'{"type":"complete"}\',flush=True);time.sleep(5)',
     )
-    job = create(store, total_ms=200)
+    job = create(store, total_ms=1500)
     coordinator = runtime.Coordinator(store, test_mode=True, emit=lambda _: None)
+    stages = []
+    real_stage = coordinator._stage
+
+    def record_stage(identity, stage):
+        stages.append(stage)
+        return real_stage(identity, stage)
+
+    coordinator._stage = record_stage
 
     async def run():
         task, active = launch(coordinator, job)
-        await asyncio.wait_for(task, 3)
+        await asyncio.wait_for(task, 5)
+        assert active["process"] is not None
         assert active["process"].returncode is not None
+        assert "reconciling" in stages
 
     asyncio.run(run())
     result = assert_no_success(store, job)
@@ -153,15 +170,538 @@ def test_cancel_while_worker_exit_waits_remains_cancelled(store, monkeypatch):
 
     async def run():
         task, active = launch(coordinator, job)
-        await asyncio.sleep(0.1)
+        await wait_until(
+            lambda: active["process"] is not None and active.get("stage") == "reconciling",
+            timeout=4.0,
+            label="worker exit wait",
+        )
         decision = store.cancel_job(job["projectId"], job["jobId"])
         assert decision["disposition"] == "accepted"
-        await asyncio.wait_for(task, 2)
+        await asyncio.wait_for(task, 4)
         assert active["process"].returncode is not None
         assert decision["state"] == "cancelling"
 
     asyncio.run(run())
     assert assert_no_success(store, job)["state"] == "cancelled"
+
+
+def job_rounds(store, job):
+    run = store._db.execute("SELECT run FROM jobs WHERE id=?", (job["jobId"],)).fetchone()[0]
+    if run is None:
+        return []
+    return [
+        row[0]
+        for row in store._db.execute(
+            "SELECT number FROM rounds WHERE run=? ORDER BY number", (run,)
+        )
+    ]
+
+
+async def park(hook_entered, settled):
+    hook_entered.set()
+    try:
+        await asyncio.Future()
+    finally:
+        settled.set()
+
+
+class GateClock:
+    """A monotonic-clock proxy bound ONLY to the coordinator module under
+    test (monkeypatch of runtime.time): the deadline and controlled() read
+    it, while asyncio, the Store and the real worker keep the real clock.
+    Advancing the offset after the hook is entered makes the ORIGINAL total
+    deadline arrive deterministically without touching any product budget."""
+
+    def __init__(self, real):
+        self._real = real
+        self.offset = 0.0
+
+    def monotonic(self):
+        return self._real.monotonic() + self.offset
+
+    def __getattr__(self, name):
+        return getattr(self._real, name)
+
+
+def real_user_cancel(store, job):
+    decision = store.cancel_job(job["projectId"], job["jobId"])
+    assert decision["disposition"] == "accepted"
+    assert decision["state"] == "cancelling"
+
+
+def test_test_schedule_is_refused_in_production(store, monkeypatch):
+    async def never(*_args):
+        await asyncio.Future()
+
+    with pytest.raises(ValueError):
+        runtime.Coordinator(store, _test_schedule={"after_round_commit": never})
+    with pytest.raises(ValueError):
+        runtime.Coordinator(store, test_mode=True, _test_schedule={"unexpected": never})
+    with pytest.raises(ValueError):
+        runtime.Coordinator(store, test_mode=True, _test_schedule={"after_round_commit": object()})
+    assert runtime.Coordinator(store, test_mode=True, emit=lambda _: None)._test_schedule is None
+    monkeypatch.delenv("ONTOLEARN_TEST_MODE", raising=False)
+    with pytest.raises(ValueError):
+        asyncio.run(runtime.serve(_test_schedule={"before_worker": never}))
+
+
+def test_round_gate_blocks_the_next_round_in_the_same_chunk_until_released(store, monkeypatch):
+    # Controlled-fixture role: this worker is NOT ontolearn_engine.worker; it
+    # exists to make the round messages observable per feed() result so the
+    # gate is provably blocking the next in-chunk message, not merely a later
+    # pipe read. Real-worker park/release is covered separately below.
+    recorded = []
+    real_reader = runtime.JsonlReader
+
+    class RecordingReader(real_reader):
+        def feed(self, chunk):
+            messages = super().feed(chunk)
+            recorded.append(messages)
+            return messages
+
+    monkeypatch.setattr(runtime, "JsonlReader", RecordingReader)
+    command(
+        monkeypatch,
+        "import sys;sys.stdin.readline();sys.stdout.write("
+        '\'{"type":"round","round":1,"state":{"pendingEvents":[],'
+        '"consumedEvents":[],"inputEvents":[]}}\\n\''
+        '\'{"type":"round","round":2,"state":{"pendingEvents":[],'
+        '"consumedEvents":[],"inputEvents":[]}}\\n\''
+        '\'{"type":"complete"}\\n\');sys.stdout.flush()',
+    )
+    job = create(store, "test.rounds", {"maxRounds": 2}, total_ms=5000)
+    holder = {"entered": []}
+
+    async def run():
+        gate = asyncio.Event()
+
+        async def after_round(coordinator, job_view, round_number):
+            # job_view may be a stale DTO: only its identity is used here.
+            holder["entered"].append(round_number)
+            await gate.wait()
+
+        coordinator = runtime.Coordinator(
+            store,
+            test_mode=True,
+            emit=lambda _: None,
+            _test_schedule={"after_round_commit": after_round},
+        )
+        task, _ = launch(coordinator, job)
+        for _ in range(150):
+            if holder["entered"]:
+                break
+            await asyncio.sleep(0.02)
+        assert holder["entered"] == [1]
+        assert job_rounds(store, job) == [1]
+        assert store.get_job(job["projectId"], job["jobId"])["state"] == "running"
+        gate.set()
+        await asyncio.wait_for(task, 3)
+
+    asyncio.run(run())
+    # Round 1 AND round 2 really arrived inside ONE feed() result (extra
+    # trailing messages in that result are fine): the gate held the next
+    # in-chunk message itself, not a later pipe read.
+    assert any(
+        messages[i].get("type") == "round"
+        and messages[i].get("round") == 1
+        and messages[i + 1].get("type") == "round"
+        and messages[i + 1].get("round") == 2
+        for messages in recorded
+        for i in range(len(messages) - 1)
+    )
+    assert store.get_job(job["projectId"], job["jobId"])["state"] == "succeeded"
+    assert job_rounds(store, job) == [1, 2]
+
+
+def test_round_gate_parks_and_releases_the_real_worker(store, monkeypatch):
+    actual_worker(monkeypatch)
+    job = create(store, "test.rounds", {"workMs": 50, "maxRounds": 2}, total_ms=5000)
+    holder = {"entered": []}
+
+    async def run():
+        gate = asyncio.Event()
+
+        async def after_round(coordinator, job_view, round_number):
+            holder["entered"].append(round_number)
+            await gate.wait()
+
+        coordinator = runtime.Coordinator(
+            store,
+            test_mode=True,
+            emit=lambda _: None,
+            _test_schedule={"after_round_commit": after_round},
+        )
+        task, _ = launch(coordinator, job)
+        for _ in range(150):
+            if holder["entered"]:
+                break
+            await asyncio.sleep(0.02)
+        assert holder["entered"] == [1]
+        assert job_rounds(store, job) == [1]
+        gate.set()
+        await asyncio.wait_for(task, 5)
+
+    asyncio.run(run())
+    assert store.get_job(job["projectId"], job["jobId"])["state"] == "succeeded"
+    assert job_rounds(store, job) == [1, 2]
+
+
+def test_after_round_gate_cancel_is_bounded_and_leaves_nothing_behind(store, monkeypatch):
+    actual_worker(monkeypatch)
+    job = create(store, "test.rounds", {"workMs": 50, "maxRounds": 2}, total_ms=5000)
+    hook_entered = asyncio.Event()
+    hook_settled = asyncio.Event()
+
+    async def run():
+        async def after_round(coordinator, job_view, round_number):
+            await park(hook_entered, hook_settled)
+
+        coordinator = runtime.Coordinator(
+            store,
+            test_mode=True,
+            emit=lambda _: None,
+            _test_schedule={"after_round_commit": after_round},
+        )
+        task, active = launch(coordinator, job)
+        await asyncio.wait_for(hook_entered.wait(), 3)
+        assert job_rounds(store, job) == [1]
+        # A REAL user cancellation: controlled() observes the cancelling
+        # state and settles the gated wait through its own cleanup.
+        real_user_cancel(store, job)
+        await asyncio.wait_for(task, 3)
+        assert hook_settled.is_set()
+        assert active["process"].returncode is not None
+        pending = [item for item in asyncio.all_tasks() if item is not asyncio.current_task()]
+        assert pending == []
+
+    asyncio.run(run())
+    assert job_rounds(store, job) == [1]
+    assert assert_no_success(store, job)["state"] == "cancelled"
+
+
+@pytest.mark.parametrize("cancel", [True, False])
+def test_before_worker_gate_cancel_and_timeout(store, monkeypatch, cancel):
+    actual_worker(monkeypatch)
+    job = create(store, "test.rounds", {"workMs": 50, "maxRounds": 2}, total_ms=5000)
+    hook_entered = asyncio.Event()
+    hook_settled = asyncio.Event()
+    clock = GateClock(runtime.time)
+    monkeypatch.setattr(runtime, "time", clock)
+
+    async def run():
+        async def before_worker(coordinator, job_view):
+            await park(hook_entered, hook_settled)
+
+        coordinator = runtime.Coordinator(
+            store,
+            test_mode=True,
+            emit=lambda _: None,
+            _test_schedule={"before_worker": before_worker},
+        )
+        task, active = launch(coordinator, job)
+        await asyncio.wait_for(hook_entered.wait(), 3)
+        if cancel:
+            real_user_cancel(store, job)
+            await asyncio.wait_for(task, 3)
+        else:
+            # Deterministic original-deadline expiry: with the gate entered,
+            # advance ONLY this coordinator's monotonic clock past the real
+            # 5s total; controlled() then raises the production TIMEOUT.
+            clock.offset = 6.0
+            await asyncio.wait_for(task, 5)
+        assert hook_settled.is_set()
+        # The worker was never launched while the gate held.
+        assert active["process"] is None
+        pending = [item for item in asyncio.all_tasks() if item is not asyncio.current_task()]
+        assert pending == []
+
+    asyncio.run(run())
+    result = assert_no_success(store, job)
+    if cancel:
+        assert result["state"] == "cancelled"
+    else:
+        assert result["error"] == runtime.safe_error("TIMEOUT", {"phase": "total"})
+    assert job_rounds(store, job) == []
+
+
+def test_after_round_gate_is_bounded_by_the_original_total_deadline(store, monkeypatch):
+    actual_worker(monkeypatch)
+    job = create(store, "test.rounds", {"workMs": 50, "maxRounds": 2}, total_ms=5000)
+    hook_entered = asyncio.Event()
+    hook_settled = asyncio.Event()
+    clock = GateClock(runtime.time)
+    monkeypatch.setattr(runtime, "time", clock)
+
+    async def run():
+        async def after_round(coordinator, job_view, round_number):
+            await park(hook_entered, hook_settled)
+
+        coordinator = runtime.Coordinator(
+            store,
+            test_mode=True,
+            emit=lambda _: None,
+            _test_schedule={"after_round_commit": after_round},
+        )
+        task, active = launch(coordinator, job)
+        await asyncio.wait_for(hook_entered.wait(), 3)
+        # Real round-1 is committed and read back BEFORE the deadline moves;
+        # then only this coordinator's monotonic clock advances past the real
+        # 5s total, so the production deadline — not a test timeout — fires.
+        assert job_rounds(store, job) == [1]
+        clock.offset = 6.0
+        await asyncio.wait_for(task, 5)
+        assert hook_settled.is_set()
+        assert active["process"].returncode is not None
+        pending = [item for item in asyncio.all_tasks() if item is not asyncio.current_task()]
+        assert pending == []
+
+    asyncio.run(run())
+    result = assert_no_success(store, job)
+    assert result["error"] == runtime.safe_error("TIMEOUT", {"phase": "total"})
+    assert job_rounds(store, job) == [1]
+
+
+def test_real_cancel_after_round1_in_same_chunk_finalizes_cancelled(store, monkeypatch):
+    # Default path, NO _test_schedule injection: the worker really emits
+    # round1 AND round2 in one flushed write (a RecordingReader witness
+    # asserts both messages really arrived in ONE feed() result), the
+    # coordinator commits the real round-1, and a real user cancel
+    # linearizes in the yield after that commit — before the same-chunk
+    # round-2 message is consumed. The accepted cancel must finalize as
+    # cancelled (not misclassify the next normal write as INVALID_STATE
+    # failure), keep the committed history exactly [1], leave the project
+    # revision at its baseline, and let the job stateVersion keep its real
+    # progression.
+    recorded = []
+    real_reader = runtime.JsonlReader
+
+    class RecordingReader(real_reader):
+        def feed(self, chunk):
+            messages = super().feed(chunk)
+            recorded.append(messages)
+            return messages
+
+    monkeypatch.setattr(runtime, "JsonlReader", RecordingReader)
+    command(
+        monkeypatch,
+        "import sys,time;sys.stdin.readline();sys.stdout.write("
+        '\'{"type":"round","round":1,"state":{"pendingEvents":[],'
+        '"consumedEvents":[],"inputEvents":[]}}\\n\''
+        '\'{"type":"round","round":2,"state":{"pendingEvents":[],'
+        '"consumedEvents":[],"inputEvents":[]}}\\n\');sys.stdout.flush();time.sleep(30)',
+    )
+    job = create(store, "test.rounds", {"maxRounds": 2}, total_ms=5000)
+    project = store.public_project("lifecycle-main")
+    revision_before = store.project_get(project)["projectRevision"]
+    coordinator = runtime.Coordinator(store, test_mode=True, emit=lambda _: None)
+    observed = {
+        "runningStateVersion": None,
+        "cancelDecision": None,
+        "cancellingStateVersion": None,
+        "round1": None,
+    }
+
+    async def run():
+        task, active = launch(coordinator, job)
+        guard = None
+        try:
+
+            async def canceller():
+                # sleep(0) spin with an in-budget bound: resumes inside the
+                # coordinator's post-commit yield, so the cancel lands
+                # strictly before round 2 is consumed; the bound turns a
+                # never-started worker into a fixture failure, not a hang.
+                deadline = time.monotonic() + 4
+                while job_rounds(store, job) != [1]:
+                    assert time.monotonic() < deadline, "round 1 never committed"
+                    await asyncio.sleep(0)
+                running = store.get_job(job["projectId"], job["jobId"])
+                assert running["state"] == "running"
+                observed["runningStateVersion"] = running["stateVersion"]
+                observed["round1"] = running["commitProgress"]["committedProgress"]
+                decision = store.cancel_job(job["projectId"], job["jobId"])
+                assert decision["disposition"] == "accepted"
+                assert decision["state"] == "cancelling"
+                observed["cancelDecision"] = decision
+                cancelling = store.get_job(job["projectId"], job["jobId"])
+                assert cancelling["state"] == "cancelling"
+                # The decision snapshot's version is exactly the durable
+                # cancelling readback, and both are strictly past running.
+                assert decision["stateVersion"] == cancelling["stateVersion"]
+                assert cancelling["stateVersion"] > running["stateVersion"]
+                observed["cancellingStateVersion"] = cancelling["stateVersion"]
+
+            guard = asyncio.create_task(canceller())
+            await asyncio.wait_for(task, 5)
+            await asyncio.wait_for(guard, 3)
+            # ALL acceptance assertions run BEFORE the fixture fallback in the
+            # finally: SUT outcome, then the complete persisted-final state,
+            # then the feed witness — the fallback can never stand in for
+            # them.
+            assert observed["cancelDecision"] is not None
+            assert active["process"].returncode is not None
+            pending = [item for item in asyncio.all_tasks() if item is not asyncio.current_task()]
+            assert pending == []
+            final = assert_no_success(store, job)
+            assert final["state"] == "cancelled"
+            assert final["error"] is None
+            assert job_rounds(store, job) == [1]
+            # Three separate persisted boundaries: project revision stays at
+            # its baseline; the committed round history is exactly [1] with
+            # the SAME round-1 progress snapshot the running state held; the
+            # job stateVersion keeps its real progression past both the
+            # running and the durable cancelling versions.
+            assert store.project_get(project)["projectRevision"] == revision_before
+            assert observed["round1"] is not None
+            assert final["commitProgress"]["committedProgress"] == observed["round1"]
+            assert final["stateVersion"] > observed["cancellingStateVersion"]
+            # Feed witness: round1 and round2 really arrived in ONE feed()
+            # result (extra trailing messages fine) — the cancel linearized
+            # inside that same chunk, not across separate reads.
+            assert any(
+                messages[i].get("type") == "round"
+                and messages[i].get("round") == 1
+                and messages[i + 1].get("type") == "round"
+                and messages[i + 1].get("round") == 2
+                for messages in recorded
+                for i in range(len(messages) - 1)
+            )
+        finally:
+            # Fixture fallback ONLY — never counted as SUT success above.
+            # Snapshot the CURRENT owned handle and kill it FIRST (before any
+            # await that could throw and skip the kill); every settlement
+            # step then runs in its own finally so one failure cannot skip
+            # the rest, and any cleanup failure re-raises as a test failure.
+            child = active["process"]
+            if child is not None and child.returncode is None:
+                child.kill()
+            try:
+                if guard is not None and not guard.done():
+                    guard.cancel()
+                    await asyncio.wait_for(asyncio.gather(guard, return_exceptions=True), 3)
+            finally:
+                try:
+                    if not task.done():
+                        task.cancel()
+                    await asyncio.wait_for(asyncio.gather(task, return_exceptions=True), 5)
+                finally:
+                    if child is not None:
+                        await asyncio.wait_for(child.wait(), 3)
+
+    asyncio.run(run())
+
+
+@pytest.mark.parametrize("cancel", [True, False])
+def test_late_cancel_during_failure_cleanup_keeps_original_error(store, monkeypatch, cancel):
+    # The worker commits a real round-1, then emits a real failure frame and
+    # stays alive. The coordinator observes the failure and enters its real
+    # generic cleanup: process.kill() on the OWNED child, then a real
+    # await process.wait(). A test-local pass-through wrapper around that
+    # same child's wait records the cleanup phase and (cancel branch only)
+    # holds the gate until the real user cancel is durably accepted — this
+    # hold is TEST SCHEDULING to fix the interleaving deterministically, not
+    # a claim of OS-natural delay; the real kill call, the real wait call
+    # and the real returncode are all preserved. A cancel arriving at that
+    # point (after the error was observed, during the real cleanup await)
+    # must NOT rewrite the original INTERNAL_ERROR; the no-cancel control
+    # proves the error equality is not incidental.
+    command(
+        monkeypatch,
+        "import sys,time;sys.stdin.readline();sys.stdout.write("
+        '\'{"type":"round","round":1,"state":{"pendingEvents":[],'
+        '"consumedEvents":[],"inputEvents":[]}}\\n\''
+        '\'{"type":"failure"}\\n\');sys.stdout.flush();time.sleep(30)',
+    )
+    job = create(store, "test.rounds", {"maxRounds": 2}, total_ms=5000)
+    coordinator = runtime.Coordinator(store, test_mode=True, emit=lambda _: None)
+    observed = {"cleanupEntered": False, "cancelDecision": None}
+
+    async def run():
+        task, active = launch(coordinator, job)
+        guard = None
+        release_cleanup = asyncio.Event()
+        cleanup_entered = asyncio.Event()
+        # One try/finally covering EVERYTHING after launch (observation,
+        # wrapping, assertions): a launch-observation failure still settles
+        # the launched task in the finally.
+        try:
+            # Wait until the OWNED child exists (in-budget bound; a worker
+            # that never launches is a fixture failure, not a hang), then
+            # wrap ITS wait (pass-through to the real coroutine; only the
+            # gate in front is test scheduling).
+            deadline = time.monotonic() + 4
+            while active["process"] is None:
+                assert time.monotonic() < deadline, "owned worker never launched"
+                await asyncio.sleep(0)
+            child = active["process"]
+            real_wait = child.wait
+
+            async def gated_wait():
+                cleanup_entered.set()
+                observed["cleanupEntered"] = True
+                if cancel:
+                    await release_cleanup.wait()
+                return await real_wait()
+
+            child.wait = gated_wait
+
+            async def late_cancel():
+                await asyncio.wait_for(cleanup_entered.wait(), 3)
+                decision = store.cancel_job(job["projectId"], job["jobId"])
+                assert decision["disposition"] == "accepted"
+                assert decision["state"] == "cancelling"
+                # Read back the durable cancelling state BEFORE releasing the
+                # cleanup gate, and prove the decision snapshot is exactly it.
+                cancelling = store.get_job(job["projectId"], job["jobId"])
+                assert cancelling["state"] == "cancelling"
+                assert decision["stateVersion"] == cancelling["stateVersion"]
+                observed["cancelDecision"] = decision
+                release_cleanup.set()
+
+            guard = asyncio.create_task(late_cancel()) if cancel else None
+            await asyncio.wait_for(task, 5)
+            if guard is not None:
+                await asyncio.wait_for(guard, 3)
+            # ALL acceptance assertions run BEFORE the fixture fallback in the
+            # finally — the fallback can never stand in for them.
+            assert observed["cleanupEntered"] is True
+            if cancel:
+                assert observed["cancelDecision"]["disposition"] == "accepted"
+                assert observed["cancelDecision"]["state"] == "cancelling"
+                assert release_cleanup.is_set()
+            assert child.returncode is not None
+            pending = [item for item in asyncio.all_tasks() if item is not asyncio.current_task()]
+            assert pending == []
+            result = assert_no_success(store, job)
+            assert result["state"] == "failed"
+            assert result["error"] == runtime.safe_error("INTERNAL_ERROR")
+            assert job_rounds(store, job) == [1]
+        finally:
+            # Fixture fallback ONLY — never counted as SUT success above.
+            # Release the gates and snapshot the CURRENT owned handle FIRST
+            # (before any await that could throw and skip the kill); kill the
+            # handle only while alive; every settlement step then runs in its
+            # own finally so one failure cannot skip the rest, and any cleanup
+            # failure re-raises as a test failure.
+            release_cleanup.set()
+            cleanup_entered.set()
+            child = active["process"]
+            if child is not None and child.returncode is None:
+                child.kill()
+            try:
+                if guard is not None and not guard.done():
+                    guard.cancel()
+                    await asyncio.wait_for(asyncio.gather(guard, return_exceptions=True), 3)
+            finally:
+                try:
+                    if not task.done():
+                        task.cancel()
+                    await asyncio.wait_for(asyncio.gather(task, return_exceptions=True), 5)
+                finally:
+                    if child is not None:
+                        await asyncio.wait_for(child.wait(), 3)
+
+    asyncio.run(run())
 
 
 def test_round_after_complete_in_same_chunk_never_commits(store, monkeypatch):
@@ -189,15 +729,21 @@ def test_round_after_complete_in_same_chunk_never_commits(store, monkeypatch):
 def test_unread_worker_stdin_is_bounded_and_cancellable(store, monkeypatch, cancel):
     command(monkeypatch, "import time;time.sleep(5)")
     rows = [{"rowId": uid(), "ordinal": i, "cells": ["a" * 7000]} for i in range(30)]
-    job = create(store, parameters={"rows": rows}, total_ms=5000 if cancel else 200)
+    job = create(store, parameters={"rows": rows}, total_ms=5000 if cancel else 1500)
     coordinator = runtime.Coordinator(store, test_mode=True, emit=lambda _: None)
 
     async def run():
         task, active = launch(coordinator, job)
         if cancel:
-            await asyncio.sleep(0.1)
+            await wait_until(
+                lambda: active["process"] is not None,
+                timeout=4.0,
+                label="unread-stdin worker launch",
+            )
+            await asyncio.sleep(0)
             store.cancel_job(job["projectId"], job["jobId"])
-        await asyncio.wait_for(task, 3)
+        await asyncio.wait_for(task, 5)
+        assert active["process"] is not None
         assert active["process"].returncode is not None
 
     asyncio.run(run())
@@ -390,7 +936,7 @@ def test_actual_memory_worker_exit_precedes_asyncio_returncode_delivery(store, m
 
 def test_busy_worker_still_allows_heartbeat_and_cancel(store, monkeypatch):
     actual_worker(monkeypatch)
-    job = create(store, parameters={"workMs": 1000}, total_ms=5000)
+    job = create(store, parameters={"workMs": 2000}, total_ms=5000)
     coordinator = runtime.Coordinator(
         store, test_mode=True, allowed_projects={job["projectId"]}, emit=lambda _: None
     )
@@ -422,13 +968,17 @@ def test_busy_worker_still_allows_heartbeat_and_cancel(store, monkeypatch):
 
     async def run():
         task, active = launch(coordinator, job)
-        await asyncio.sleep(0.1)
+        await wait_until(
+            lambda: active["process"] is not None and active.get("stage") == "computing",
+            timeout=4.0,
+            label="busy worker computing",
+        )
         nonce = uid()
         assert request("session.ping", {"nonce": nonce})["result"] == {"nonce": nonce}
         decision = request("job.cancel", {"projectId": job["projectId"], "jobId": job["jobId"]})
         assert decision["result"]["disposition"] == "accepted"
         assert decision["result"]["state"] == "cancelling"
-        await asyncio.wait_for(task, 2)
+        await asyncio.wait_for(task, 4)
         assert active["process"].returncode is not None
         assert decision["result"]["state"] == "cancelling"
 

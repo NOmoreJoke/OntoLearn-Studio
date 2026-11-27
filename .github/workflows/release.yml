@@ -1,0 +1,158 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  package-macos:
+    name: Package macOS (arm64 DMG)
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          version: '0.11.12'
+          enable-cache: true
+      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+        with:
+          path: |
+            ~/Library/Caches/electron
+            ~/Library/Caches/electron-builder
+          key: electron-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: electron-${{ runner.os }}-
+      - run: npm ci
+      - run: uv sync --frozen
+      - run: npx --no-install install-electron
+      - run: npm run verify:sources
+      - run: npm run build && npm run engine:build
+      - name: Build macOS DMG (signed when CSC_LINK is configured, otherwise community build)
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -n "${CSC_LINK:-}" ]; then
+            npm run package:release:mac
+          else
+            npx --workspace @ontolearn/desktop electron-builder --mac dmg --arm64 --publish never \
+              -c.forceCodeSigning=false -c.mac.identity=null -c.mac.hardenedRuntime=false -c.mac.notarize=false
+          fi
+      - run: npm run release:hygiene
+      - name: Generate SHA-256 checksum
+        run: |
+          cd release
+          shasum -a 256 *.dmg > macos-arm64.sha256
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: installer-macos-arm64
+          path: |
+            release/*.dmg
+            release/macos-arm64.sha256
+          if-no-files-found: error
+          retention-days: 14
+
+  package-windows:
+    name: Package Windows (x64 NSIS)
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          version: '0.11.12'
+          enable-cache: true
+      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+        with:
+          path: |
+            ~/AppData/Local/electron/Cache
+            ~/AppData/Local/electron-builder/Cache
+          key: electron-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: electron-${{ runner.os }}-
+      - run: npm ci
+      - run: uv sync --frozen
+      - run: npx --no-install install-electron
+      - run: npm run verify:sources
+      - run: npm run build && npm run engine:build
+      - name: Build Windows NSIS installer (signed when WIN_CSC_LINK is configured, otherwise community build)
+        shell: pwsh
+        env:
+          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+        run: |
+          if ($env:WIN_CSC_LINK) {
+            npm run package:release:win
+          } else {
+            npx --workspace @ontolearn/desktop electron-builder --win nsis --x64 --publish never `
+              -c.forceCodeSigning=false -c.win.signExecutable=false
+          }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - run: npm run release:hygiene
+      - name: Generate SHA-256 checksum
+        shell: pwsh
+        run: |
+          Get-ChildItem release\*.exe | Where-Object { $_.Name -notlike '__uninstaller*' } | ForEach-Object {
+            $hash = (Get-FileHash -Algorithm SHA256 $_.FullName).Hash.ToLowerInvariant()
+            "$hash  $($_.Name)"
+          } | Out-File -FilePath release\windows-x64.sha256 -Encoding ascii
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: installer-windows-x64
+          path: |
+            release/*.exe
+            !release/__uninstaller*.exe
+            release/windows-x64.sha256
+          if-no-files-found: error
+          retention-days: 14
+
+  publish-release:
+    name: Publish GitHub Release
+    needs: [package-macos, package-windows]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Download installer artifacts and publish Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          mkdir -p dist-release
+          gh run download "${{ github.run_id }}" --dir dist-release
+          cat dist-release/installer-macos-arm64/*.sha256 dist-release/installer-windows-x64/*.sha256 > dist-release/SHA256SUMS.txt
+          shopt -s nullglob
+          files=(
+            dist-release/installer-macos-arm64/*.dmg
+            dist-release/installer-windows-x64/*.exe
+            dist-release/SHA256SUMS.txt
+          )
+          if [ "${#files[@]}" -lt 3 ]; then
+            echo "Expected at least 3 release assets (.dmg, .exe, SHA256SUMS.txt), got ${#files[@]}" >&2
+            exit 1
+          fi
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            gh release upload "$TAG_NAME" "${files[@]}" --clobber
+          else
+            gh release create "$TAG_NAME" "${files[@]}" \
+              --title "OntoLearn Studio $TAG_NAME" \
+              --generate-notes
+          fi

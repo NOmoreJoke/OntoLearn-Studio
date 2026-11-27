@@ -3,6 +3,7 @@
 Same deliberately small JSON Schema vocabulary as the TS/zod adapter.
 """
 
+import hashlib
 import json
 import math
 import re
@@ -133,7 +134,7 @@ def semantic(v):
     if isinstance(v.get("completed"), (int, float)) and isinstance(v.get("total"), (int, float)):
         if v["completed"] > v["total"]:
             return False
-    if "staleReason" in v:
+    if isinstance(v.get("staleReason"), list):
         reasons = v["staleReason"]
         vector, sets = v["dependencyVector"], v["definitionSetDigests"]
         if "facts:asserted" not in vector or len({r["dependency"] for r in reasons}) != len(
@@ -253,11 +254,995 @@ def validate(name, value):
             and semantic(value)
             and encoded_size(value) <= 262144
         )
+        if valid and (
+            not _changeset_semantics(name, value)
+            or not _query_consumer_semantics(name, value)
+            or not _checkpoint_semantics(name, value)
+            or not _wave4_semantics(name, value)
+        ):
+            return False
         if valid and name in {"params_job.create", "params_job.list"}:
             return semantic({"kind": "request", "method": name[7:], "params": value})
         return valid
     except (KeyError, TypeError, ValueError, OverflowError, RecursionError):
         return False
+
+
+_QUERY_EDGE_SPACE = (
+    "\t\n\x0b\x0c\r\x1c\x1d\x1e\x1f \x85\xa0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006"
+    "\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000\ufeff"
+)
+
+
+def _query_consumer_semantics(name, value):
+    if name in {"request", "response", "envelope", "request3", "response3", "envelope3"}:
+        if value["kind"] == "request" and value["method"].startswith("query."):
+            return _query_consumer_semantics("params_" + value["method"], value["params"])
+        if value["kind"] == "response" and value["ok"] and value["method"].startswith("query."):
+            return _query_consumer_semantics("result_" + value["method"], value["result"])
+        return True
+    if name == "params_query.execution.prepare":
+        return _query_consumer_semantics("query.consumer.draft", value["visibleDraft"])
+    if name in {"result_query.definition.load", "query.consumer.definitionLoad"}:
+        return value["kind"] != "managed" or _query_consumer_semantics(
+            "query.consumer.draft", value["draft"]
+        )
+    if name == "query.consumer.descriptor":
+        for key, maximum in {"name": 128, "description": 4096, "capabilityQuestion": 4096}.items():
+            text = value[key]
+            if (
+                type(text) is not str
+                or any(0xD800 <= ord(c) <= 0xDFFF for c in text)
+                or sum(2 if ord(c) > 0xFFFF else 1 for c in text) > maximum
+            ):
+                return False
+        return bool(value["name"]) and value["name"] == value["name"].strip(_QUERY_EDGE_SPACE)
+    if name != "query.consumer.draft":
+        return True
+    for key, maximum in {
+        "name": 128,
+        "description": 4096,
+        "sparql": 65536,
+        "capabilityQuestion": 4096,
+    }.items():
+        text = value[key]
+        if type(text) is not str or any(0xD800 <= ord(c) <= 0xDFFF for c in text):
+            return False
+        if sum(2 if ord(c) > 0xFFFF else 1 for c in text) > maximum:
+            return False
+    return all(value[key].strip(_QUERY_EDGE_SPACE) for key in ("name", "sparql"))
+
+
+def _changeset_semantics(name, value):
+    if name in {"request3", "response3", "envelope3"}:
+        if value["kind"] == "request" and value["method"] == "changeset.preview":
+            return _changeset_semantics("params_changeset.preview", value["params"])
+        if value["kind"] == "response" and value["ok"] and value["method"].startswith("changeset."):
+            return _changeset_semantics("result_" + value["method"], value["result"])
+        return True
+    if name == "params_changeset.preview":
+        return value["intent"] != "change" or _changeset_semantics("changeSetPlan", value["plan"])
+    if name == "changeSetPlan":
+        return all(
+            _changeset_semantics("changeSetDefinition", item)
+            for item in value.get("definitions", [])
+        )
+    if name in {"changeSetDefinition", "changeSetOntologyDefinition"}:
+        return value["layer"] != "ontology" or _changeset_semantics(
+            "changeSetOntologyValue", value["value"]
+        )
+    if name == "changeSetOntologyValue":
+        return "entityMetadata" not in value or _entity_metadata_semantics(value["entityMetadata"])
+    if name == "changeSetEntityMetadata":
+        return _entity_metadata_semantics(value)
+    if name == "changeSetManifest":
+        parts = value["segments"]
+        if len(parts) != value["segmentCount"]:
+            return False
+        offset = 0
+        for ordinal, part in enumerate(parts):
+            if part["ordinal"] != ordinal or part["byteOffset"] != offset:
+                return False
+            offset += part["rawByteLength"]
+        return offset == value["totalBytes"]
+    if name == "result_changeset.preview":
+        manifest = value["manifest"]
+        return _changeset_semantics("changeSetManifest", manifest) and (
+            manifest["documentKind"] == "undo-impact"
+            if value["status"] == "conflict"
+            else manifest["documentKind"] == "diff"
+            and (
+                value["targetOperationId"] is None
+                if value["intent"] == "change"
+                else value["targetOperationId"] is not None
+            )
+        )
+    if name == "changeSetSegment":
+        encoded = value["dataBase64"]
+        padding = 2 if encoded.endswith("==") else 1 if encoded.endswith("=") else 0
+        return len(encoded) // 4 * 3 - padding == value["rawByteLength"]
+    if name in {"changeSetPage", "result_changeset.diff.page"}:
+        parts = value["segments"]
+        return all(
+            _changeset_semantics("changeSetSegment", part)
+            and (
+                index == 0
+                or part["ordinal"] == parts[index - 1]["ordinal"] + 1
+                and part["byteOffset"]
+                == parts[index - 1]["byteOffset"] + parts[index - 1]["rawByteLength"]
+            )
+            for index, part in enumerate(parts)
+        )
+    return True
+
+
+def _checkpoint_semantics(name, value):
+    if name in {"request3", "response3", "envelope3"}:
+        if value["kind"] == "request" and value["method"].startswith(
+            ("project.checkpoint.", "project.restore.")
+        ):
+            return _checkpoint_semantics("params_" + value["method"], value["params"])
+        if (
+            value["kind"] == "response"
+            and value["ok"]
+            and value["method"].startswith(("project.checkpoint.", "project.restore."))
+        ):
+            return _checkpoint_semantics("result_" + value["method"], value["result"])
+        return True
+    if name in {"restore.manifest", "checkpoint.coverage", "checkpoint.preserved"}:
+        parts = value["segments"] if name == "restore.manifest" else value
+        offset = 0
+        for ordinal, part in enumerate(parts):
+            if part["ordinal"] != ordinal or part["byteOffset"] != offset:
+                return False
+            offset += part["rawByteLength"]
+        return offset == value["totalBytes"] if name == "restore.manifest" else True
+    if name == "restore.segment":
+        encoded = value["dataBase64"]
+        padding = 2 if encoded.endswith("==") else 1 if encoded.endswith("=") else 0
+        return len(encoded) // 4 * 3 - padding == value["rawByteLength"]
+    if name in {"result_project.restore.page", "params_project.restore.page"}:
+        if name.startswith("params_"):
+            return True
+        parts = value["segments"]
+        return all(
+            _checkpoint_semantics("restore.segment", part)
+            and (
+                index == 0
+                or part["ordinal"] == parts[index - 1]["ordinal"] + 1
+                and part["byteOffset"]
+                == parts[index - 1]["byteOffset"] + parts[index - 1]["rawByteLength"]
+            )
+            for index, part in enumerate(parts)
+        )
+    if name == "params_project.restore.confirm":
+        return len(value["readSegmentHashes"]) == len(set(value["readSegmentHashes"]))
+    return True
+
+
+def _entity_metadata_semantics(metadata):
+    for iri, entity in metadata["entities"].items():
+        if not re.match(r"[A-Za-z][A-Za-z0-9+.-]*:", iri) or any(
+            c.isspace() or c in '<>"{}|^`\\' for c in iri
+        ):
+            return False
+        for field in ("labels", "definitions"):
+            pairs = entity[field]
+            if len({tuple(pair) for pair in pairs}) != len(pairs) or any(
+                not text.strip()
+                or len(text) > 16000
+                or re.fullmatch(r"(?:|[a-z]+(?:-[a-z0-9]+)*)", language) is None
+                for text, language in pairs
+            ):
+                return False
+        for field in ("synonyms", "examples"):
+            values = entity[field]
+            if len(set(values)) != len(values) or any(
+                not text.strip() or len(text) > 16000 for text in values
+            ):
+                return False
+    return True
+
+
+def validate_startup_failure(value, payload_byte_length, expected_registry_hash):
+    """Original-byte budget only; attempt/profile/provenance are runtime-owned."""
+    return (
+        type(payload_byte_length) in {int, float}
+        and 0 < payload_byte_length <= ERROR_CATALOG["startup"]["maxPayloadBytes"]
+        and payload_byte_length == int(payload_byte_length)
+        and isinstance(expected_registry_hash, str)
+        and re.fullmatch(r"[0-9a-f]{64}", expected_registry_hash) is not None
+        and validate("startupFailure", value)
+        and value["registryHash"] == expected_registry_hash
+    )
+
+
+def startup_error(code, params=None):
+    """Construct only the canonical finite startup projection, or safe internal error."""
+    from copy import deepcopy
+
+    spec = ERROR_CATALOG["startup"]["codes"].get(code)
+    if spec is not None:
+        candidate = {
+            "code": code,
+            "messageKey": spec["messageKey"],
+            "retryable": spec["retryable"],
+            "params": {} if params is None else deepcopy(params),
+        }
+        if validate("error_startup", candidate):
+            return candidate
+    return startup_error("INTERNAL_ERROR", {})
+
+
+def business3_error(code, params=None):
+    """Normal business3 errors stay in error3; startup-only codes cannot enter it."""
+    from copy import deepcopy
+
+    spec = ERROR_CATALOG["codes"].get(code)
+    if spec is not None:
+        candidate = {
+            "code": code,
+            "messageKey": spec["messageKey"],
+            "retryable": spec["retryable"],
+            "params": {} if params is None else deepcopy(params),
+        }
+        if validate_business3("error", candidate):
+            return candidate
+    return business3_error("INTERNAL_ERROR", {})
+
+
+def _wave4_value_at(value, path):
+    for key in path.split("."):
+        value = value.get(key) if isinstance(value, dict) else None
+    return value
+
+
+def _wave4_payload_keys_safe(payload):
+    return not {"__proto__", "constructor", "prototype"}.intersection(payload)
+
+
+def _wave4_package_manifest(value):
+    files, options = value["files"], value["options"]
+    roles = {entry["role"] for entry in files}
+    transfer = REGISTRY["projectTransfer"]
+    return (
+        len(roles) == len(files)
+        and len({entry["path"] for entry in files}) == len(files)
+        and "definitions" in roles
+        and (value["kind"] != "full" or set(transfer["packageCoreRoles"]) <= roles)
+        and all(
+            role not in roles or options[option] is True
+            for option, role in transfer["packageRoleOptions"].items()
+        )
+    )
+
+
+def _wave4_report(value):
+    attempts = value["learning"]
+    if len({(item["taskId"], item["attemptId"]) for item in attempts}) != len(attempts):
+        return False
+    for attempt in attempts:
+        check = attempt["check"]
+        passed = check["status"] == "passed"
+        independent = (
+            passed
+            and attempt["transferTask"]
+            and attempt["operationCompleted"]
+            and attempt["hint"] == "none"
+            and attempt["agentAssistance"] == "none"
+        )
+        if (passed and not check["evidenceRef"]) or independent != attempt[
+            "independentTransferSuccess"
+        ]:
+            return False
+    revision = value["projectRevision"]
+    return all(
+        result["inputRevision"] <= revision
+        and (result["status"] != "current" or result["inputRevision"] == revision)
+        for field in ("queryResults", "validationResults", "behaviorResults", "scenarioComparisons")
+        for result in value[field]
+    )
+
+
+def _wave4_scenario_config(config):
+    return _wave4_payload_keys_safe(config["parameters"]) and all(
+        _wave4_payload_keys_safe(event["payload"]) for event in config["events"]
+    )
+
+
+def _wave4_scenario_run(run):
+    scope, rounds = run["scope"], run["rounds"]
+    last, offset = run["lastCommittedRound"], run["roundOffset"]
+    evidence = run["evidence"]
+    return (
+        scope["mode"] == "scenario"
+        and scope["scopeId"] == run["identity"]["scenarioId"]
+        and last <= evidence["maxRounds"]
+        and _wave4_payload_keys_safe(evidence["parameters"])
+        and (run["replayAvailable"] == (run["replayUnavailableReason"] is None))
+        and offset + len(rounds) <= last
+        and all(entry["number"] == offset + index for index, entry in enumerate(rounds, 1))
+        and ((run["status"] == "failed") == (run["error"] is not None))
+        and (last == 0 or run["checkpointRef"] is not None)
+        and (
+            not run["resumeAvailable"]
+            or (run["checkpointRef"] is not None and run["status"] in {"cancelled", "failed"})
+        )
+    )
+
+
+def _wave4_semantics(name, value):
+    if name in {"request3", "response3", "envelope3"}:
+        method = value.get("method")
+        if method in REGISTRY["wave4ResponseBindings"]:
+            if value["kind"] == "request":
+                return _wave4_semantics("params_" + method, value["params"])
+            if value["kind"] == "response" and value["ok"]:
+                return _wave4_semantics("result_" + method, value["result"])
+        return True
+
+    if name == "w4.mapping.issue":
+        return (
+            ERROR_CATALOG["wave4"]["mappingIssueMessageKeys"].get(value["code"])
+            == value["messageKey"]
+        )
+    if name == "result_project.mapping.source.select":
+        return (
+            value["sheet"] in value["sheets"]
+            and len(set(value["sheets"])) == len(value["sheets"])
+            and (
+                value["encoding"] is not None and value["sheet"] == "CSV"
+                if value["format"] == "csv"
+                else value["encoding"] is None
+            )
+        )
+    if name == "result_project.mapping.preview":
+        return value["offset"] + len(value["rows"]) <= value["totalRows"] and all(
+            _wave4_semantics("w4.mapping.issue", issue) for issue in value["issues"]
+        )
+
+    if name == "w4.behavior.event":
+        return _wave4_payload_keys_safe(value["payload"])
+    if name.startswith("params_project.behavior."):
+        return value["projectId"] == value["binding"]["projectId"] and all(
+            _wave4_semantics("w4.behavior.event", event) for event in value.get("events", ())
+        )
+    if name == "w4.behavior.result" or name.startswith("result_project.behavior."):
+        freshness, reason = value["freshness"], value["staleReason"]
+        return (
+            value["projectId"] == value["binding"]["projectId"]
+            and (
+                reason is not None
+                if freshness == "stale"
+                else freshness != "current" or reason is None
+            )
+            and all(
+                decision["triggered"] == (decision["reason"] == "triggered")
+                for decision in value["conditions"]
+            )
+        )
+
+    if name == "w4.scenario.event":
+        return _wave4_payload_keys_safe(value["payload"])
+    if name == "w4.scenario.config":
+        return _wave4_scenario_config(value)
+    if name == "params_project.scenario.create":
+        return _wave4_scenario_config(value["configuration"])
+    if name == "params_project.scenario.resume":
+        return value["sourceRunId"] != value["runId"]
+    if name == "params_project.scenario.compare":
+        return len({run["runId"] for run in value["runs"]}) == len(value["runs"])
+    if name == "w4.scenario.run":
+        return _wave4_scenario_run(value)
+    if name.startswith("result_project.scenario."):
+        if "run" in value and not _wave4_scenario_run(value["run"]):
+            return False
+        scenarios = [value["scenario"]] if "scenario" in value else value.get("items", ())
+        return all(
+            scenario["identity"]["projectId"] == value["projectId"]
+            and _wave4_scenario_config(scenario["configuration"])
+            for scenario in scenarios
+        )
+
+    if name == "w4.transfer.manifest":
+        return _wave4_package_manifest(value)
+    if name == "result_project.transfer.package.export.check" or (
+        name == "result_project.transfer.package.import.check" and value["status"] == "compatible"
+    ):
+        manifest, portability = value["manifest"], value["portability"]
+        roles = {entry["role"] for entry in manifest["files"]}
+        return (
+            manifest["kind"] == value.get("kind", value.get("expectedKind"))
+            and ("options" not in value or value["options"] == manifest["options"])
+            and _wave4_package_manifest(manifest)
+            and (not portability["restoreCurrent"] or manifest["kind"] == "full")
+            and (not portability["rerunMapping"] or "raw-source" in roles)
+            and (not portability["replayScenario"] or "history" in roles)
+        )
+    if name == "result_project.transfer.package.import":
+        return value["importedProjectId"] != value["projectId"]
+    if name == "w4.transfer.report":
+        return _wave4_report(value)
+    if name == "result_project.transfer.report.prepare":
+        report = value["report"]
+        return (
+            report["projectId"] == value["projectId"]
+            and report["projectRevision"] == value["baseRevision"]
+            and _wave4_report(report)
+        )
+    return True
+
+
+def _wave4_response_matches(method, params, result):
+    if any(
+        _wave4_value_at(params, source) != _wave4_value_at(result, target)
+        for source, target in REGISTRY["wave4ResponseBindings"][method]
+    ):
+        return False
+    if method == "project.mapping.source.select":
+        return all(
+            key not in params or result[key] == params[key]
+            for key in ("selectionId", "sheet", "encoding")
+        )
+    if method == "project.mapping.preview":
+        page = params.get("page", {"offset": 0, "limit": 100})
+        return result["offset"] == page["offset"] and len(result["rows"]) <= page["limit"]
+    if method == "project.mapping.draft.save":
+        return (
+            result["generation"] == params["expectedGeneration"] + 1
+            and result["draft"] == params["draft"]
+        )
+    if method == "project.scenario.create":
+        return params["configuration"] == result["scenario"]["configuration"]
+    if method == "project.scenario.copy":
+        scenario = result["scenario"]
+        return (
+            scenario["identity"]["scenarioId"] != params["scenarioId"]
+            and scenario["configuration"]["name"] == params["name"]
+        )
+    if method == "project.scenario.list":
+        return len(result["items"]) <= params["limit"]
+    if method == "project.scenario.run.read":
+        return len(result["run"]["rounds"]) <= params["limit"]
+    if method == "project.scenario.compare":
+        picks, runs = params["runs"], result["runs"]
+        return len(runs) == len(picks) and all(
+            run["runId"] == pick["runId"]
+            and run["identity"]["scenarioId"] == pick["scenarioId"]
+            and run["identity"]["projectId"] == params["projectId"]
+            and ((run["lastCommittedRound"] == 0) == (run["finalMetrics"] is None))
+            and len(run["metrics"]) <= params["limit"]
+            and all(
+                metric["round"] == params["roundOffset"] + index
+                and metric["round"] <= run["lastCommittedRound"]
+                for index, metric in enumerate(run["metrics"], 1)
+            )
+            for run, pick in zip(runs, picks, strict=True)
+        )
+    return True
+
+
+def validate_business3(name, value):
+    """Strict explicit profile validation, not runtime/session or Store readiness."""
+    profiles = {
+        "request": "request3",
+        "response": "response3",
+        "notification": "notification3",
+        "envelope": "envelope3",
+        "error": "error3",
+        "bootstrapError": "error_bootstrap3",
+        "project": "project3",
+        "result_project.get": "result_project.get3",
+        "result_hello": "result_hello3",
+    }
+    return validate(profiles.get(name, name), value)
+
+
+def ownership_detail_matches(params, value):
+    import base64
+    import binascii
+    import hashlib
+
+    if not (
+        validate("params_project.ownership.detail", params)
+        and validate("result_project.ownership.detail", value)
+    ):
+        return False
+    manifest, start, segments = value["manifest"], params["startOrdinal"], value["segments"]
+    count = (manifest["totalBytes"] + 32767) // 32768
+    end = start + len(segments)
+    if (
+        value["projectId"] != params["projectId"]
+        or value["detailRef"] != params["detailRef"]
+        or value["startOrdinal"] != start
+        or count != manifest["segmentCount"]
+        or len(segments) > params["pageSize"]
+        or not start < end <= count
+        or (
+            params["documentHash"] is not None
+            and params["documentHash"] != manifest["documentHash"]
+        )
+        or value["nextOrdinal"] != (None if end == count else end)
+        or value["complete"] != (end == count)
+    ):
+        return False
+    for ordinal, segment in enumerate(segments, start):
+        length = min(32768, manifest["totalBytes"] - ordinal * 32768)
+        if (
+            segment["ordinal"] != ordinal
+            or segment["byteOffset"] != ordinal * 32768
+            or segment["rawByteLength"] != length
+        ):
+            return False
+        try:
+            raw = base64.b64decode(segment["dataBase64"], validate=True)
+        except (ValueError, binascii.Error):
+            return False
+        if len(raw) != length or hashlib.sha256(raw).hexdigest() != segment["sha256"]:
+            return False
+    return True
+
+
+def matches_business3_response(request, response, expected_registry_hash):
+    """Pending-request binding only; actual ready gates remain runtime-owned."""
+    from copy import deepcopy
+
+    if not (
+        validate("hash", expected_registry_hash)
+        and validate_business3("request", request)
+        and validate_business3("response", response)
+    ):
+        return False
+    if any(request[k] != response[k] for k in ("id", "method")):
+        return False
+    method = request["method"]
+    if method in REGISTRY["wave4ResponseBindings"]:
+        return request["engineSessionId"] == response["engineSessionId"] and (
+            not response["ok"]
+            or _wave4_response_matches(method, request["params"], response["result"])
+        )
+    if request["method"] in {"project.ontology.export", "project.ontology.import.check"}:
+        return request["engineSessionId"] == response["engineSessionId"]
+    if request["method"] == "project.agent.before_commit":
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        params, result = request["params"], response["result"]
+        return (
+            result["projectId"] == params["projectId"]
+            and result["operationId"] == params["operationId"]
+        )
+    if request["method"] == "project.ownership.detail":
+        return request["engineSessionId"] == response["engineSessionId"] and (
+            not response["ok"] or ownership_detail_matches(request["params"], response["result"])
+        )
+    if request["method"] == "project.draft.save":
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        import hashlib
+
+        p, value = request["params"], response["result"]
+        return (
+            value["projectId"] == p["projectId"]
+            and value["operationId"] == p["operationId"]
+            and value["editor"] == p["editor"]
+            and value["generation"] == p["expectedGeneration"] + 1
+            and value["boundDomainRevision"] == p["boundDomainRevision"]
+            and value["contentHash"] == hashlib.sha256(p["contentJson"].encode()).hexdigest()
+        )
+    if request["method"] in {
+        "project.catalog",
+        "project.create",
+        "project.example.create",
+        "project.open",
+        "project.read",
+    }:
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        method, p, value = request["method"], request["params"], response["result"]
+        if method == "project.catalog":
+            end = value["offset"] + len(value["items"])
+            return (
+                len(value["items"]) <= p["pageSize"]
+                and end <= value["total"]
+                and (
+                    end == value["total"]
+                    if value["nextCursor"] is None
+                    else bool(value["items"]) and end < value["total"]
+                )
+            )
+        if method in {"project.create", "project.example.create"}:
+            import hashlib
+
+            request_hash = hashlib.sha256(
+                json.dumps(p, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
+            ).hexdigest()
+            receipt = value["receipt"]
+            return (
+                value["operationId"] == p["operationId"] == receipt["operationId"]
+                and value["projectId"] == receipt["projectId"]
+                and value["requestHash"] == receipt["requestHash"] == request_hash
+            )
+        if value["projectId"] != p["projectId"]:
+            return False
+        if method == "project.open":
+            return True
+        workspace, domain = value["workspace"], value["domain"]
+        draft = workspace["draft"]
+        return (
+            workspace["projectId"] == p["projectId"]
+            and workspace["inputSnapshotId"] == value["inputSnapshotId"]
+            and domain["projectRevision"] == workspace["domainRevision"]
+            and draft["editor"] == p["editor"]
+            and (
+                draft["state"] == "missing"
+                or (
+                    draft["present"] is True
+                    and type(draft["contentJson"]) is str
+                    and type(draft["contentHash"]) is str
+                    if draft["state"] == "present"
+                    else draft["present"] is False
+                    and draft["contentJson"] is None
+                    and draft["contentHash"] is None
+                )
+            )
+        )
+    if request["method"].startswith(("project.checkpoint.", "project.restore.")):
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        method, p, value = request["method"], request["params"], response["result"]
+        if (
+            value["state"] != "not-found"
+            and (value["result"] is None or value["result"]["projectId"] != p["projectId"])
+            if method == "project.restore.operation.get"
+            else value["projectId"] != p["projectId"]
+        ):
+            return False
+        if method == "project.checkpoint.list":
+            items = value["items"]
+            end = value["offset"] + len(items)
+            current = [item for item in items if item["isCurrent"]]
+            return (
+                len(items) <= p["pageSize"]
+                and end <= value["total"]
+                and (
+                    end == value["total"]
+                    if value["nextCursor"] is None
+                    else bool(items) and end < value["total"]
+                )
+                and len({item["checkpointRef"] for item in items}) == len(items)
+                and len(current) <= 1
+            )
+        if method == "project.checkpoint.create":
+            return value["operationId"] == p["operationId"] and value["reason"] == "manual"
+        if method == "project.restore.preview":
+            return (
+                value["targetCheckpointRef"] == p["targetCheckpointRef"]
+                and value["currentCheckpointRef"] == p["expectedCheckpointRef"]
+                and value["documentHash"] == value["manifest"]["documentHash"]
+            )
+        if method == "project.restore.page":
+            return value["previewRef"] == p["previewRef"]
+        if method == "project.restore.confirm":
+            return (
+                value["previewRef"] == p["previewRef"]
+                and value["documentHash"] == p["documentHash"]
+            )
+        if method == "project.restore.apply":
+            return value["operationId"] == p["operationId"]
+        if method != "project.restore.operation.get":
+            return False
+        if value["state"] == "not-found":
+            return value["result"] is None
+        return (
+            value["result"] is not None
+            and value["result"]["operationId"] == p["operationId"]
+            and value["result"]["requestHash"] == p["requestHash"]
+        )
+    if request["method"].startswith("project.learning."):
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        method, p, value = request["method"], request["params"], response["result"]
+        if value["projectId"] != p["projectId"]:
+            return False
+        if method == "project.learning.read":
+            return True
+        if value["operationId"] != p["operationId"] or value["taskId"] != p["taskId"]:
+            return False
+        if method == "project.learning.hint.record":
+            return value["level"] == p["level"]
+        if method == "project.learning.observation.record":
+            return value["observation"] == p["observation"]
+        return method in {"project.learning.attempt.start", "project.learning.task.check"}
+    if request["method"].startswith("project.quality."):
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        p, value = request["params"], response["result"]
+        if value["projectId"] != p["projectId"]:
+            return False
+        if request["method"] == "project.quality.read":
+            return True
+        return value["operationId"] == p["operationId"]
+    if request["method"].startswith("changeset."):
+        if request["engineSessionId"] != response["engineSessionId"]:
+            return False
+        if not response["ok"]:
+            return True
+        p, data = request["params"], response["result"]
+        if p["projectId"] != data["projectId"]:
+            return False
+        if request["method"] == "changeset.preview":
+            return p["baseRevision"] == data["baseRevision"] and (
+                data["status"] == "ready"
+                and data["intent"] == "change"
+                and data["targetOperationId"] is None
+                if p["intent"] == "change"
+                else data["targetOperationId"] == p["targetOperationId"]
+                and (data["status"] == "conflict" or data["intent"] == "undo")
+            )
+        if p["previewHash"] != data["previewHash"]:
+            return False
+        if request["method"] == "changeset.diff.page":
+            return (
+                p["documentKind"] == data["documentKind"] and len(data["segments"]) <= p["pageSize"]
+            )
+        return request["method"] == "changeset.confirm"
+    if request["method"] == "hello" and response["ok"]:
+        result = response["result"]
+        if (
+            3 not in request["params"]["supportedVersions"]
+            or result["registryHash"] != expected_registry_hash
+            or any(
+                c not in REGISTRY["foundationProfiles"]["business3"]["methods"]
+                for c in result["capabilities"]
+            )
+        ):
+            return False
+        # Strict3-only advertised methods must not be checked against legacy2.
+        return True
+    # Validate v3 first; projecting only known literals reuses the existing
+    # strict resource/operation/page bindings without any runtime downgrade.
+    q, r = deepcopy(request), deepcopy(response)
+    q["protocolVersion"] = r["protocolVersion"] = 2
+    if q["method"] == "hello":
+        q["params"]["supportedVersions"] = [2]
+        if r["ok"]:
+            r["result"]["selectedVersion"] = 2
+    if q["method"] == "project.get" and r["ok"]:
+        r["result"]["formatVersion"] = 2
+    if not r["ok"] and r["error"]["code"] == "VERSION_INCOMPATIBLE":
+        r["error"]["params"] = {"supportedVersions": [2]}
+    return matches_response(q, r)
+
+
+def business3_hello_outcome(request, response, expected_registry_hash):
+    if not matches_business3_response(request, response, expected_registry_hash):
+        return "invalid-close"
+    if request["method"] != "hello":
+        return "invalid-close"
+    if response["ok"]:
+        return "success"
+    if response["error"]["code"] == "VERSION_INCOMPATIBLE":
+        return "incompatible-close"
+    return "rejected-close"
+
+
+def accepts_business3_job_event(value, binding):
+    if not validate_business3("notification", value):
+        return False
+    return accepts_job_event({**value, "protocolVersion": 2}, binding)
+
+
+def source_table_material(table, options, implementation, expected_source_hash, max_encoded_bytes):
+    """Owner-internal bounded data-only capture, not a host-object sandbox."""
+    try:
+        return _capture_source_table(
+            table, options, implementation, expected_source_hash, max_encoded_bytes
+        )
+    except Exception:
+        raise ValueError("INVALID_REQUEST") from None
+
+
+def _capture_source_table(table, options, implementation, expected_source_hash, max_encoded_bytes):
+    def invalid():
+        raise ValueError("INVALID_REQUEST")
+
+    if (
+        type(max_encoded_bytes) not in {int, float}
+        or not 1 <= max_encoded_bytes <= 2**53 - 1
+        or max_encoded_bytes != int(max_encoded_bytes)
+        or type(expected_source_hash) is not str
+        or not validate("hash", expected_source_hash)
+    ):
+        invalid()
+    max_encoded_bytes = int(max_encoded_bytes)
+
+    def record(value, names):
+        if type(value) is not dict or len(value) != len(names):
+            invalid()
+        for key in value:
+            if type(key) is not str or key not in names:
+                invalid()
+        return {key: dict.__getitem__(value, key) for key in names}
+
+    def array(value, maximum):
+        if type(value) is not list or len(value) > min(maximum, max_encoded_bytes):
+            invalid()
+        return value
+
+    t = record(table, ("source_hash", "sheet", "fields", "rows"))
+    o = record(options, ("format", "encoding", "sheet"))
+    impl = record(
+        implementation, ("executionSemanticsVersion", "engineVersion", "dependencyLockHash")
+    )
+    if (
+        type(t["source_hash"]) is not str
+        or t["source_hash"] != expected_source_hash
+        or type(t["sheet"]) is not str
+        or type(o["format"]) is not str
+        or (o["encoding"] is not None and type(o["encoding"]) is not str)
+        or (o["sheet"] is not None and type(o["sheet"]) is not str)
+        or any(type(value) is not str for value in impl.values())
+        or not validate("implementation", impl)
+    ):
+        invalid()
+    if o["format"] == "csv":
+        if (
+            o["encoding"] not in {"utf-8", "utf-8-sig", "gb18030", "big5", "utf-16"}
+            or o["sheet"] is not None
+            or t["sheet"] != "CSV"
+        ):
+            invalid()
+    elif (
+        o["format"] != "xlsx"
+        or o["encoding"] is not None
+        or not t["sheet"]
+        or o["sheet"] != t["sheet"]
+    ):
+        invalid()
+    fields, rows = array(t["fields"], 256), array(t["rows"], 50000)
+    if not fields:
+        invalid()
+    chunks = []
+    total = 0
+
+    def reserve(size):
+        nonlocal total
+        if size > max_encoded_bytes - total:
+            invalid()
+        total += size
+
+    def token(text):
+        reserve(len(text))
+        chunks.append(text.encode("ascii"))
+
+    def string(value, maximum=None, field=False, no_nul=False):
+        if type(value) is not str:
+            invalid()
+        size = 2
+        if size > max_encoded_bytes - total:
+            invalid()
+        for count, char in enumerate(value, 1):
+            cp = ord(char)
+            if 0xD800 <= cp <= 0xDFFF or (no_nul and cp == 0):
+                invalid()
+            if maximum is not None and count > maximum:
+                invalid()
+            size += (
+                2
+                if char in '\\"\b\f\n\r\t'
+                else 6
+                if cp < 32
+                else 1
+                if cp < 128
+                else 2
+                if cp < 2048
+                else 3
+                if cp < 65536
+                else 4
+            )
+            if size > max_encoded_bytes - total:
+                invalid()
+        if field and (not value or value.isspace()):
+            invalid()
+        reserve(size)
+        # Only the captured immutable primitive reaches json.dumps. Charge first;
+        # never deepcopy/stringify caller objects or return a partial material.
+        encoded = json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        if len(encoded) != size:
+            invalid()
+        chunks.append(encoded)
+
+    token("[")
+    string("ontolearn.source-table")
+    token(",1,")
+    string(t["source_hash"])
+    token(",[")
+    string(o["format"])
+    token(",")
+    token("null") if o["encoding"] is None else string(o["encoding"])
+    token(",")
+    token("null") if o["sheet"] is None else string(o["sheet"])
+    token("],[")
+    for i, key in enumerate(("executionSemanticsVersion", "engineVersion", "dependencyLockHash")):
+        if i:
+            token(",")
+        string(impl[key])
+    token("],")
+    string(t["sheet"])
+    token(",[")
+    seen = set()
+    for i in range(len(fields)):
+        value = list.__getitem__(fields, i)
+        if i:
+            token(",")
+        string(value, 32768, True, True)
+        if value in seen:
+            invalid()
+        seen.add(value)
+    token("],[")
+    previous = 1
+    kinds = {"string", "empty", "boolean", "datetime", "date", "number"}
+    for i in range(len(rows)):
+        row = record(list.__getitem__(rows, i), ("number", "cells"))
+        number = row["number"]
+        if (
+            type(number) not in {int, float}
+            or not 2 <= number <= 50001
+            or number != int(number)
+            or number <= previous
+        ):
+            invalid()
+        previous = number
+        cells = array(row["cells"], 256)
+        if len(cells) != len(fields):
+            invalid()
+        if i:
+            token(",")
+        token(f"[{int(number)},[")
+        for j in range(len(cells)):
+            cell = record(list.__getitem__(cells, j), ("text", "kind"))
+            text, kind = cell["text"], cell["kind"]
+            if (
+                type(text) is not str
+                or type(kind) is not str
+                or kind not in kinds
+                or (o["format"] == "csv" and kind != "string")
+                or (kind == "empty" and text != "")
+                or (kind == "boolean" and text not in ("true", "false"))
+            ):
+                invalid()
+            if j:
+                token(",")
+            token("[")
+            string(text, 32768, False, True)
+            token(",")
+            string(kind)
+            token("]")
+        token("]]")
+    token("]]")
+    output = b"".join(chunks)
+    if len(output) != total:
+        invalid()
+    return output
+
+
+def source_table_digest(table, options, implementation, expected_source_hash, max_encoded_bytes):
+    material = source_table_material(
+        table, options, implementation, expected_source_hash, max_encoded_bytes
+    )
+    return {"sha256": hashlib.sha256(material).hexdigest(), "encodedBytes": len(material)}
 
 
 def accepts_job_event(value, binding):
@@ -366,6 +1351,41 @@ def derive_dependencies(capability, definition_id, scope, definitions):
     return {"keys": sorted(selected), "sets": sets}
 
 
+def matches_ordinary_response(request, response, binding=None):
+    """Private association requires the original issued choice/verified lease binding."""
+    if not validate("request", request) or not validate("response", response):
+        return False
+    if request["method"] != "ordinary.library" or any(
+        request[k] != response[k] for k in ("id", "method", "engineSessionId")
+    ):
+        return False
+    if not response["ok"]:
+        return True
+    p, data = request["params"], response["result"]
+    if any(p[k] != data[k] for k in ("op", "ownerId")):
+        return False
+    if p["op"] == "choices":
+        rows = data["choices"]
+        return (
+            p["menuSeq"] == data["menuSeq"]
+            and len({r["choiceRef"] for r in rows}) == len(rows)
+            and len({r["projectId"] for r in rows}) == len(rows)
+        )
+    if any(p[k] != data[k] for k in ("actionId", "actionSeq")):
+        return False
+    if p["op"] == "release":
+        return True
+    if p["op"] == "commit" and p["leaseRef"] != data["leaseRef"]:
+        return False
+    if not isinstance(binding, dict) or binding.get("projectId") != data["project"]["projectId"]:
+        return False
+    if "project" in binding and not validate("result_project.get", binding["project"]):
+        return False
+    if p["op"] == "commit" and "project" not in binding:
+        return False
+    return "project" not in binding or binding["project"] == data["project"]
+
+
 def matches_response(request, response):
     if not validate("request", request) or not validate("response", response):
         return False
@@ -373,13 +1393,18 @@ def matches_response(request, response):
         return False
     if request["method"] != "hello" and request["engineSessionId"] != response["engineSessionId"]:
         return False
+    if request["method"] == "ordinary.library":
+        return matches_ordinary_response(request, response)
+    if request["method"].startswith("query."):
+        return matches_query_consumer_response(request, response)
     if not response["ok"]:
         return True
     p, data = request["params"], response["result"]
     method = request["method"]
     if method == "hello":
         return 2 in p["supportedVersions"] and all(
-            c in REGISTRY["v2Runtime"] for c in data["capabilities"]
+            c in REGISTRY["v2Runtime"] or c == REGISTRY["ordinaryLibrary"]["method"]
+            for c in data["capabilities"]
         )
     if data is None:
         return True
@@ -504,3 +1529,115 @@ def validation_projection_matches_resources(projection, resources):
         ):
             return False
     return True
+
+
+def matches_query_consumer_response(request, response, expected=None):
+    """Authenticate successful query DTOs; correct error envelopes still match."""
+    if not validate("request", request) or not validate("response", response):
+        return False
+    if any(request[k] != response[k] for k in ("id", "method", "engineSessionId")):
+        return False
+    if not response["ok"]:
+        return True
+    method, p, v = request["method"], request["params"], response["result"]
+    if method == "query.definition.load":
+        valid = (
+            v["projectId"] == p["projectId"]
+            and v["definitionId"] == p["definitionId"]
+            and (
+                p["selection"]["kind"] != "historical"
+                or v["inputSnapshotId"] == p["selection"]["snapshotId"]
+            )
+        )
+        return valid and (expected is None or all(v.get(k) == x for k, x in expected.items()))
+    if method == "query.execution.prepare":
+        input_ = v["input"]
+        valid = (
+            v["projectId"] == p["projectId"]
+            and v["operationId"] == p["operationId"]
+            and v["definitionBinding"] == p["definitionBinding"]
+            and input_["definitionId"] == p["definitionBinding"]["definitionId"]
+            and input_["scope"] == p["visibleDraft"]["scope"]
+            and len(input_["derivedResultIds"])
+            == (1 if input_["scope"] == "asserted+derived" else 0)
+            and input_["preparedPlanRef"] is None
+            and (
+                p["selection"]["kind"] != "historical"
+                or input_["inputSnapshotId"] == p["selection"]["snapshotId"]
+            )
+        )
+        return valid and (expected is None or all(v.get(k) == x for k, x in expected.items()))
+    if method == "query.result.describe":
+        identity, metadata = v["identity"], v["metadata"]
+        if (
+            identity["projectId"] != p["projectId"]
+            or identity["resultId"] != p["resultId"]
+            or metadata["kind"] != "query"
+            or any(
+                identity[k] != metadata[k]
+                for k in (
+                    "projectId",
+                    "resultId",
+                    "jobId",
+                    "inputSnapshotId",
+                    "definitionId",
+                    "parametersHash",
+                    "scope",
+                    "implementation",
+                    "inputProjectRevision",
+                )
+            )
+        ):
+            return False
+        text, query = v["executedText"], v["query"]
+        if not (
+            text["unicodeScalars"] <= text["utf8Bytes"] <= 4 * text["unicodeScalars"]
+            and text["unicodeScalars"] <= text["utf16Units"] <= 2 * text["unicodeScalars"]
+        ):
+            return False
+        if query["kind"] == "SELECT":
+            columns = query["columns"]
+            if any(c["index"] != i for i, c in enumerate(columns)) or len(
+                {c["name"] for c in columns}
+            ) != len(columns):
+                return False
+        return expected is None or all(v.get(k) == x for k, x in expected.items())
+    if method in {"query.result.textPage", "query.result.rowsPage"}:
+        if p["binding"] != v["identity"]:
+            return False
+        if method.endswith("textPage"):
+            length = len(v["text"].encode("utf-8"))
+            if v["utf8Length"] != length or length > p["maxUtf8Bytes"]:
+                return False
+            if expected is not None:
+                end = v["startUtf8Byte"] + length
+                if (
+                    ("nextUtf8Byte" in expected and v["startUtf8Byte"] != expected["nextUtf8Byte"])
+                    or end > expected["executedText"]["utf8Bytes"]
+                    or (v["nextCursor"] is None and end != expected["executedText"]["utf8Bytes"])
+                ):
+                    return False
+        else:
+            rows = v["rows"]
+            if len(rows) > p["pageSize"] or any(
+                b["index"] != a["index"] + 1 for a, b in zip(rows, rows[1:], strict=False)
+            ):
+                return False
+            if expected is not None:
+                query = expected["query"]
+                start = expected.get(
+                    "nextIndex", rows[0]["index"] if rows else query.get("rowCount", 0)
+                )
+                if query["kind"] != "SELECT":
+                    return False
+                if (
+                    any(
+                        row["index"] != start + i or len(row["cells"]) != len(query["columns"])
+                        for i, row in enumerate(rows)
+                    )
+                    or start + len(rows) > query["rowCount"]
+                    or (v["nextCursor"] is None and start + len(rows) != query["rowCount"])
+                ):
+                    return False
+        return encoded_size(v) <= 131072
+    return False

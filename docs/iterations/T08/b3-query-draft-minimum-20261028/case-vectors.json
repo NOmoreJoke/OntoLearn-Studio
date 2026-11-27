@@ -1,0 +1,621 @@
+{
+  "kind": "proposed_acceptance_vectors_not_test_results",
+  "version": 1,
+  "status": "PREPARED_NOT_EXECUTED",
+  "purpose": "new private query-draft proposal boundary only;not provider/Agent/FR400 proof",
+  "messageConstruction": "For literal cases, set existing AssistantMessage role=assistant, content=JSON.stringify(modelContent), reasoning_content=synthetic-plan. No real provider response is claimed. Replacement cases copy QD01 and replace exactly the named content field with repeat repeated count times.",
+  "cases": [
+    {
+      "id": "QD01",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expected": {
+        "kind": "query-draft-proposal",
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "draft": {
+          "name": "\u8bbe\u5907\ud83d\ude00",
+          "description": "\u67e5\u770b\u8bbe\u5907001",
+          "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+          "scope": "asserted",
+          "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f",
+          "source": "model"
+        },
+        "requiresHumanReview": true
+      },
+      "assertions": [
+        "sparql ends with exact LF",
+        "001 and valid emoji preserved",
+        "no job/result/passed/confirmation fields"
+      ]
+    },
+    {
+      "id": "QD02",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted+derived"
+      },
+      "expected": {
+        "kind": "query-draft-proposal",
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "draft": {
+          "name": "\u8bbe\u5907\ud83d\ude00",
+          "description": "\u67e5\u770b\u8bbe\u5907001",
+          "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+          "scope": "asserted+derived",
+          "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f",
+          "source": "model"
+        },
+        "requiresHumanReview": true
+      },
+      "assertions": ["scope is explicit host value;not a runtime-support claim"]
+    },
+    {
+      "id": "QD03",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f",
+        "scope": "asserted+derived",
+        "projectId": "p2",
+        "execute": true
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expectedError": "INVALID_JSON"
+    },
+    {
+      "id": "QD04",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expectedError": "INVALID_JSON",
+      "assertions": ["do not infer sparql from description/detail"]
+    },
+    {
+      "id": "QD05",
+      "modelContent": {
+        "kind": "evidence",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f",
+        "resultId": "invented"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expectedError": "INVALID_JSON"
+    },
+    {
+      "id": "QD06",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        }
+      },
+      "expectedError": "INVALID_PROTOCOL",
+      "assertions": ["no default queryScope"]
+    },
+    {
+      "id": "QD07",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT * WHERE { SERVICE <https://invalid.example/sparql> { ?s ?p ?o } }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expected": {
+        "kind": "query-draft-proposal",
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "draft": {
+          "name": "\u8bbe\u5907\ud83d\ude00",
+          "description": "\u67e5\u770b\u8bbe\u5907001",
+          "sparql": "SELECT * WHERE { SERVICE <https://invalid.example/sparql> { ?s ?p ?o } }\n",
+          "scope": "asserted",
+          "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f",
+          "source": "model"
+        },
+        "requiresHumanReview": true
+      },
+      "assertions": [
+        "untrusted draft text only;no execution or safe-query claim;real I05 gate still required"
+      ]
+    },
+    {
+      "id": "QD08",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expected": {
+        "kind": "query-draft-proposal",
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "draft": {
+          "name": "\u8bbe\u5907\ud83d\ude00",
+          "description": "\u67e5\u770b\u8bbe\u5907001",
+          "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+          "scope": "asserted",
+          "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f",
+          "source": "model"
+        },
+        "requiresHumanReview": true
+      },
+      "assertions": [
+        "mutating returned context.selectedObjectIds or draft does not mutate host/model input",
+        "mutating host/model input after call does not mutate returned proposal"
+      ]
+    },
+    {
+      "id": "QD09",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\ud800",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expectedError": "INVALID_JSON",
+      "assertions": ["isolated surrogate rejected;no replacement-character success"]
+    },
+    {
+      "id": "QD10",
+      "base": "QD01",
+      "literalFieldReplacement": {
+        "name": "name",
+        "unit": "UTF-16 code units",
+        "repeat": "a",
+        "count": 129
+      },
+      "expectedError": "INVALID_JSON"
+    },
+    {
+      "id": "QD11",
+      "base": "QD01",
+      "literalFieldReplacement": {
+        "name": "sparql",
+        "unit": "UTF-16 code units",
+        "repeat": "x",
+        "count": 65537
+      },
+      "expectedError": "INVALID_JSON"
+    },
+    {
+      "id": "QD12",
+      "base": "QD01",
+      "literalFieldReplacement": {
+        "name": "description",
+        "unit": "UTF-16 code units",
+        "repeat": "d",
+        "count": 4097
+      },
+      "expectedError": "INVALID_JSON"
+    },
+    {
+      "id": "QD13",
+      "base": "QD01",
+      "literalFieldReplacement": {
+        "name": "capabilityQuestion",
+        "unit": "UTF-16 code units",
+        "repeat": "q",
+        "count": 4097
+      },
+      "expectedError": "INVALID_JSON"
+    },
+    {
+      "id": "QD14",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expectedError": "INVALID_JSON"
+    },
+    {
+      "id": "QD15",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": " \t\n",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expectedError": "INVALID_JSON"
+    },
+    {
+      "id": "QD16",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expectedError": "INVALID_JSON"
+    },
+    {
+      "id": "QD17",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": " \t\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expectedError": "INVALID_JSON"
+    },
+    {
+      "id": "QD18",
+      "base": "QD01",
+      "literalFieldReplacement": {
+        "name": "name",
+        "unit": "UTF-16 code units",
+        "repeat": "a",
+        "count": 128
+      },
+      "expectedFrom": "QD01.expected with the same draft field replaced exactly",
+      "assertions": ["at raw limit succeeds;no text normalization or syntax/execution claim"]
+    },
+    {
+      "id": "QD19",
+      "base": "QD01",
+      "literalFieldReplacement": {
+        "name": "sparql",
+        "unit": "UTF-16 code units",
+        "repeat": "x",
+        "count": 65536
+      },
+      "expectedFrom": "QD01.expected with the same draft field replaced exactly",
+      "assertions": ["at raw limit succeeds;no text normalization or syntax/execution claim"]
+    },
+    {
+      "id": "QD20",
+      "base": "QD01",
+      "literalFieldReplacement": {
+        "name": "description",
+        "unit": "UTF-16 code units",
+        "repeat": "d",
+        "count": 4096
+      },
+      "expectedFrom": "QD01.expected with the same draft field replaced exactly",
+      "assertions": ["at raw limit succeeds;no text normalization or syntax/execution claim"]
+    },
+    {
+      "id": "QD21",
+      "base": "QD01",
+      "literalFieldReplacement": {
+        "name": "capabilityQuestion",
+        "unit": "UTF-16 code units",
+        "repeat": "q",
+        "count": 4096
+      },
+      "expectedFrom": "QD01.expected with the same draft field replaced exactly",
+      "assertions": ["at raw limit succeeds;no text normalization or syntax/execution claim"]
+    },
+    {
+      "id": "QD22",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": -1,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expectedError": "INVALID_PROTOCOL"
+    },
+    {
+      "id": "QD23",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted",
+        "grantId": "untrusted"
+      },
+      "expectedError": "INVALID_PROTOCOL"
+    },
+    {
+      "id": "QD24",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\ud800",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expectedError": "INVALID_JSON"
+    },
+    {
+      "id": "QD25",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "\ud800",
+        "capabilityQuestion": "\u6709\u54ea\u4e9b\u8bbe\u5907\uff1f"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expectedError": "INVALID_JSON"
+    },
+    {
+      "id": "QD26",
+      "modelContent": {
+        "kind": "query-draft",
+        "name": "\u8bbe\u5907\ud83d\ude00",
+        "description": "\u67e5\u770b\u8bbe\u5907001",
+        "sparql": "SELECT ?s WHERE { ?s a <urn:Equipment> }\n",
+        "capabilityQuestion": "\ud800"
+      },
+      "hostInput": {
+        "inputContext": {
+          "projectId": "p1",
+          "projectRevision": 3,
+          "inputSnapshotId": "s3",
+          "scopeRef": "authorized-scope",
+          "module": "query",
+          "mode": "project",
+          "selectedObjectIds": ["001", "002"]
+        },
+        "queryScope": "asserted"
+      },
+      "expectedError": "INVALID_JSON"
+    }
+  ],
+  "notRetested": [
+    "existing codec JSON protocol/truncation/budget/toolID suite",
+    "existing context drift/call boundary suite",
+    "accepted752TS1052Py/fullcheck",
+    "mounted03 DOM",
+    "I06 socket/safeStorage/native authorization suites"
+  ]
+}

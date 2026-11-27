@@ -1,0 +1,309 @@
+.quality-workspace {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding: 1.5rem;
+}
+.quality-workspace header p {
+  color: var(--ink-secondary);
+  margin-bottom: 0.25rem;
+}
+.quality-workspace h2 {
+  margin-top: 0;
+}
+.quality-workspace aside {
+  border-left: 3px solid var(--signal-warning);
+  background: var(--signal-hint-bg);
+  color: var(--ink-primary);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+}
+.quality-workspace form,
+.quality-workspace fieldset,
+.quality-pattern {
+  display: grid;
+  gap: 0.6rem;
+}
+.quality-workspace fieldset,
+.quality-workspace details {
+  border: 1px solid var(--hair-border);
+  border-radius: var(--radius-md);
+  background: var(--paper-surface);
+  padding: 1rem;
+}
+.quality-workspace form {
+  margin-top: 1rem;
+}
+.quality-workspace input,
+.quality-workspace select,
+.quality-workspace textarea,
+.quality-workspace button {
+  font: inherit;
+  padding: 0.65rem;
+  min-height: 2.75rem;
+}
+.quality-workspace input,
+.quality-workspace select,
+.quality-workspace textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--paper-surface);
+  color: var(--ink-primary);
+  border: 1px solid var(--hair-strong);
+  border-radius: var(--radius-sm);
+}
+.quality-workspace button {
+  width: fit-content;
+  max-width: 100%;
+  cursor: pointer;
+}
+.quality-workspace button:disabled {
+  cursor: default;
+}
+.quality-workspace :focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+.quality-workspace .quality-check {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+.quality-workspace .quality-check input {
+  width: 1.25rem;
+}
+.quality-pattern {
+  padding: 1rem;
+  background: var(--paper-subtle);
+  border-bottom: 1px solid var(--hair-border);
+}
+.quality-workspace pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: var(--paper-subtle);
+  padding: 1rem;
+  color: var(--ink-primary);
+  font-family: var(--font-mono);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--hair-border);
+}
+.quality-statements {
+  overflow-x: auto;
+}
+.quality-statements table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.quality-statements th,
+.quality-statements td {
+  padding: 0.65rem;
+  border: 1px solid var(--hair-border);
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.quality-statements th {
+  background: var(--paper-subtle);
+}
+.quality-workspace dd {
+  margin-bottom: 0.75rem;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  .quality-workspace {
+    padding: 0.75rem;
+  }
+  .quality-pattern {
+    padding: 0.5rem;
+  }
+}
+.quality-run {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+.quality-run select {
+  width: auto;
+  max-width: 100%;
+}
+.quality-location {
+  margin-block: 0.75rem;
+  border-inline-start: 3px solid var(--accent-primary);
+  padding: 1rem;
+  background: var(--accent-soft);
+  color: var(--ink-primary);
+  border-radius: var(--radius-sm);
+  overflow-wrap: anywhere;
+}
+.quality-location dt {
+  font-weight: 600;
+}
+.quality-location dd {
+  margin-inline-start: 0;
+}
+
+/* W7-3: Retail dual-scale simulation & plain evidence chain cards */
+.retail-simulation-banner {
+  border: 1px solid var(--hair-strong);
+  border-radius: var(--radius-lg);
+  background: var(--paper-surface);
+  padding: 16px 18px;
+  display: grid;
+  gap: 14px;
+}
+.retail-sim-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.retail-sim-head h3 {
+  margin: 6px 0 0;
+  font-size: 16px;
+}
+.retail-sim-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent-primary);
+}
+.retail-scale-toggle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  background: var(--paper-subtle);
+  border: 1px solid var(--hair-border);
+}
+.retail-scale-toggle button {
+  min-height: 0;
+  padding: 6px 12px;
+  font-size: 12px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-secondary);
+}
+.retail-scale-toggle button[aria-pressed='true'] {
+  background: var(--paper-surface);
+  color: var(--accent-primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-subtle);
+}
+.retail-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+}
+.retail-kpi-card {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--hair-border);
+  background: var(--paper-card);
+  display: grid;
+  gap: 4px;
+}
+.retail-kpi-card.is-warn {
+  background: var(--signal-warning-bg);
+  border-color: var(--signal-warning);
+}
+.retail-kpi-card.is-danger {
+  background: var(--signal-danger-bg);
+  border-color: var(--signal-danger);
+}
+.retail-kpi-card.is-accent {
+  background: var(--accent-soft);
+  border-color: var(--accent-primary);
+}
+.retail-kpi-card .kpi-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+.retail-kpi-card strong {
+  font-size: 14px;
+  color: var(--ink-primary);
+}
+.retail-kpi-card small {
+  font-size: 11px;
+  color: var(--ink-secondary);
+  line-height: 1.45;
+}
+.retail-sim-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.retail-run-btn {
+  background: var(--accent-primary);
+  color: var(--ink-inverse);
+  border: 1px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+}
+.retail-run-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+.retail-sim-note {
+  font-size: 12px;
+  color: var(--ink-secondary);
+}
+.retail-evidence-panel {
+  border-top: 1px solid var(--hair-border);
+  padding-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+.retail-evidence-verdict {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 13px;
+}
+.retail-trace-cards {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.retail-trace-card {
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--paper-subtle);
+  border-left: 3px solid var(--accent-primary);
+  display: grid;
+  gap: 6px;
+}
+.trace-card-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 13px;
+}
+.trace-rule-pill {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--paper-surface);
+  color: var(--accent-primary);
+  border: 1px solid var(--hair-border);
+}
+.trace-premises {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-secondary);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}

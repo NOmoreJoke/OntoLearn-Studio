@@ -1307,3 +1307,120 @@ def test_valid_edited_identity_and_tombstone_remain_usable_project_inputs(db, va
     result = db.publish("p", snap, ["facts:asserted"], "q", [], IMPL)
     assert db.result(result)["state"] == "current"
     assert db.state("p")["facts"][0]["id"] == key
+
+
+class TestColdSnapshotProjection:
+    def test_write_token_cannot_be_reused_after_its_scope_or_by_another_store(self, tmp_path):
+        store = Store(tmp_path / "token.sqlite")
+        other = Store(tmp_path / "foreign-token.sqlite")
+        try:
+            store.create_project("p")
+            identity = digest(store._snapshot_projection("p"))
+            with store._snapshot_writer() as expired:
+                pass
+            trace = []
+            with store._read():
+                store._db.set_trace_callback(trace.append)
+                with pytest.raises(Conflict, match="Snapshot write scope required"):
+                    store._materialize_snapshot(identity, "p", _write_scope=expired)
+                store._db.set_trace_callback(None)
+            with other._snapshot_writer() as foreign:
+                with store._read():
+                    store._db.set_trace_callback(trace.append)
+                    with pytest.raises(Conflict, match="Snapshot write scope required"):
+                        store._materialize_snapshot(identity, "p", _write_scope=foreign)
+                    store._db.set_trace_callback(None)
+            assert trace == []
+            assert store._db.execute("SELECT count(*) FROM snapshots").fetchone()[0] == 0
+        finally:
+            other.close()
+            store.close()
+
+    def test_projection_is_pure_and_not_a_claim_of_persistent_evidence(self, tmp_path):
+        store = Store(tmp_path / "projection.sqlite")
+        try:
+            store.create_project("p")
+            before = "\n".join(store._db.iterdump())
+            trace = []
+            store._db.set_trace_callback(trace.append)
+            payload = store._snapshot_projection("p")
+            identity = digest(payload)
+            assert payload == {
+                "project": "p",
+                "projectRevision": 0,
+                "dependencyVector": {},
+                "state": {"definitions": [], "facts": [], "mappingState": {}},
+            }
+            assert store._snapshot_projection("p") == payload
+            with pytest.raises(KeyError, match="Missing replay input snapshot"):
+                store.load_snapshot(identity)
+            with pytest.raises(KeyError, match="Missing replay input snapshot"):
+                store._project_snapshot(identity, "p")
+            assert "\n".join(store._db.iterdump()) == before
+            assert not any("BEGIN IMMEDIATE" in sql.upper() for sql in trace)
+            assert not any(sql.lstrip().upper().startswith("INSERT") for sql in trace)
+            store._db.set_trace_callback(None)
+            with store._snapshot_writer() as writer:
+                assert store._materialize_snapshot(identity, "p", _write_scope=writer) == payload
+            assert store.load_snapshot(identity) == payload
+            assert store.snapshot("p") == identity  # Original explicit write API/hash is unchanged.
+        finally:
+            store.close()
+
+    @pytest.mark.parametrize("writer", ["publish", "start_run"])
+    def test_normal_writer_materializes_cold_input_and_keeps_history(self, tmp_path, writer):
+        path = tmp_path / "consume.sqlite"
+        store = Store(path)
+        store.create_project("p")
+        payload = store._snapshot_projection("p")
+        identity = digest(payload)
+        if writer == "publish":
+            result = store.publish("p", identity, ["facts:asserted"], "query", [], IMPL)
+            assert store.result(result)["snapshot"] == identity
+        else:
+            config = {
+                "parameters": {},
+                "events": [],
+                "ruleVersions": {},
+                "behaviorVersions": {},
+                "maxRounds": 1,
+            }
+            run = store.start_run("p", identity, config, IMPL)
+            assert (
+                store._db.execute("SELECT snapshot FROM runs WHERE id=?", (run,)).fetchone()[0]
+                == identity
+            )
+            assert store.history(run)["replayable"] is True
+        assert store.load_snapshot(identity) == payload
+        store.commit("p", 0, "advance", "domain-job", manual=[fact()])
+        assert digest(store._snapshot_projection("p")) != identity
+        assert store._project_snapshot(identity, "p") == payload
+        store.close()
+        reopened = Store(path)
+        try:
+            assert reopened.load_snapshot(identity) == payload
+            assert reopened._project_snapshot(identity, "p") == payload
+            if writer == "start_run":
+                assert reopened.history(run)["replayable"] is True
+        finally:
+            reopened.close()
+
+    @pytest.mark.parametrize("writer", ["publish", "start_run"])
+    def test_missing_noncurrent_identity_cannot_be_replaced_with_current(self, tmp_path, writer):
+        store = Store(tmp_path / "mismatch.sqlite")
+        try:
+            store.create_project("p")
+            store.create_project("other")
+            foreign = digest(store._snapshot_projection("other"))
+            before = "\n".join(store._db.iterdump())
+            with pytest.raises(Conflict, match="Current snapshot identity changed") as caught:
+                if writer == "publish":
+                    store.publish("p", foreign, ["facts:asserted"], "query", [], IMPL)
+                else:
+                    store.start_run("p", foreign, {}, IMPL)
+            assert caught.value.category == "identity"
+            assert "\n".join(store._db.iterdump()) == before
+            with pytest.raises(KeyError, match="Missing replay input snapshot"):
+                store.load_snapshot(foreign)
+        finally:
+            store.close()

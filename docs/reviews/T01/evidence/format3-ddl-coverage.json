@@ -1,0 +1,718 @@
+{
+  "scope": "Actual sqlite trace on synthetic source only; every migration DDL matched immediate tested hook",
+  "candidateBase": "4858cf178113697c1312e06cfc0ec469db31f363",
+  "faultModes": [
+    "RuntimeError",
+    "KeyboardInterrupt",
+    "OSError",
+    "real subprocess os._exit(79)"
+  ],
+  "appDdlObjects": 21,
+  "newSpecificDomainCases": 42,
+  "optionalRetirementCases": 4,
+  "targetedResult": "172 passed, 526 deselected; old unchanged matrix not repeated for this delta",
+  "sourceSha256": {
+    "packages/engine/src/ontolearn_engine/storage.py": "0fbc565922757dce47543092e289ab354eb4fc162bcfb8d6652cb08eda823f60",
+    "packages/engine/src/ontolearn_engine/project/format3.py": "6ea7d16e9219865f8ab528e607a0fbf3ac68ab4580e1b68c780f30a238c06261",
+    "packages/engine/tests/test_project_format3.py": "a03c82d83bcf39be243e0d38694566d89323f9c2568a83e4815ee445a3d0c9ae"
+  },
+  "runs": [
+    {
+      "sourceFormat": 0,
+      "missingOptionalRetirements": false,
+      "executedDdlCount": 53,
+      "allExecutedDdlHaveImmediateFaultHook": true,
+      "hooks": [
+        {
+          "hook": "format3_v1_ddl:0",
+          "sqlSha256": "fcf09764fedc2c23aabe53856ac8b861d3668bb146e2ada7f64b5cf46226a2aa",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:1",
+          "sqlSha256": "e2c5c3221cf981b5a13a6f83d478542ead66430e4836b83990d417525db332b2",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:2",
+          "sqlSha256": "f8b043ced9c3af75770069e7fb209292832cebc84a8126c1c38f87fb285faf5e",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:3",
+          "sqlSha256": "2a2a85f6a9e0a2f1f474d6dd848df51b303758a520e8009c3f43f9829acdd694",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:4",
+          "sqlSha256": "de55318256efb7f08c6eca40559175eff4f80631d07f591e13670ad5b14a8eef",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:5",
+          "sqlSha256": "9353138f666ac5a3c2b4104b86b8b210adf610c9c7f997dcbf9e5b5c42d0748a",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:6",
+          "sqlSha256": "137f3c6d5ac4dfdfa53f84dbaa17a6e3a3410b29edf9a1126910d02d04d7e786",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:7",
+          "sqlSha256": "1e4086ed4b86b9341f917bb563f85ffa78ddc5928d8fb7652769770a0c59deda",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:8",
+          "sqlSha256": "a62ca918937c6473b18ab484ed867c9d415a1a70de4b208352d86bc412e4269c",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:9",
+          "sqlSha256": "f4ee272483b8afd96e01e6dcf84993f4ae4a8ce822f72e0041c6a24dd1f5de9e",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:10",
+          "sqlSha256": "72b45dd8dff69b5a84e2896c5db2e4d2a19583af59742aeb76acc61b53aa9d4e",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:11",
+          "sqlSha256": "0bfd12ba0c885af8c1665f840216563694b4b37c9d3182c53b429758571bc1c4",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:12",
+          "sqlSha256": "90d4a02dc3d44628085595d68d3e642b67ad5ae620cfeeea68eca2d23e416bb6",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:13",
+          "sqlSha256": "9075a36584b0701ec951b7b454ffc54ee4a751df10843bf9b701838ae6792fc3",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:14",
+          "sqlSha256": "8232280495960a0b35759afa491a3a0f6ae0adf87793930cbf41d20482ec6ce4",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:15",
+          "sqlSha256": "509e00f556efa8c3005719211540e8a888e632e72624979b5175a00decf6fff9",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:16",
+          "sqlSha256": "d60c726b72e01764d01d794cc9c7e4dbcb54c4bdadecec967fdd69255972ea7a",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:17",
+          "sqlSha256": "b27829841630f92189a13426b6c7f5058f627afc99986cbe215b38baff8d4d39",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:18",
+          "sqlSha256": "e939323757f5291143698450c9df304c6a302c5a9d6c1f66d8fb51f1e913938e",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:19",
+          "sqlSha256": "1ea7c5ab9f723364667f629199d741232cfba267d5658aecd98a345ab26035d4",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:20",
+          "sqlSha256": "bff4ce5e0709469fc5c066604a09096c3c6a260448bc1f20c2b5681362f4fe13",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:21",
+          "sqlSha256": "91c06bbf5de70fe1c8493b5fb72e1d3853978f60bab46540484db008d2a39394",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:22",
+          "sqlSha256": "7331a00c502cee7d90e5f8d06a0b96d155ceef99208e9954ccdfa73c4289d6a3",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v1_ddl:23",
+          "sqlSha256": "5eefbcb884572df608cf3939e1fe9a3c0f1f673f5487fe2a871e63f7be994e60",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:mapping_state",
+          "sqlSha256": "988cf7aa135d1587328705310199cb60359b5cf7c1192125e68624a583726f3d",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:commit_evidence",
+          "sqlSha256": "7de29ee2588551264443b5921bf60910779e01f1e596541aaef859671b0f2a0b",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:immutable_commit_evidence_UPDATE",
+          "sqlSha256": "77f154c386d6bac5f9dbd38e80d37c9378a4a2747f0f7dd9e86ff6881cf93ee9",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:immutable_commit_evidence_DELETE",
+          "sqlSha256": "1519a9f6dc425b0c257ea8c38e9e63021b89fc4b33f2edd79706b03daa5a6735",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:migration_log",
+          "sqlSha256": "5e0b186e30b18831c81812312a8a0340a361bcc692ff8f46af33cdd67a042337",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:current_results_v2",
+          "sqlSha256": "20a0cd785ec51e693ed784611c7515b2020298fe7c2acbced06f86878c031eb2",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:drop_current_results",
+          "sqlSha256": "fa8be8be4248b3f9ddf72b173c3f558917b69a3082e9836a59207aa583330a08",
+          "statementKind": "DROP"
+        },
+        {
+          "hook": "format3_v2_ddl:rename_current_results",
+          "sqlSha256": "8921a1d8d97bf9274db524d5de7f7202160da935886f2ae5c24fce8ec90cd1af",
+          "statementKind": "ALTER"
+        },
+        {
+          "hook": "format3_ddl:app_format",
+          "sqlSha256": "924e409f62b3f0d8adadc12fe7ae2afe75819e76f0e61ccebaa07bca96c3adc0",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_projects",
+          "sqlSha256": "fd3e64a258f8deeb39f77c20265254e375d9507fd7c0b6251950bb1e3a11c490",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_drafts",
+          "sqlSha256": "cede5c4d8415383f201a99a12654a0d406654c684f116d1a450713a316fe5019",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_learning",
+          "sqlSha256": "681a47094bd1283ce24a12af147f1fe668c58ee9420faf7760ca4475988fd572",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_assistance",
+          "sqlSha256": "b94d40f1ff3e50176e30858be90eb78856e814ebd780be840eee4c7d89622b98",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_operations",
+          "sqlSha256": "35adccae2dc5dc2e4bd12baa8498d82481b0a05d071ab046ebe339335d7b4ca7",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_checkpoints",
+          "sqlSha256": "0beb3919750c6fa0ca2f84d2304dcf7c402b72eb2ddf681a8ffd08e0ada7f765",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_origins",
+          "sqlSha256": "c17cec3232b4ae33b4845c367d1f5ea4828b2a98bec9c0a22e803e76b0d9bea8",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_receipts",
+          "sqlSha256": "d7a0ceff89313a3e3d415dfc6d6fc763535f17ebe49c370bcb541ea269d56dd2",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_assistance_UPDATE",
+          "sqlSha256": "1e43eb8eb7ddb269de1010992ab0a8c7856a5116d169065427b28270fd85859b",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_assistance_DELETE",
+          "sqlSha256": "19c866aef930e64e2754ca47ced5082c450f0da5bbf570664554f9e09c2785a6",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_checkpoints_UPDATE",
+          "sqlSha256": "bde94bc7d57e298e0b91e9fa621f1ce9a0485b4a0d369cae068a57dfa15f2aad",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_checkpoints_DELETE",
+          "sqlSha256": "5dadea5df38c96597908961be036dbb702e4c71f57ae946527dca65a4715fac3",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_format_UPDATE",
+          "sqlSha256": "4954028edceca02f2b78e39b6e674a62c716c1ba058ed87cfbdab58877b12fb8",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_format_DELETE",
+          "sqlSha256": "a90466f0d7548fb7c25533e73bbdbcbb168b6d283687946c3792417f7cf3cc24",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_operations_UPDATE",
+          "sqlSha256": "4f86fd5f01ac00c221b4e4d9770dcde51d67fac78f5450113edec165acfd9a21",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_operations_DELETE",
+          "sqlSha256": "cf4f67df139dca1a3d437dbd43dc42fe815227683c6dc36499e66e55f705080a",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_origins_UPDATE",
+          "sqlSha256": "30b90d54d8a91fc0f1d4b7c1ec14a0c171636238c0af901aa1b56d912fd9482d",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_origins_DELETE",
+          "sqlSha256": "d90c938d691a0d09babc5b678cbd14d983d888f4b5eb6caca64df4e45ae4754b",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_receipts_UPDATE",
+          "sqlSha256": "cd6475ea8a57e579fe6ef0ab702a83e8eeb4c53f00da3cb5a81d17ff3c98bc2f",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_receipts_DELETE",
+          "sqlSha256": "e9a53f3ec98c93bea91b50f368d881967c743e8807debee7cd0543d4e7e23744",
+          "statementKind": "CREATE"
+        }
+      ]
+    },
+    {
+      "sourceFormat": 1,
+      "missingOptionalRetirements": false,
+      "executedDdlCount": 29,
+      "allExecutedDdlHaveImmediateFaultHook": true,
+      "hooks": [
+        {
+          "hook": "format3_v2_ddl:mapping_state",
+          "sqlSha256": "988cf7aa135d1587328705310199cb60359b5cf7c1192125e68624a583726f3d",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:commit_evidence",
+          "sqlSha256": "7de29ee2588551264443b5921bf60910779e01f1e596541aaef859671b0f2a0b",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:immutable_commit_evidence_UPDATE",
+          "sqlSha256": "77f154c386d6bac5f9dbd38e80d37c9378a4a2747f0f7dd9e86ff6881cf93ee9",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:immutable_commit_evidence_DELETE",
+          "sqlSha256": "1519a9f6dc425b0c257ea8c38e9e63021b89fc4b33f2edd79706b03daa5a6735",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:migration_log",
+          "sqlSha256": "5e0b186e30b18831c81812312a8a0340a361bcc692ff8f46af33cdd67a042337",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:current_results_v2",
+          "sqlSha256": "20a0cd785ec51e693ed784611c7515b2020298fe7c2acbced06f86878c031eb2",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:drop_current_results",
+          "sqlSha256": "fa8be8be4248b3f9ddf72b173c3f558917b69a3082e9836a59207aa583330a08",
+          "statementKind": "DROP"
+        },
+        {
+          "hook": "format3_v2_ddl:rename_current_results",
+          "sqlSha256": "8921a1d8d97bf9274db524d5de7f7202160da935886f2ae5c24fce8ec90cd1af",
+          "statementKind": "ALTER"
+        },
+        {
+          "hook": "format3_ddl:app_format",
+          "sqlSha256": "924e409f62b3f0d8adadc12fe7ae2afe75819e76f0e61ccebaa07bca96c3adc0",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_projects",
+          "sqlSha256": "fd3e64a258f8deeb39f77c20265254e375d9507fd7c0b6251950bb1e3a11c490",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_drafts",
+          "sqlSha256": "cede5c4d8415383f201a99a12654a0d406654c684f116d1a450713a316fe5019",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_learning",
+          "sqlSha256": "681a47094bd1283ce24a12af147f1fe668c58ee9420faf7760ca4475988fd572",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_assistance",
+          "sqlSha256": "b94d40f1ff3e50176e30858be90eb78856e814ebd780be840eee4c7d89622b98",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_operations",
+          "sqlSha256": "35adccae2dc5dc2e4bd12baa8498d82481b0a05d071ab046ebe339335d7b4ca7",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_checkpoints",
+          "sqlSha256": "0beb3919750c6fa0ca2f84d2304dcf7c402b72eb2ddf681a8ffd08e0ada7f765",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_origins",
+          "sqlSha256": "c17cec3232b4ae33b4845c367d1f5ea4828b2a98bec9c0a22e803e76b0d9bea8",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_receipts",
+          "sqlSha256": "d7a0ceff89313a3e3d415dfc6d6fc763535f17ebe49c370bcb541ea269d56dd2",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_assistance_UPDATE",
+          "sqlSha256": "1e43eb8eb7ddb269de1010992ab0a8c7856a5116d169065427b28270fd85859b",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_assistance_DELETE",
+          "sqlSha256": "19c866aef930e64e2754ca47ced5082c450f0da5bbf570664554f9e09c2785a6",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_checkpoints_UPDATE",
+          "sqlSha256": "bde94bc7d57e298e0b91e9fa621f1ce9a0485b4a0d369cae068a57dfa15f2aad",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_checkpoints_DELETE",
+          "sqlSha256": "5dadea5df38c96597908961be036dbb702e4c71f57ae946527dca65a4715fac3",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_format_UPDATE",
+          "sqlSha256": "4954028edceca02f2b78e39b6e674a62c716c1ba058ed87cfbdab58877b12fb8",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_format_DELETE",
+          "sqlSha256": "a90466f0d7548fb7c25533e73bbdbcbb168b6d283687946c3792417f7cf3cc24",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_operations_UPDATE",
+          "sqlSha256": "4f86fd5f01ac00c221b4e4d9770dcde51d67fac78f5450113edec165acfd9a21",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_operations_DELETE",
+          "sqlSha256": "cf4f67df139dca1a3d437dbd43dc42fe815227683c6dc36499e66e55f705080a",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_origins_UPDATE",
+          "sqlSha256": "30b90d54d8a91fc0f1d4b7c1ec14a0c171636238c0af901aa1b56d912fd9482d",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_origins_DELETE",
+          "sqlSha256": "d90c938d691a0d09babc5b678cbd14d983d888f4b5eb6caca64df4e45ae4754b",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_receipts_UPDATE",
+          "sqlSha256": "cd6475ea8a57e579fe6ef0ab702a83e8eeb4c53f00da3cb5a81d17ff3c98bc2f",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_receipts_DELETE",
+          "sqlSha256": "e9a53f3ec98c93bea91b50f368d881967c743e8807debee7cd0543d4e7e23744",
+          "statementKind": "CREATE"
+        }
+      ]
+    },
+    {
+      "sourceFormat": 2,
+      "missingOptionalRetirements": false,
+      "executedDdlCount": 21,
+      "allExecutedDdlHaveImmediateFaultHook": true,
+      "hooks": [
+        {
+          "hook": "format3_ddl:app_format",
+          "sqlSha256": "924e409f62b3f0d8adadc12fe7ae2afe75819e76f0e61ccebaa07bca96c3adc0",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_projects",
+          "sqlSha256": "fd3e64a258f8deeb39f77c20265254e375d9507fd7c0b6251950bb1e3a11c490",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_drafts",
+          "sqlSha256": "cede5c4d8415383f201a99a12654a0d406654c684f116d1a450713a316fe5019",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_learning",
+          "sqlSha256": "681a47094bd1283ce24a12af147f1fe668c58ee9420faf7760ca4475988fd572",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_assistance",
+          "sqlSha256": "b94d40f1ff3e50176e30858be90eb78856e814ebd780be840eee4c7d89622b98",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_operations",
+          "sqlSha256": "35adccae2dc5dc2e4bd12baa8498d82481b0a05d071ab046ebe339335d7b4ca7",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_checkpoints",
+          "sqlSha256": "0beb3919750c6fa0ca2f84d2304dcf7c402b72eb2ddf681a8ffd08e0ada7f765",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_origins",
+          "sqlSha256": "c17cec3232b4ae33b4845c367d1f5ea4828b2a98bec9c0a22e803e76b0d9bea8",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_receipts",
+          "sqlSha256": "d7a0ceff89313a3e3d415dfc6d6fc763535f17ebe49c370bcb541ea269d56dd2",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_assistance_UPDATE",
+          "sqlSha256": "1e43eb8eb7ddb269de1010992ab0a8c7856a5116d169065427b28270fd85859b",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_assistance_DELETE",
+          "sqlSha256": "19c866aef930e64e2754ca47ced5082c450f0da5bbf570664554f9e09c2785a6",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_checkpoints_UPDATE",
+          "sqlSha256": "bde94bc7d57e298e0b91e9fa621f1ce9a0485b4a0d369cae068a57dfa15f2aad",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_checkpoints_DELETE",
+          "sqlSha256": "5dadea5df38c96597908961be036dbb702e4c71f57ae946527dca65a4715fac3",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_format_UPDATE",
+          "sqlSha256": "4954028edceca02f2b78e39b6e674a62c716c1ba058ed87cfbdab58877b12fb8",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_format_DELETE",
+          "sqlSha256": "a90466f0d7548fb7c25533e73bbdbcbb168b6d283687946c3792417f7cf3cc24",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_operations_UPDATE",
+          "sqlSha256": "4f86fd5f01ac00c221b4e4d9770dcde51d67fac78f5450113edec165acfd9a21",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_operations_DELETE",
+          "sqlSha256": "cf4f67df139dca1a3d437dbd43dc42fe815227683c6dc36499e66e55f705080a",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_origins_UPDATE",
+          "sqlSha256": "30b90d54d8a91fc0f1d4b7c1ec14a0c171636238c0af901aa1b56d912fd9482d",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_origins_DELETE",
+          "sqlSha256": "d90c938d691a0d09babc5b678cbd14d983d888f4b5eb6caca64df4e45ae4754b",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_receipts_UPDATE",
+          "sqlSha256": "cd6475ea8a57e579fe6ef0ab702a83e8eeb4c53f00da3cb5a81d17ff3c98bc2f",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_receipts_DELETE",
+          "sqlSha256": "e9a53f3ec98c93bea91b50f368d881967c743e8807debee7cd0543d4e7e23744",
+          "statementKind": "CREATE"
+        }
+      ]
+    },
+    {
+      "sourceFormat": 1,
+      "missingOptionalRetirements": true,
+      "executedDdlCount": 30,
+      "allExecutedDdlHaveImmediateFaultHook": true,
+      "hooks": [
+        {
+          "hook": "format3_v2_ddl:mapping_state",
+          "sqlSha256": "988cf7aa135d1587328705310199cb60359b5cf7c1192125e68624a583726f3d",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:commit_evidence",
+          "sqlSha256": "7de29ee2588551264443b5921bf60910779e01f1e596541aaef859671b0f2a0b",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:immutable_commit_evidence_UPDATE",
+          "sqlSha256": "77f154c386d6bac5f9dbd38e80d37c9378a4a2747f0f7dd9e86ff6881cf93ee9",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:immutable_commit_evidence_DELETE",
+          "sqlSha256": "1519a9f6dc425b0c257ea8c38e9e63021b89fc4b33f2edd79706b03daa5a6735",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:migration_log",
+          "sqlSha256": "5e0b186e30b18831c81812312a8a0340a361bcc692ff8f46af33cdd67a042337",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:current_results_v2",
+          "sqlSha256": "20a0cd785ec51e693ed784611c7515b2020298fe7c2acbced06f86878c031eb2",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_v2_ddl:drop_current_results",
+          "sqlSha256": "fa8be8be4248b3f9ddf72b173c3f558917b69a3082e9836a59207aa583330a08",
+          "statementKind": "DROP"
+        },
+        {
+          "hook": "format3_v2_ddl:rename_current_results",
+          "sqlSha256": "8921a1d8d97bf9274db524d5de7f7202160da935886f2ae5c24fce8ec90cd1af",
+          "statementKind": "ALTER"
+        },
+        {
+          "hook": "format3_domain_retirements",
+          "sqlSha256": "b0d8bb00dcd863ffb51c8158a433f126b9361feb62bae549c68ce5119a644b15",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_format",
+          "sqlSha256": "924e409f62b3f0d8adadc12fe7ae2afe75819e76f0e61ccebaa07bca96c3adc0",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_projects",
+          "sqlSha256": "fd3e64a258f8deeb39f77c20265254e375d9507fd7c0b6251950bb1e3a11c490",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_drafts",
+          "sqlSha256": "cede5c4d8415383f201a99a12654a0d406654c684f116d1a450713a316fe5019",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_learning",
+          "sqlSha256": "681a47094bd1283ce24a12af147f1fe668c58ee9420faf7760ca4475988fd572",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_assistance",
+          "sqlSha256": "b94d40f1ff3e50176e30858be90eb78856e814ebd780be840eee4c7d89622b98",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_operations",
+          "sqlSha256": "35adccae2dc5dc2e4bd12baa8498d82481b0a05d071ab046ebe339335d7b4ca7",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_checkpoints",
+          "sqlSha256": "0beb3919750c6fa0ca2f84d2304dcf7c402b72eb2ddf681a8ffd08e0ada7f765",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_origins",
+          "sqlSha256": "c17cec3232b4ae33b4845c367d1f5ea4828b2a98bec9c0a22e803e76b0d9bea8",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:app_receipts",
+          "sqlSha256": "d7a0ceff89313a3e3d415dfc6d6fc763535f17ebe49c370bcb541ea269d56dd2",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_assistance_UPDATE",
+          "sqlSha256": "1e43eb8eb7ddb269de1010992ab0a8c7856a5116d169065427b28270fd85859b",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_assistance_DELETE",
+          "sqlSha256": "19c866aef930e64e2754ca47ced5082c450f0da5bbf570664554f9e09c2785a6",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_checkpoints_UPDATE",
+          "sqlSha256": "bde94bc7d57e298e0b91e9fa621f1ce9a0485b4a0d369cae068a57dfa15f2aad",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_checkpoints_DELETE",
+          "sqlSha256": "5dadea5df38c96597908961be036dbb702e4c71f57ae946527dca65a4715fac3",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_format_UPDATE",
+          "sqlSha256": "4954028edceca02f2b78e39b6e674a62c716c1ba058ed87cfbdab58877b12fb8",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_format_DELETE",
+          "sqlSha256": "a90466f0d7548fb7c25533e73bbdbcbb168b6d283687946c3792417f7cf3cc24",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_operations_UPDATE",
+          "sqlSha256": "4f86fd5f01ac00c221b4e4d9770dcde51d67fac78f5450113edec165acfd9a21",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_operations_DELETE",
+          "sqlSha256": "cf4f67df139dca1a3d437dbd43dc42fe815227683c6dc36499e66e55f705080a",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_origins_UPDATE",
+          "sqlSha256": "30b90d54d8a91fc0f1d4b7c1ec14a0c171636238c0af901aa1b56d912fd9482d",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_origins_DELETE",
+          "sqlSha256": "d90c938d691a0d09babc5b678cbd14d983d888f4b5eb6caca64df4e45ae4754b",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_receipts_UPDATE",
+          "sqlSha256": "cd6475ea8a57e579fe6ef0ab702a83e8eeb4c53f00da3cb5a81d17ff3c98bc2f",
+          "statementKind": "CREATE"
+        },
+        {
+          "hook": "format3_ddl:immutable_app_receipts_DELETE",
+          "sqlSha256": "e9a53f3ec98c93bea91b50f368d881967c743e8807debee7cd0543d4e7e23744",
+          "statementKind": "CREATE"
+        }
+      ]
+    }
+  ]
+}

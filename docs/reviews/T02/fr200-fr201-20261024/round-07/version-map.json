@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "candidate": {
+    "base": "583c05c7870ba0f8f642e3eeea1d0590e5859ca2",
+    "head": "b215f5432d0c9f74df9e9e3fbb6120bff57703a9",
+    "tree": "7cab46f041140114d5011d86077c54aeb93d537d",
+    "branch": "feature/weekly-t02-fr200-fr201",
+    "commits": 33,
+    "diffLeaves": 88,
+    "trackedSource": 1371,
+    "builds": 5
+  },
+  "originalChecklist": {
+    "bytes": 11255,
+    "sha256": "1ca23def39d88ceaace9ad1b8aa14ee8714229871e9d6b1d1edd0f9e847f709c",
+    "copiesPerOriginalPrompt": 1,
+    "endsWithNewline": false
+  },
+  "independence": "Current peer report/facts/verdict not supplied to either author; historical R01-R06 equally readable. MM saw peer filename/size/mtime only; Z saw initial directory absence. Independent internal reviewers each own assigned model only.",
+  "authors": [
+    {
+      "author": "zcode",
+      "sid": "session_1f663b7f4a09f84efc0dcd066f28ce63",
+      "model": "GLM-5.3/highest/StartPlan/fullAccess",
+      "originalPrompt": {
+        "bytes": 28704,
+        "sha256": "466fd48de09b5109ae7e0563557f01d811fb546caada6fb40441fe79f4af603e"
+      },
+      "originalNatural": {
+        "path": "zcode-natural-01.md",
+        "bytes": 30400,
+        "sha256": "f25d8827a115cb606c970e56dff5e3335eeba68f498fe3f7aed48255daac7723"
+      },
+      "originalSeal": {
+        "path": "zcode-natural-01-seal.json",
+        "bytes": 858,
+        "sha256": "cf758c37c1230bdaabeb18a6f1629c24d18649ba21287fff94248018e2de84a0"
+      },
+      "revisedNatural": {
+        "path": "zcode-revised-01.md",
+        "bytes": 41817,
+        "sha256": "a94b7ef7204f33971174de8b3d47730e559c324b2e6bbdd3acc0799f7c219b2c"
+      },
+      "revisedSeal": {
+        "path": "zcode-revised-01-seal.json",
+        "bytes": 641,
+        "sha256": "9b41801a7551a9b12725c33f923491587b9d504aa90c0fd14956778381a31511"
+      },
+      "diff": {
+        "path": "zcode-natural-to-revised-01.diff",
+        "bytes": 33062,
+        "sha256": "9e22abbe3377e0903accc0ed866a470210a47db076ee5666e6b5845cdc7d7bc8"
+      },
+      "originalVerdict": "ConditionalPass",
+      "revisedVerdict": "ConditionalPass",
+      "sameSIDFactRevisionCount": 1,
+      "wrapperCount": 1,
+      "newReportCreatedByRevision": false,
+      "currentPeerBodyRead": false
+    },
+    {
+      "author": "minimax",
+      "sid": "mvs_8d66d37640404c25bc061bffe6311b0b",
+      "model": "M3.1-Flash/xhigh/alwaysAuthorize",
+      "originalPrompt": {
+        "bytes": 28717,
+        "sha256": "53d6f688f7a095308ae8dc3f0f5a916e038818ea5a5bede452e95c02ffba73c8"
+      },
+      "originalNatural": {
+        "path": "minimax-natural-01.md",
+        "bytes": 57131,
+        "sha256": "ce4b1ae7121d97a003de22e656730ef7f685b32df148707bc3245a974ce6b8c8"
+      },
+      "originalSeal": {
+        "path": "minimax-natural-01-seal.json",
+        "bytes": 813,
+        "sha256": "d29bcc413adba919fd042769a2e58d0083c83e13ddc36be0af7eb6721ff0a976"
+      },
+      "revisedNatural": {
+        "path": "minimax-revised-01.md",
+        "bytes": 81951,
+        "sha256": "eee3e39d15c1b7d05853c378c4e7278194ca09cd5cccaec406138e049ddf974a"
+      },
+      "revisedSeal": {
+        "path": "minimax-revised-01-seal.json",
+        "bytes": 651,
+        "sha256": "6d30ea1d7c916a60012cc2c98dfa93be3a5233b12891da37d4981c87a2822e06"
+      },
+      "diff": {
+        "path": "minimax-natural-to-revised-01.diff",
+        "bytes": 74696,
+        "sha256": "9726b802a7b9006715bf8e0d7d7ab03b892546eb377ac137f1ac23010c9dfc02"
+      },
+      "originalVerdict": "ConditionalPass",
+      "revisedVerdict": "ConditionalPass",
+      "sameSIDFactRevisionCount": 1,
+      "wrapperCount": 1,
+      "newReportCreatedByRevision": false,
+      "currentPeerBodyRead": false
+    }
+  ],
+  "finalGuard": {
+    "path": "FINAL-GUARDS.json",
+    "bytes": 2249,
+    "sha256": "0b039d66076a24dd0d45989381419e77874257c47ce02502e12f4b12d50bd839"
+  },
+  "disposition": {
+    "path": "DISPOSITION.md",
+    "bytes": 20347,
+    "sha256": "da18a978418055b97cb46e444fd37538eb30b5605a7f65403d5bb0b0c8cf3015"
+  },
+  "transport": {
+    "path": "FACT-PACKAGE-TRANSPORT.json",
+    "bytes": 2281,
+    "sha256": "a1440d7f88417395c15d6cfd9740155d6bef8be34f65bd25285420f7d33e015b"
+  },
+  "gate": {
+    "originalVerdicts": [
+      "ConditionalPass",
+      "ConditionalPass"
+    ],
+    "localAcceptance": "O047 existing actual fullcheck and six GUI, bounded; no new product runs in R07",
+    "prePushTechnicalBlock": "Neither author found a blocker; not an exhaustive defect guarantee",
+    "merge": "Requires future real complete three-job CI and acceptance of all existing downstream steps/Quality packaged recovery; b215 has no new CI",
+    "statusDocs": "ROOT sole maintainer future explicit evidence-archive ticket, append only",
+    "pushAuthorized": false,
+    "ciDispatchAuthorized": false,
+    "mergeAuthorized": false,
+    "newGoalOrReleaseComplete": false,
+    "holdsPreserved": true
+  },
+  "failuresAndCorrections": [
+    "Z initial malformed title-only input preserved; not counted as complete package delivery. Failed selectors/context operations and accidental unrelated navigation had no message there.",
+    "Each actual fact package delivered with one short ASCII wrapper via original SID and actual local Read; not attachment. MM full official copy recovers original11096 bytes exactly after UI line prefixes removed.",
+    "Original fact package miscount372/378 is corrected by independent true NUL-path counts384/390; original erroneous package retained.",
+    "Package SHA1ca23 concatenation is ambiguous; actual intended and independently confirmed marker SHA2561ca23... correct; author SHA1 interpretation is preserved and locally qualified.",
+    "Ruff384/390 and386/379 static set model is supported; actual run discovery/ignore/selection causality remains unproven."
+  ],
+  "createdUtc": "2026-10-26T00:49:19.237474+00:00",
+  "reviewGrant": {
+    "path": "iteration-control/2026-10-21-weekly-release/six-patches-20261023/controller-t02-b215f543-local-validation-reception-and-fresh-r07-start-20261025.json",
+    "bytes": 6525,
+    "sha256": "152fb3d3425f6c0161cbaf4f012b7ccbfec840eae115f32ea37adb2ad9d29661"
+  },
+  "localDevelopRef": "5f910b52c69d86a1076b2032e5d3c63e715947f3 (stale local ref, not explicit review base)",
+  "independentFinalReviews": [
+    {
+      "path": "independent-zcode-revised01-review.md",
+      "bytes": 8652,
+      "sha256": "20b37406d3fda32ab8ad2c48b3472f59df97bb0415bd42e7765c6e915071a295"
+    },
+    {
+      "path": "independent-minimax-revised01-review.md",
+      "bytes": 8548,
+      "sha256": "87aec81141c817887d73c0fb1e90cb5065248c8b84cf3a38a0c6cefe546b3065"
+    }
+  ],
+  "documentReadback": {
+    "mainAgentReadBothNaturalAndRevisedFully": true,
+    "zRevisedLines": 314,
+    "mmRevisedLines": 608,
+    "eachIndependentReviewerReadOwnOnly": true,
+    "currentNumberedOriginalPositions": 22,
+    "originalUnnumberedMMPositions": 1,
+    "revisedMMAssignsUnnumbered": "R07-13",
+    "historicalPositions": 55,
+    "dispositionCurrentPositions": 23,
+    "dispositionHistoryGroups": [
+      8,
+      12,
+      35
+    ]
+  }
+}

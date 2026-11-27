@@ -1,0 +1,85 @@
+{
+  "schema": "T02.R13.received-review-documentation-lineage.v1",
+  "reviewedCandidate": {
+    "base": "583c05c7870ba0f8f642e3eeea1d0590e5859ca2",
+    "head": "b02a39b4cd7e8fdbe990e824b22e28b6d2be9d38",
+    "tree": "3284bc38e8206096e47c578724cc13548f1c5761",
+    "parent": "e9a114707e3aeeb4b34f819b77976fe3a9e1c139",
+    "branch": "feature/weekly-t02-fr200-fr201",
+    "cumulativeCommits": 47,
+    "baseDiffPaths": 150,
+    "trackedFiles": 1425
+  },
+  "reviewedScope": {
+    "cumulative": "base583→head b02 全部 150 差异路径（含 12 路径 O085–O090 候选内容）",
+    "lastCommitOnly12": "b02 的 sole-parent e9a→b02 差异恰为 12 路径（fix: preserve bounded CI runtime diagnostics and packaged validation）",
+    "runtimeIdentityBoundary": "O092/O093/O094 全部运行发生于 e9a＋12 已测工作源 WIP；该 12 源内容与 b02 提交 blob 逐字节相等（O095 FREEZE-REPORT committed-blob-bindings 全 match），运行不得倒写为发生于 b02"
+  },
+  "thisDocsSuccessor": {
+    "kind": "normal local documentation-only direct successor",
+    "requiredSoleParent": "b02a39b4cd7e8fdbe990e824b22e28b6d2be9d38",
+    "authorizedPathsExactly": [
+      "docs/reviews/T02/fr200-fr201-20261024/round-13/zcode-glm53.md",
+      "docs/reviews/T02/fr200-fr201-20261024/round-13/minimax-m31flash.md",
+      "docs/reviews/T02/fr200-fr201-20261024/round-13/disposition.md",
+      "docs/reviews/T02/fr200-fr201-20261024/round-13/owner-effective-index.json",
+      "docs/reviews/T02/fr200-fr201-20261024/round-13/version-map.json",
+      "docs/reviews/T02/fr200-fr201-20261024/round-13/artifact-manifest.json",
+      "docs/reviews/T02/status.md",
+      "docs/m0-checklist.md"
+    ],
+    "noProductSourceOrTestConfigDependencyCIBudgetChange": true
+  },
+  "implementationHeadLineage": {
+    "e9a11470": "docs: archive T02 R12 bounded technical reviews",
+    "b02a39b4": "fix: preserve bounded CI runtime diagnostics and packaged validation（12 路径冻结；本轮唯一 parent）"
+  },
+  "sourceBindingException": [
+    {
+      "path": "AGENTS.md",
+      "validatedCurrentSource": {
+        "mode": "0644",
+        "bytes": 15147,
+        "sha256": "de15f6ce13795bb26fbf9807130f475fcac1e16be142bee62d70058056a5c8c4"
+      },
+      "committedSource": {
+        "mode": "0644",
+        "bytes": 1056,
+        "sha256": "1b3c02916e9bab79f463a61f2818846f01e849014b70251b37c112377443a6fb"
+      },
+      "note": "原 AGENTS 政策操作 overlay：仓库提交内为旧精简版；工作区 overlay 为现行操作政策，二者均为有意状态，不属受审实现缺陷。"
+    }
+  ],
+  "rawArchivePins": {
+    "zcode-glm53.md": {
+      "bytes": 67562,
+      "sha256": "71f0b48a0d1beae2af38949f1c4f788645fa3aee4b7736bb901f3edc8e2f28ff",
+      "equalsO095Original": true
+    },
+    "minimax-m31flash.md": {
+      "bytes": 113461,
+      "sha256": "0522705d8dad6f4d95e9b43d3535e2e797ecec087388643da8a605b0277e8604",
+      "equalsO095Original": true
+    },
+    "owner-effective-index.json": {
+      "bytes": 265108,
+      "sha256": "faf7c68afc4f2d4b156084e924bed5809077a1b4a4bee239de0d324f6a9fe6c2",
+      "equalsO095Disposition": true,
+      "originalPointer": "/Users/kyle/Documents/工作/知爻/本体/outputs/20261028_t02_candidate_freeze_review_095/OWNER-EFFECTIVE-DISPOSITION.json"
+    }
+  },
+  "statusAppend": {
+    "docs/reviews/T02/status.md": {
+      "beforeBytes": 40450,
+      "beforeSha256": "7bfbce60418deaaba7bf15ba217907a7688a0b2a721364f2b72db73e069856e6",
+      "appendOnly": true,
+      "originalPrefixPreserved": true
+    },
+    "docs/m0-checklist.md": {
+      "beforeBytes": 22482,
+      "beforeSha256": "ca376c9d03220bd31c5a534e0f43fd0f082e29e5532f78758f9e03692ead8d63",
+      "appendOnly": true,
+      "originalPrefixPreserved": true
+    }
+  }
+}
