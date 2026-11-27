@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - uses: actions/setup-node@249970729cb0ef3589644e289645e5dc5ba9c38 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .node-version
           cache: npm
@@ -70,7 +70,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - uses: actions/setup-node@249970729cb0ef3589644e289645e5dc5ba9c38 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .node-version
           cache: npm
@@ -107,7 +107,7 @@ jobs:
       - name: Generate SHA-256 checksum
         shell: pwsh
         run: |
-          Get-ChildItem release\*.exe | ForEach-Object {
+          Get-ChildItem release\*.exe | Where-Object { $_.Name -notlike '__uninstaller*' } | ForEach-Object {
             $hash = (Get-FileHash -Algorithm SHA256 $_.FullName).Hash.ToLowerInvariant()
             "$hash  $($_.Name)"
           } | Out-File -FilePath release\windows-x64.sha256 -Encoding ascii
@@ -116,6 +116,7 @@ jobs:
           name: installer-windows-x64
           path: |
             release/*.exe
+            !release/__uninstaller*.exe
             release/windows-x64.sha256
           if-no-files-found: error
           retention-days: 14
@@ -127,6 +128,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      actions: read
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Download installer artifacts and publish Release
@@ -137,17 +139,20 @@ jobs:
           mkdir -p dist-release
           gh run download "${{ github.run_id }}" --dir dist-release
           cat dist-release/installer-macos-arm64/*.sha256 dist-release/installer-windows-x64/*.sha256 > dist-release/SHA256SUMS.txt
+          shopt -s nullglob
+          files=(
+            dist-release/installer-macos-arm64/*.dmg
+            dist-release/installer-windows-x64/*.exe
+            dist-release/SHA256SUMS.txt
+          )
+          if [ "${#files[@]}" -lt 3 ]; then
+            echo "Expected at least 3 release assets (.dmg, .exe, SHA256SUMS.txt), got ${#files[@]}" >&2
+            exit 1
+          fi
           if gh release view "$TAG_NAME" >/dev/null 2>&1; then
-            gh release upload "$TAG_NAME" \
-              dist-release/installer-macos-arm64/*.dmg \
-              dist-release/installer-windows-x64/*.exe \
-              dist-release/SHA256SUMS.txt \
-              --clobber
+            gh release upload "$TAG_NAME" "${files[@]}" --clobber
           else
-            gh release create "$TAG_NAME" \
-              dist-release/installer-macos-arm64/*.dmg \
-              dist-release/installer-windows-x64/*.exe \
-              dist-release/SHA256SUMS.txt \
+            gh release create "$TAG_NAME" "${files[@]}" \
               --title "OntoLearn Studio $TAG_NAME" \
               --generate-notes
           fi
