@@ -1,14 +1,62 @@
-name: 缺陷报告
-description: 报告可复现问题
+name: 缺陷报告 (Bug Report)
+description: 报告可复现的问题或桌面端异常
+title: '[Bug]: '
+labels: ['bug']
 body:
-  - type: textarea
-    id: reproduction
+  - type: markdown
     attributes:
-      label: 复现步骤与预期结果
-      description: 请附系统版本、应用版本、实际结果；不要上传凭据或真实业务数据。
+      value: 感谢反馈！请勿在公开 Issue 中上传真实业务敏感数据、API 密钥或个人隐私文件。
+  - type: dropdown
+    id: platform
+    attributes:
+      label: 运行平台与安装方式
+      options:
+        - macOS (Apple Silicon DMG 安装包)
+        - Windows 10/11 (x64 Setup.exe 安装包)
+        - macOS (源码开发环境)
+        - Windows (源码开发环境)
+        - Linux (源码开发环境)
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 应用版本 / Commit SHA
+      placeholder: 例如 v0.1.0 或 8c73f093
+    validations:
+      required: true
+  - type: dropdown
+    id: module
+    attributes:
+      label: 涉及模块
+      options:
+        - 安装 / 首次启动 / 窗口恢复
+        - 00 三元组与概念沙盒
+        - 01 本体构建
+        - 02 数据映射
+        - 03 本体查询
+        - 04 质量与推导
+        - 05 行为定义 / 06 情景推演
+        - 07 迁移练习 / 08 导出与迁移
+        - 课程导师 / 可选模型助手
+        - 其他
     validations:
       required: true
   - type: textarea
-    id: requirement
+    id: reproduction
     attributes:
-      label: 对应需求或验收基线
+      label: 复现步骤
+      description: 请描述触发问题的清晰步骤（可使用脱敏样例）。
+      placeholder: |
+        1. 打开工作台并进入...
+        2. 点击...
+        3. 出现报错...
+    validations:
+      required: true
+  - type: textarea
+    id: expected_actual
+    attributes:
+      label: 预期结果 vs 实际结果
+      description: 说明您期望发生什么，以及实际观察到了什么现象或错误提示。
+    validations:
+      required: true

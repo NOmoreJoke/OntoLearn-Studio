@@ -1,0 +1,32 @@
+name: 功能建议 (Feature Request)
+description: 提出新功能、教学案例或体验优化建议
+title: '[Feature]: '
+labels: ['enhancement']
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: 建议归属范围
+      options:
+        - 零代码学习体验 / 教学案例
+        - 本体建模与图谱可视化
+        - 数据映射与导入导出
+        - SHACL 校验 / 规则推导 / 查询
+        - 桌面交互与无障碍体验
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 使用场景与痛点
+      description: 描述您希望解决什么实际学习或工程问题。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 期望方案或交互形态
+      description: 说明您期望的功能行为或界面流程；如有参考标准可一并附上。
+    validations:
+      required: true

@@ -2,32 +2,36 @@
 
 ## 工具与可重复安装
 
-Node.js 24（`.node-version`）、Python 3.12（`.python-version`），npm workspace 管理 TypeScript，uv workspace 管理 Python。提交 `package-lock.json` 和 `uv.lock`，CI 使用 `npm ci` / `uv sync --frozen`。JS 直接依赖使用精确版本；Python 由锁文件固定传递依赖。根目录运行所有命令，含空格路径使用引号。
+开发环境使用 Node.js 24（[`.node-version`](../.node-version)）与 Python 3.12（[`.python-version`](../.python-version)），分别由 npm workspace 与 `uv` workspace 管理。`package-lock.json` 与 `uv.lock` 必须随依赖变更同步提交，CI 严格使用 `npm ci` 与 `uv sync --frozen`。请在仓库根目录运行所有命令；路径含空格时注意加引号。
 
-`npm run dev` 启动桌面端和仅绑定 127.0.0.1 的 Vite 开发服务；打包应用直接加载本地文件。引擎是受限 stdio 子进程，开发环境执行仓库 `.venv` 的 Python，打包环境执行随包提供的独立二进制，不依赖系统 Python。PyInstaller 产物必须在目标平台构建，不能用 macOS 产物直接发给 Windows。
+`npm run dev` 启动桌面端与仅绑定 `127.0.0.1` 的 Vite 开发服务；打包应用直接加载本地构建产物。语义引擎运行于受监管的无 shell stdio 常驻协调器进程：开发态执行 `.venv` 中的 Python 3.12，打包态执行随 `resources/engine/` 分发的 PyInstaller 独立二进制，不依赖用户系统 Python。PyInstaller 产物必须在目标操作系统原生构建（macOS 与 Windows 产物互不通用）。
 
 ## 常用命令
 
-| 命令                     | 用途                                         |
-| ------------------------ | -------------------------------------------- |
-| `npm run dev`            | 启动真实桌面应用，包含 Vite 热更新           |
-| `npm run check`          | 全部静态检查、单元测试和编译                 |
-| `npm run test:e2e`       | 在已有编译产物上启动 Electron 并检查真实引擎 |
-| `npm run verify:sources` | 校验已归档 PRD、原型及历史审查的字节一致性   |
-| `npm run package:dir`    | 构建当前系统开发应用目录，内置引擎运行时     |
-| `npm run format`         | 格式化开发文件；不会格式化归档源资料         |
+| 命令                                    | 用途                                                                           |
+| :-------------------------------------- | :----------------------------------------------------------------------------- |
+| `npm run dev`                           | 启动真实桌面应用（含 Vite 本地热更新）                                         |
+| `npm run check`                         | 运行全部静态检查（ESLint、Prettier、tsc）、Vitest、构建、Ruff 与 Pytest        |
+| `npm run test:e2e`                      | 在已有构建产物上启动真实 Electron 运行 Playwright E2E                          |
+| `npm run verify:sources`                | 校验 [`source-manifest.json`](source-manifest.json) 锁定的归档源资料字节一致性 |
+| `node scripts/check-design-harness.mjs` | 校验渲染层语义 Token 与 Design Harness 确定性规则                              |
+| `npm run review:level`                  | 计算当前分支相对 `origin/develop` 的代码审查等级（`L0`/`L1`/`L2`）             |
+| `npm run package:dir`                   | 构建当前系统应用目录包（内置 PyInstaller 冻结引擎运行时）                      |
+| `npm run release:hygiene`               | 校验 `release/` 产物的 extraResources、第三方许可与零密钥残留                  |
+| `npm run format`                        | 格式化开发源码与文档（自动跳过受保护的归档源资料）                             |
 
 ## 故障处理
 
-- 引擎未就绪：在仓库根目录重新执行 `uv sync --frozen`；当前只接受 Python 3.12。
-- 开发端口被占用：关闭该仓库旧的开发进程后重启；服务固定 127.0.0.1:5173，禁止自动退让到外网接口。
-- Linux 桌面测试：运行 `xvfb-run -a npm run test:e2e`，需系统具备 Electron 的 GUI 库。
-- Electron 下载失败：恢复网络后执行 `npm ci`；不要通过关闭 TLS 校验处理。
-- Windows：使用原生 Node、uv、Python；引擎路径自动选择 `.venv/Scripts/python.exe`。CI 会执行 Windows 编译和桌面冒烟，不等于正式首发支持承诺。
-- 无法启动未签名打包应用：当前仅为开发验证产物；正式分发必须经过签名、公证和目标系统验证。
+- **引擎未就绪**：在仓库根目录重新执行 `uv sync --frozen`；项目当前仅接受 Python 3.12。
+- **开发端口被占用**：关闭残留开发进程后重启；开发服务固定监听 `127.0.0.1:5173`，禁止自动暴露到局域网或外网接口。
+- **Linux 桌面测试**：执行 `xvfb-run -a npm run test:e2e`，需系统安装 Electron 所需的 GUI 依赖库。
+- **Electron 下载失败**：恢复网络后重跑 `npm ci`，禁止通过关闭 TLS 校验绕过网络问题。
+- **Windows 环境**：使用原生 Node.js、`uv` 与 Python；引擎路径自动定位 `.venv/Scripts/python.exe`。
+- **社区无签名包首次启动**：未注入 Apple 公证或 Windows 代码签名 Secrets 时，`package:dir` 与 Release 工作流默认生成社区无签名包；正式商用签名与目标真机验收须按外部证书与 [`verification/VERIFY.md`](verification/VERIFY.md) 流程执行。
 
-## 扩展边界
+## 架构与扩展边界
 
-新增功能先更新需求追踪、类型/运行时校验和失败场景，再实现真实引擎。健康探针采用一次请求后退出的子进程；耗时业务接入前需设计持久进程、ExecutionJob 状态机、取消、崩溃恢复和资源上限。不得把当前探针直接扩展成任意 Python 命令执行接口。
-
-新增模型 SDK 之前先实现最终外发授权和凭据存储。新增 SPARQL/RDF 依赖之前先完成附录 C/G 技术验证；仅设置配置项不能视为证明外联已被禁止。
+- **常驻引擎与任务状态机**：主进程通过 `EngineSupervisor` 管理常驻协调器与 `ExecutionJob` 生命周期，配合 SQLite Writer Lease 与事务恢复机制确保窗口崩溃或重启后不丢失已提交状态、不自动重放未确认写任务（详见 [`architecture/0003-resident-coordinator-and-jobs.md`](architecture/0003-resident-coordinator-and-jobs.md)）。
+- **IPC 与安全约束**：Preload 仅暴露业务命名的受限接口，禁止直接暴露 `ipcRenderer`、任意文件路径或命令行执行入口；渲染层严格遵循双态零 `unsafe-inline` / `unsafe-eval` CSP。
+- **模型外发与数据安全**：外部模型调用默认关闭，新增或调整模型网关逻辑必须保持凭据 `safeStorage` 加密、脱敏负载预览与逐次人工确认边界，详见 [`../SECURITY.md`](../SECURITY.md) 与 [`../CONTRIBUTING.md`](../CONTRIBUTING.md)。
+- **审查与验证纪律**：所有变更按 [`process/review-policy.md`](process/review-policy.md) 分级，改动核心引擎/契约/主进程须经过双审（`L2`）与对应 Diff 触发验证。
