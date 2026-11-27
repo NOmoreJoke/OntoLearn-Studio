@@ -30,7 +30,7 @@
 ## Key Capabilities
 
 1. **Local-First & Offline-Safe by Default**
-   - Bundles a frozen Python 3.12 semantic engine (`RDFLib` + `pySHACL` + `owlrl`) and an atomic SQLite transaction store; projects and checkpoints stay entirely on local disk.
+   - Bundles a frozen Python 3.12 semantic engine (`RDFLib` + `pySHACL`) and an atomic SQLite transaction store; projects and checkpoints stay entirely on local disk.
    - Zero accounts and zero telemetry. Optional LLM model assistance is disabled by default, requires encrypted credential storage (`safeStorage`), redacted payload preview, and explicit human confirmation per call, and only produces drafts for manual review.
 2. **Dual-View Parity: Business Intuition ↔ Standard Semantic Graph**
    - The default beginner view hides raw `<urn:...>` namespaces, N3 datatype suffixes, and raw JSON dumps behind an **Excel row-to-triple builder**, **PRD 4-color term highlighter**, **natural-language dropdown sentence builder**, and a 3-column **`ReadableBusinessDiff`** table.
@@ -59,7 +59,7 @@
 | **`01`**       | **Ontology Builder**              | Instant toggle between `[Zero-Code Business View \| Standard RDF/IRI View]`, dropdown sentence builder, `ReadableBusinessDiff` preview, and atomic commit                                                                       |
 | **`02`**       | **Data Mapping**                  | CSV / Excel (`.xlsx`) mapping, stable entity identity checks, malformed-input rejection, and snapshot-traceable import                                                                                                          |
 | **`03`**       | **Ontology Query**                | Local read-only SPARQL & visual query builder (`SERVICE` and updates blocked), bounded pagination, same-snapshot graph view, historical snapshot replay, and CSV export                                                         |
-| **`04`**       | **Quality & Reasoning**           | pySHACL structural validation, bounded single-phase rules & RDFS/OWL-RL subset inference, 10/80-row stress validation, and plain-language proof chains                                                                          |
+| **`04`**       | **Quality & Reasoning**           | pySHACL structural validation, RDFS (`subClassOf`/`domain`/`range`) closure & bounded single-phase rules, 10/80-row stress validation, and plain-language proof chains                                                          |
 | **`05`**       | **Behavior Rules**                | Event-triggered rule definitions and sandbox checks with upstream snapshot invalidation tracking                                                                                                                                |
 | **`06`**       | **Scenario Simulation**           | Deterministic multi-round scenario runs based on explicit rules and inputs                                                                                                                                                      |
 | **`07`**       | **Transfer Practice**             | Unlocked repair & classification transfer challenges graded offline                                                                                                                                                             |
@@ -75,7 +75,7 @@ flowchart LR
   UI["React 19 Renderer<br/>00-08 Dual-Mode UI / Design Harness<br/>No Node or Filesystem Access"]
   PRE["Preload Bridge<br/>Context Isolation + Sandbox<br/>Named Allowlist / No Generic IPC"]
   MAIN["Electron 44 Main Process<br/>Strict Dual-Mode CSP / Crash Recovery<br/>safeStorage & Process Supervision"]
-  ENG["Supervised Python 3.12 Coordinator<br/>stdio v2 JSONL + ExecutionJob<br/>RDFLib / pySHACL / owlrl / SQLite"]
+  ENG["Supervised Python 3.12 Coordinator<br/>stdio v2 JSONL + ExecutionJob<br/>RDFLib / pySHACL / SQLite"]
   LLM["Optional Model Gateway<br/>Disabled by Default / Redacted Preview + Confirm"]
 
   UI <-->|"Allowlisted API"| PRE
@@ -99,14 +99,18 @@ Download installers from the [Latest GitHub Release](https://github.com/NOmoreJo
 
 ### Verify Checksums (SHA-256)
 
+Compute the SHA-256 digest of your downloaded installer and compare it against `SHA256SUMS.txt` (note: GitHub Releases replaces spaces in uploaded asset filenames with dots):
+
 ```bash
 # macOS / Linux
-shasum -a 256 -c SHA256SUMS.txt
+shasum -a 256 OntoLearn.Studio-0.1.0-arm64.dmg
+cat SHA256SUMS.txt
 ```
 
 ```powershell
 # Windows PowerShell
 Get-FileHash .\OntoLearn.Studio.Setup.0.1.0.exe -Algorithm SHA256
+Get-Content .\SHA256SUMS.txt
 ```
 
 ---
@@ -161,8 +165,8 @@ docs/                 PRD baseline, ADRs, development guide, verification specs 
 
 ## Semantic Scope & Boundaries
 
-- **Supported**: RDF/RDFS modeling and inheritance, SHACL core constraint validation (`pyshacl`), bounded single-phase rules and OWL-RL subset reasoning (`owlrl`), and local read-only SPARQL queries with bounded pagination and timeouts.
-- **Explicit Non-Goals / Limits**: Does not claim full unbounded OWL DL reasoning, federated SPARQL `SERVICE` network queries, SPARQL Update writes, or unconfirmed automated model writes to the project store.
+- **Supported**: RDF/RDFS (`subClassOf` / `domain` / `range`) closure and inheritance, `owl:Class` / `owl:ObjectProperty` / `owl:DatatypeProperty` vocabulary declarations, SHACL core constraint validation (`pyshacl`, `inference="none"`), bounded single-phase controlled rule inference, and local read-only SPARQL queries with bounded pagination and timeouts.
+- **Explicit Non-Goals / Limits**: Does not support OWL-RL, OWL DL, or SHACL-AF reasoning, federated SPARQL `SERVICE` network queries, SPARQL Update writes, or unconfirmed automated model writes to the project store.
 
 ---
 

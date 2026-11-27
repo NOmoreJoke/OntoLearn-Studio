@@ -16,10 +16,10 @@
   - 升级 V2 原型与四层 `design-harness/` 设计底座，引入确定性设计门禁脚本（`scripts/check-design-harness.mjs`）。
   - 统一左侧工作台导航与右侧 `[课程导师 | AI 助手]` 边栏及顶栏快照/检查点抽屉。
 - **全链路本体工程工作台（Waves 1–5）**：
-  - 落地 `01 本体构建`、`02 数据映射`（CSV / XLSX）、`03 本体查询`（本地只读 SPARQL 与可视化构造、历史快照重跑）、`04 质量与推导`（SHACL 与单阶段规则/OWL-RL 子集推导）、`05 行为定义`、`06 情景推演`、`07 迁移练习`、`08 导出与迁移`（`.zip` 整包迁移、检查点整库恢复、离线 HTML 报告）。
+  - 落地 `01 本体构建`、`02 数据映射`（CSV / XLSX）、`03 本体查询`（本地只读 SPARQL 与可视化构造、历史快照重跑）、`04 质量与推导`（pySHACL 校验与 RDFS 闭包/单阶段受控规则推导）、`05 行为定义`、`06 情景推演`、`07 迁移练习`、`08 导出与迁移`（`.zip` 整包迁移、检查点整库恢复、离线 HTML 报告）。
   - 落地 `B1a/B1b` 项目生命周期与快照失效追踪、`L1/Lq` 离线学习账本与课程验收闭环、`I06` 可选模型网关（`safeStorage` 加密凭据 + 脱敏外发预览 + 人工确认）。
 - **底层安全架构与常驻语义引擎（I01–I04）**：
-  - 常驻受监管 Python 3.12 协调器（`RDFLib` + `pySHACL` + `owlrl` + SQLite 单库原子事务与 Writer Lease），支持 `ExecutionJob` 取消与主进程崩溃/无响应恢复。
+  - 常驻受监管 Python 3.12 协调器（`RDFLib` + `pySHACL` + SQLite 单库原子事务与 Writer Lease），支持 `ExecutionJob` 取消与主进程崩溃/无响应恢复。
   - 启用 `contextIsolation`、`sandbox`、方法级白名单 Preload 桥与开发/生产双态严格 CSP（零 `unsafe-inline` / `unsafe-eval`）。
 - **开源协议与双平台桌面发布（Wave 8）**：
   - 采用 **Apache License 2.0** 开源，补全 `licenses/NOTICE` 与第三方依赖原始许可文本。

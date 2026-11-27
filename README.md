@@ -30,7 +30,7 @@
 ## 核心特性
 
 1. **本地优先（Local-First）与零外发默认安全**
-   - 内置随包冻结的 Python 3.12 语义引擎（RDFLib + pySHACL + owlrl）与 SQLite 单库原子事务存储，所有项目数据与检查点保存在本地。
+   - 内置随包冻结的 Python 3.12 语义引擎（RDFLib + pySHACL）与 SQLite 单库原子事务存储，所有项目数据与检查点保存在本地。
    - 零账号体系、零遥测上报；可选的外部模型助手默认关闭，启用前须经过本地凭据加密存储（`safeStorage`）、脱敏负载预览与人工逐次确认，且仅生成供人工审核的变更草稿，绝不绕过确认直接落库。
 2. **零代码业务直觉 ↔ 标准语义图谱同源双视图**
    - 默认新手视图隐藏裸 `<urn:...>` 命名空间、N3 字面量类型后缀与原始 JSON 快照，通过 **Excel 行拆积木**、**PRD 原句四色圈词**、**自然语言下拉造句器** 与三列可读变更预览（`ReadableBusinessDiff`）降低理解门槛。
@@ -59,7 +59,7 @@
 | **`01`**   | **本体构建**            | `[零代码业务视图 \| 标准 RDF/IRI 视图]` 一键切换、下拉自然语言造句器、`ReadableBusinessDiff` 三列变更预览与事务原子提交                                         |
 | **`02`**   | **数据映射**            | CSV / Excel (`.xlsx`) 导入映射、稳定个体身份校验、非法输入拦截与快照可追溯导入                                                                                  |
 | **`03`**   | **本体查询**            | 仅限本地只读的 SPARQL 与可视化查询构造，禁 `SERVICE` 与写更新，支持有界分页、同快照关系图、历史快照重跑与 CSV 导出                                              |
-| **`04`**   | **质量与推导**          | pySHACL 结构体检、单阶段受控规则与 RDFS/OWL-RL 子集推导、10 行 / 80 行双规模仿真体检与白话推导证据链                                                            |
+| **`04`**   | **质量与推导**          | pySHACL 结构体检、RDFS（`subClassOf`/`domain`/`range`）闭包与单阶段受控规则推导、10 行 / 80 行双规模仿真体检与白话推导证据链                                    |
 | **`05`**   | **行为定义**            | 事件触发规则定义与沙盘检验，关联前序快照与失效状态追踪                                                                                                          |
 | **`06`**   | **情景推演**            | 多轮业务指标情景推演与结果对比（基于显式规则与输入情景，非黑盒统计预测）                                                                                        |
 | **`07`**   | **迁移练习**            | 解锁后的独立迁移排错与分类练习关卡，配合离线课程检验闭环                                                                                                        |
@@ -75,7 +75,7 @@ flowchart LR
   UI["React 19 渲染层<br/>00-08 双模工作台 / Design Harness<br/>无 Node 与文件系统权限"]
   PRE["Preload 受限桥<br/>Context Isolation + Sandbox<br/>方法级白名单 / 无通用 IPC"]
   MAIN["Electron 44 主进程<br/>双态零 unsafe CSP / 窗口崩溃恢复<br/>safeStorage 凭据与任务监督"]
-  ENG["受监管 Python 3.12 常驻协调器<br/>stdio v2 JSONL + ExecutionJob<br/>RDFLib / pySHACL / owlrl / SQLite"]
+  ENG["受监管 Python 3.12 常驻协调器<br/>stdio v2 JSONL + ExecutionJob<br/>RDFLib / pySHACL / SQLite"]
   LLM["可选外部模型网关<br/>默认关闭 / 逐次脱敏预览 + 人工确认"]
 
   UI <-->|"白名单 API"| PRE
@@ -99,16 +99,18 @@ flowchart LR
 
 ### 下载后校验 SHA-256
 
-下载安装包与同版本的 `SHA256SUMS.txt` 后，可执行哈希校验：
+下载安装包与同版本的 `SHA256SUMS.txt` 后，可执行以下哈希命令并与 `SHA256SUMS.txt` 中的摘要逐一比对（注：GitHub Releases 会将安装包文件名中的空格转为 `.`）：
 
 ```bash
 # macOS / Linux
-shasum -a 256 -c SHA256SUMS.txt
+shasum -a 256 OntoLearn.Studio-0.1.0-arm64.dmg
+cat SHA256SUMS.txt
 ```
 
 ```powershell
 # Windows PowerShell
 Get-FileHash .\OntoLearn.Studio.Setup.0.1.0.exe -Algorithm SHA256
+Get-Content .\SHA256SUMS.txt
 ```
 
 ---
@@ -167,8 +169,8 @@ docs/                 PRD 基线、架构决策（ADR）、开发指南、验证
 
 为保持工程透明度，当前版本明确界定以下语义边界：
 
-- **支持范围**：RDF / RDFS 基础建模与继承、SHACL 核心形状约束校验（pySHACL）、受控单阶段规则与 OWL-RL 子集推导（owlrl）、仅限本地存储的只读 SPARQL 查询（`SELECT` / `CONSTRUCT` 等只读形式，受分页与超时约束）。
-- **明确限制**：不支持无边界完整 OWL DL 推理，不支持 SPARQL `SERVICE` 联邦外联查询与 SPARQL Update 写操作，模型助手不直接代替确定性引擎产出结论或跳过人工确认提交数据。
+- **支持范围**：RDF / RDFS（`subClassOf` / `domain` / `range`）闭包与继承、`owl:Class` / `owl:ObjectProperty` / `owl:DatatypeProperty` 词汇声明、SHACL 核心形状约束校验（pySHACL，`inference="none"`）、有界单阶段受控规则推导，以及仅限本地存储的只读 SPARQL 查询（`SELECT` / `CONSTRUCT` 等只读形式，受分页与超时约束）。
+- **明确限制**：不支持 OWL-RL、OWL DL、SHACL-AF 扩展推导，不支持 SPARQL `SERVICE` 联邦外联查询与 SPARQL Update 写操作，模型助手不直接代替确定性引擎产出结论或跳过人工确认提交数据。
 
 ---
 
