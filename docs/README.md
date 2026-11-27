@@ -1,8 +1,16 @@
-# 项目资料
+# 仓内文档总索引
 
-- [PRD V0.6](prd/PRD-本体学习与落地Agent工作台.md)：当前需求基准，仍待 M0 验证。
-- [可编辑原型](../design/prototypes/OntoLearn-Studio-Prototype.pen)：使用支持 .pen 格式的 Pencil 编辑器打开。
-- [审查记录](reviews/)：保留需求及原型的审查演进，不替代当前 PRD。
-- [导入清单](source-manifest.json)：原始文件路径、仓库路径与 SHA-256。
+本目录汇集 **OntoLearn Studio** 的需求基线、架构决策、开发验证指南与迭代留痕。
 
-2026-10-19 第四轮原型审查仍列有三个遗留项：主动作占位、Agent 模式徽章、自动保存与底部状态徽章。本次归档不修改原型，不代表通过发布验收。
+## 核心文档导航
+
+| 类别                   | 路径                                                                                                                                                                                                                                                                                               | 说明                                                                                             |
+| :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------- |
+| **需求基线（PRD）**    | [`prd/PRD-本体学习与落地Agent工作台.md`](prd/PRD-本体学习与落地Agent工作台.md)                                                                                                                                                                                                                     | 冻结产品需求基线（受 [`source-manifest.json`](source-manifest.json) 哈希校验保护，不可擅改）     |
+| **架构决策（ADR）**    | [`architecture/0001-desktop-framework.md`](architecture/0001-desktop-framework.md)<br>[`architecture/0003-resident-coordinator-and-jobs.md`](architecture/0003-resident-coordinator-and-jobs.md)                                                                                                   | 桌面进程边界、安全沙箱、常驻 Python 协调器与 `ExecutionJob` 事务恢复决策                         |
+| **开发指南**           | [`development.md`](development.md)                                                                                                                                                                                                                                                                 | Node 24 / Python 3.12 / `uv` 环境搭建、常用命令、故障处理与跨平台打包边界                        |
+| **验证与覆盖矩阵**     | [`verification/VERIFY.md`](verification/VERIFY.md)<br>[`verification/FEATURE-MAP.md`](verification/FEATURE-MAP.md)                                                                                                                                                                                 | E2E 验证规范、Diff 触发防回归项与功能覆盖评分表                                                  |
+| **发布与真机手册**     | [`release/README.md`](release/README.md)                                                                                                                                                                                                                                                           | 桌面安装包发布核验、迁移恢复与目标真机操作 Runbook                                               |
+| **代码审查分级**       | [`process/review-policy.md`](process/review-policy.md)                                                                                                                                                                                                                                             | `L0` / `L1` / `L2` 审查分级政策、可信基线机制与 160 条拆分清单                                   |
+| **设计底座与原型**     | [`../design-harness/README.md`](../design-harness/README.md)<br>[`../design/prototypes/OntoLearn-Studio-Prototype-v2.pen`](../design/prototypes/OntoLearn-Studio-Prototype-v2.pen)<br>[`../design/prototypes/OntoLearn-Studio-Prototype.pen`](../design/prototypes/OntoLearn-Studio-Prototype.pen) | 前端四层 Design Harness 规范、V2 演进原型与受锁定的 V1 归档原型（使用 Pencil 编辑器查看 `.pen`） |
+| **归档资料与审查留痕** | [`reviews/`](reviews/) · [`source-manifest.json`](source-manifest.json)                                                                                                                                                                                                                            | 保留历史需求与原型审查演进及 12 份归档文件 SHA-256 校验基准，默认保持只读                        |
